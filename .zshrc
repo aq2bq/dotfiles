@@ -49,7 +49,7 @@ plugins=(git)
 
 # User configuration
 
-export PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:$HOME/.rbenv/bin"
+export PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games"
 # export MANPATH="/usr/local/man:$MANPATH"
 
 source $ZSH/oh-my-zsh.sh
@@ -80,7 +80,15 @@ source $ZSH/oh-my-zsh.sh
 # alias ohmyzsh="mate ~/.oh-my-zsh"
 
 # Aliases
-alias emacs="/usr/bin/emacs -nw"
+
+case ${OSTYPE} in
+    darwin*)
+	alias emacs="/usr/local/Cellar/emacs/24.4/bin/emacs -nw"
+    ;;
+    linux*)
+	alias emacs="/usr/bin/emacsclient -nw"
+    ;;
+    esac
 alias be="bundle exec"
 
 # Enable peco
@@ -101,25 +109,31 @@ zle -N peco-select-history
 bindkey '^r' peco-select-history
 
 # Setting rbenv
-eval "$(rbenv init -)"
-if [[ ! -o interactive ]]; then
-    return
+export PATH="$HOME/.rbenv/shims:$PATH"
+if [ -d ${HOME}/.rbenv ]; then
+    export PATH=$HOME/.rbenv/bin:$PATH
+    eval "$(rbenv init -)"
+    . ${HOME}/.rbenv/completions/rbenv.zsh
+    export BUNDLER_EDITOR='emacsclient'
 fi
+# if [[ ! -o interactive ]]; then
+#     return
+# fi
 
-compctl -K _rbenv rbenv
+# compctl -K _rbenv rbenv
 
-_rbenv() {
-  local words completions
-  read -cA words
+# _rbenv() {
+#     local words completions
+#     read -cA words
 
-  if [ "${#words}" -eq 2 ]; then
-    completions="$(rbenv commands)"
-  else
-    completions="$(rbenv completions ${words[2,-2]})"
-  fi
+#     if [ "${#words}" -eq 2 ]; then
+# 	completions="$(rbenv commands)"
+#     else
+# 	completions="$(rbenv completions ${words[2,-2]})"
+#     fi
 
-  reply=("${(ps:\n:)completions}")
-}
+#     reply=("${(ps:\n:)completions}")
+# }
 
 # Exectable "git status" & "ls" on hitting Enter
 function do_enter() {

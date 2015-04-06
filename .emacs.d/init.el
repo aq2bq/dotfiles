@@ -1,3 +1,13 @@
+;;;
+;;; Emacs Client
+;;;
+;; run server
+;; (require 'server)
+;; (unless (server-running-p)
+;;   (server-start))
+
+
+
 ;; -------------------------------------
 ;; Initialize El-Get: package management
 ;; -------------------------------------
@@ -13,6 +23,8 @@
     (goto-char (point-max))
     (eval-print-last-sexp)))
 
+;; Auto load configures init-/packagename/.el
+(setq el-get-user-package-directory (locate-user-emacs-file "init"))
 
 ;; -------------------
 ;; General Settings
@@ -45,9 +57,19 @@
 ;; Emacs
 (el-get-bundle k1LoW/emacs-drill-instructor)
 (el-get-bundle auto-complete)
-(el-get-bundle minibuf-isearch)
-(el-get-bundle iswitchb-highlight)
-(el-get-bundle anything)
+;; (el-get-bundle minibuf-isearch)
+;; (el-get-bundle iswitchb-highlight)
+(el-get-bundle hlinum)
+(el-get-bundle use-package)
+(el-get-bundle bind-key)
+
+
+;; Helm
+(el-get-bundle helm)
+(el-get-bundle migemo)	
+(el-get-bundle helm-migemo)
+(el-get-bundle helm-swoop)
+
 
 ;; Ruby
 (el-get-bundle ruby-mode)
@@ -57,19 +79,37 @@
 (el-get-bundle rails-el)
 
 
+;; -----------
+;; Appearance
+;; -----------
 
+;; Highlight paren
+(show-paren-mode 1)
+
+;; Display line number(& hilight current line number)
+(global-linum-mode t)
+(setq linum-format "%4d|\s")
+(hlinum-activate)
 
 ;; ------------
 ;; Key Bindings
 ;; ------------
+
+(use-package bind-key)
 
 ;; Drill Instructor!!
 (require 'drill-instructor)
 (drill-instructor t)
 (setq drill-instructor-global t)
 
-;; Backspace
-(define-key global-map "\C-h" 'delete-backward-char)
+;; ;; Suspend EmacsClient
+;; (bind-key "C-x C-c" 'ns-do-hide-emacs)
+
+;; ;; Exit EmacsClient
+;; (defalias 'exit 'save-buffers-kill-emacs)
+
+;; Backspace C-h
+(bind-key "C-h" 'delete-backward-char)
 
 ;; Toggle comment/uncomment
 (global-set-key (kbd "C-c C-c") 'comment-or-uncomment-region)
@@ -77,5 +117,15 @@
 ;; windmove.el
 (windmove-default-keybindings 'meta)
 
+;; Goto line C-x l
+(define-key ctl-x-map "l" 'goto-line)
 
+;; Incremental seach from buffer C-f
+(icomplete-mode 1)
 
+;; -----------
+;; Mouse
+;; -----------
+
+;; Enable copy mouse drag region
+(setq mouse-drag-copy-region t)
