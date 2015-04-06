@@ -142,7 +142,10 @@ function do_enter() {
 zle -N do_enter
 bindkey '^m' do_enter
 
-# setting Go
+# Setting Go
 export GOROOT=/usr/lib/go
 export GOPATH=$HOME/go
 export PATH=$PATH:$GOROOT/bin:$GOPATH/bin
+
+# Setting node.js
+export PATH=$PATH:$HOME/.nodebrew/current/bin
