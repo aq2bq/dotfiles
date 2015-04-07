@@ -80,7 +80,7 @@ source $ZSH/oh-my-zsh.sh
 # alias ohmyzsh="mate ~/.oh-my-zsh"
 
 # Aliases
-
+alias be="bundle exec"
 case ${OSTYPE} in
     darwin*)
 	alias emacs="/usr/local/Cellar/emacs/24.4/bin/emacs -nw"
@@ -88,8 +88,8 @@ case ${OSTYPE} in
     linux*)
 	alias emacs="/usr/bin/emacsclient -nw"
     ;;
-    esac
-alias be="bundle exec"
+esac
+export EDITOR="emacs -nw"
 
 # Enable peco
 function peco-select-history() {
@@ -110,12 +110,13 @@ bindkey '^r' peco-select-history
 
 # Setting rbenv
 export PATH="$HOME/.rbenv/shims:$PATH"
-if [ -d ${HOME}/.rbenv ]; then
-    export PATH=$HOME/.rbenv/bin:$PATH
-    eval "$(rbenv init -)"
-    . ${HOME}/.rbenv/completions/rbenv.zsh
-    export BUNDLER_EDITOR='emacsclient'
-fi
+eval "$(rbenv init -)"
+# if [ -d ${HOME}/.rbenv ]; then
+#     export PATH=$HOME/.rbenv/bin:$PATH
+#     eval "$(rbenv init -)"
+#     . ${HOME}/.rbenv/completions/rbenv.zsh
+#     export BUNDLER_EDITOR='emacsclient'
+# fi
 # if [[ ! -o interactive ]]; then
 #     return
 # fi

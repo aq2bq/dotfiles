@@ -55,24 +55,31 @@
 ;; --------------------------
 
 ;; Emacs
+(el-get-bundle bind-key)
 (el-get-bundle k1LoW/emacs-drill-instructor)
 (el-get-bundle auto-complete)
 ;; (el-get-bundle minibuf-isearch)
 ;; (el-get-bundle iswitchb-highlight)
 (el-get-bundle hlinum)
 (el-get-bundle use-package)
-(el-get-bundle bind-key)
 
+
+
+;; Markdown
+(el-get-bundle markdown-mode)
 
 ;; Helm
 (el-get-bundle helm)
 (el-get-bundle migemo)	
 (el-get-bundle helm-migemo)
 (el-get-bundle helm-swoop)
+(el-get-bundle helm-descbinds)
+(el-get-bundle helm-ag)
 
 
 ;; Ruby
-(el-get-bundle ruby-mode)
+;; (el-get-bundle ruby-mode)
+(el-get-bundle zenspider/enhanced-ruby-mode)
 (el-get-bundle ruby-block)
 (el-get-bundle ruby-electric)
 (el-get-bundle rspec-mode)
@@ -91,31 +98,46 @@
 (setq linum-format "%4d|\s")
 (hlinum-activate)
 
+
 ;; ------------
 ;; Key Bindings
 ;; ------------
 
-(use-package bind-key)
+(require 'bind-key)
 
 ;; Drill Instructor!!
 (require 'drill-instructor)
 (drill-instructor t)
 (setq drill-instructor-global t)
 
-;; ;; Suspend EmacsClient
+;; Suspend EmacsClient
 ;; (bind-key "C-x C-c" 'ns-do-hide-emacs)
 
-;; ;; Exit EmacsClient
+;; Exit EmacsClient
 ;; (defalias 'exit 'save-buffers-kill-emacs)
 
 ;; Backspace C-h
-(bind-key "C-h" 'delete-backward-char)
-
+;; (bind-key "C-h" 'delete-backward-char)
+(global-set-key (kbd "C-h") 'delete-backward-char)
 ;; Toggle comment/uncomment
 (global-set-key (kbd "C-c C-c") 'comment-or-uncomment-region)
 
-;; windmove.el
-(windmove-default-keybindings 'meta)
+;; Move to other window M-p
+;; (global-set-key (kbd "M-p") 'other-window)
+(defun other-window-or-split (val)
+  (interactive)
+  (when (one-window-p)
+					;    (split-window-horizontally) ;split horizontally
+    (split-window-vertically) ;split vertically
+    )
+  (other-window val))
+
+(global-set-key (kbd "M-p") (lambda () (interactive) (other-window-or-split 1)))
+(global-set-key (kbd "M-S-p") (lambda () (interactive) (other-window-or-split -1)))
+
+;; Change buffer next/before C-c n/C-c b
+(global-set-key (kbd "C-c n") 'next-buffer)
+(global-set-key (kbd "C-c b") 'previous-buffer)
 
 ;; Goto line C-x l
 (define-key ctl-x-map "l" 'goto-line)
