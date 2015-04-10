@@ -6,5 +6,6 @@
 	 ("Capfile$" . ruby-mode)
 	 ("Guardfile$" . ruby-mode)
 	 ("[Rr]akefile$" . ruby-mode))
+  :bind (("C-c c" . smart-compile))
   :interpreter "ruby"
 )

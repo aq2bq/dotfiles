@@ -62,7 +62,7 @@
 ;; (el-get-bundle iswitchb-highlight)
 (el-get-bundle hlinum)
 (el-get-bundle use-package)
-
+(el-get-bundle smart-compile)
 
 
 ;; Markdown
@@ -75,6 +75,7 @@
 (el-get-bundle helm-swoop)
 (el-get-bundle helm-descbinds)
 (el-get-bundle helm-ag)
+
 
 
 ;; Ruby
@@ -122,8 +123,7 @@
 ;; Toggle comment/uncomment
 (global-set-key (kbd "C-c C-c") 'comment-or-uncomment-region)
 
-;; Move to other window M-p
-;; (global-set-key (kbd "M-p") 'other-window)
+;; Move to other window C-q
 (defun other-window-or-split (val)
   (interactive)
   (when (one-window-p)
@@ -132,8 +132,8 @@
     )
   (other-window val))
 
-(global-set-key (kbd "M-p") (lambda () (interactive) (other-window-or-split 1)))
-(global-set-key (kbd "M-S-p") (lambda () (interactive) (other-window-or-split -1)))
+(global-set-key (kbd "C-q") (lambda () (interactive) (other-window-or-split 1)))
+(global-set-key (kbd "C-S-q") (lambda () (interactive) (other-window-or-split -1)))
 
 ;; Change buffer next/before C-c n/C-c b
 (global-set-key (kbd "C-c n") 'next-buffer)
