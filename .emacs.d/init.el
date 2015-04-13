@@ -79,13 +79,14 @@
 ;; Git
 (el-get-bundle magit)
 
-;; Ruby
+;; Ruby / Rails
 ;; (el-get-bundle ruby-mode)
 (el-get-bundle zenspider/enhanced-ruby-mode)
 (el-get-bundle ruby-block)
 (el-get-bundle ruby-electric)
 (el-get-bundle rspec-mode)
 (el-get-bundle rails-el)
+(el-get-bundle yaml-mode)
 
 
 ;; -----------
