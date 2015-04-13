@@ -76,7 +76,8 @@
 (el-get-bundle helm-descbinds)
 (el-get-bundle helm-ag)
 
-
+;; Git
+(el-get-bundle magit)
 
 ;; Ruby
 ;; (el-get-bundle ruby-mode)
