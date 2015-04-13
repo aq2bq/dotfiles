@@ -83,7 +83,7 @@ source $ZSH/oh-my-zsh.sh
 alias be="bundle exec"
 case ${OSTYPE} in
     darwin*)
-	alias emacs="/usr/local/Cellar/emacs/24.4/bin/emacs -nw"
+	alias emacs="/usr/local/Cellar/emacs/24.5/bin/emacs -nw"
     ;;
     linux*)
 	alias emacs="/usr/bin/emacsclient -nw"
