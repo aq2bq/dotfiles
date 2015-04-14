@@ -6,7 +6,7 @@
 (bind-key "C-x C-f" 'helm-find-files)
 (bind-key "C-x f" 'helm-find)
 (bind-key "C-x C-r" 'helm-recentf)
-(bind-key "C-x b" 'helm-buffers-list)
+(bind-key "C-x C-b" 'helm-buffers-list)
 (bind-key "C-c o" 'helm-occur)
 
 ;; Force define Backspace C-h

@@ -63,7 +63,8 @@
 (el-get-bundle hlinum)
 (el-get-bundle use-package)
 (el-get-bundle smart-compile)
-
+(el-get-bundle flycheck)
+(el-get-bundle flycheck-color-mode-line)
 
 ;; Markdown
 (el-get-bundle markdown-mode)
@@ -80,13 +81,18 @@
 (el-get-bundle magit)
 
 ;; Ruby / Rails
-;; (el-get-bundle ruby-mode)
 (el-get-bundle zenspider/enhanced-ruby-mode)
 (el-get-bundle ruby-block)
 (el-get-bundle ruby-electric)
+(el-get-bundle inf-ruby)
+(el-get-bundle rcodetools)
+(el-get-bundle rubocop)
+(el-get-bundle robe-mode)
+(el-get-bundle helm-robe)
 (el-get-bundle rspec-mode)
 (el-get-bundle rails-el)
 (el-get-bundle yaml-mode)
+(el-get-bundle masutaka/emacs-helm-bundle-show)
 
 
 ;; -----------

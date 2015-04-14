@@ -13,6 +13,7 @@
 !/.emacs.d
 !/.emacs.d/init.el
 !/.emacs.d/init/*.el
+!/.emacs.d/Gemfile
 
 
 # Ignore from TARGETS
@@ -21,6 +22,7 @@
 /.emacs.d/.#*
 /.emacs.d/%*
 /.emacs.d/*.dat
+/.emacs.d/*.lock
 /.emacs.d/*~
 /.emacs.d/el-get
 /.emacs.d/init/*.elc
