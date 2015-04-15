@@ -55,13 +55,15 @@
 ;; --------------------------
 
 ;; Emacs
+(el-get-bundle! use-package)
 (el-get-bundle! bind-key)
+(el-get-bundle! powerline)
 (el-get-bundle k1LoW/emacs-drill-instructor)
 (el-get-bundle auto-complete)
 ;; (el-get-bundle minibuf-isearch)
 ;; (el-get-bundle iswitchb-highlight)
 (el-get-bundle hlinum)
-(el-get-bundle! use-package)
+
 (el-get-bundle smart-compile)
 (el-get-bundle  anzu)
 (el-get-bundle flycheck)
