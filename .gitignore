@@ -28,3 +28,4 @@
 /.emacs.d/init/*.elc
 /.emacs.d/elpa
 /.emacs.d/recentf
+/.emacs.d/eshell

@@ -35,6 +35,8 @@
 
 ;; encoding
 (set-language-environment       "Japanese")
+(setq file-name-coding-system 'utf-8)
+(setq locale-coding-system 'utf-8)
 (prefer-coding-system           'utf-8-unix)
 (setq                           default-buffer-file-coding-system 'utf-8)
 (set-buffer-file-coding-system  'utf-8)
@@ -49,6 +51,10 @@
 ;; copy mouse drag region
 (setq mouse-drag-copy-region t)
 
+
+;; for support `ls --dired`
+(let ((gls "/usr/local/bin/gls"))
+  (if (file-exists-p gls) (setq insert-directory-program gls)))
 
 ;; --------------------------
 ;; Bundle Packages
@@ -65,7 +71,7 @@
 (el-get-bundle hlinum)
 
 (el-get-bundle smart-compile)
-(el-get-bundle  anzu)
+(el-get-bundle anzu)
 (el-get-bundle flycheck)
 (el-get-bundle flycheck-color-mode-line)
 
@@ -96,6 +102,15 @@
 (el-get-bundle rails-el)
 (el-get-bundle yaml-mode)
 (el-get-bundle masutaka/emacs-helm-bundle-show)
+
+
+;; JS / JSX / Coffee Script
+(el-get-bundle js2-mode)
+(el-get-bundle coffee-mode)
+(el-get-bundle web-mode)
+
+;; Slim
+(el-get-bundle slim-mode)
 
 
 ;; -----------
@@ -162,3 +177,6 @@
 
 ;; Enable copy mouse drag region
 (setq mouse-drag-copy-region t)
+
+
+
