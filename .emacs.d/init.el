@@ -33,6 +33,12 @@
 ;; set tab width
 (setq tab-width 2)
 
+;; replace inputting yes-no to y-n
+(fset 'yes-or-no-p 'y-or-n-p) 
+
+;; highlight a blank-space of end of line
+(setq-default show-trailing-whitespace t)
+
 ;; encoding
 (set-language-environment       "Japanese")
 (setq file-name-coding-system 'utf-8)
@@ -80,7 +86,7 @@
 
 ;; Helm
 (el-get-bundle helm)
-(el-get-bundle migemo)	
+(el-get-bundle migemo)
 (el-get-bundle helm-migemo)
 (el-get-bundle helm-swoop)
 (el-get-bundle helm-descbinds)
@@ -108,6 +114,10 @@
 (el-get-bundle js2-mode)
 (el-get-bundle coffee-mode)
 (el-get-bundle web-mode)
+
+;; SASS
+(el-get-bundle nex3/sass-mode)
+(el-get-bundle flymake-sass)
 
 ;; Slim
 (el-get-bundle slim-mode)
