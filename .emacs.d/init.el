@@ -118,6 +118,7 @@
 ;; SASS
 (el-get-bundle nex3/sass-mode)
 (el-get-bundle flymake-sass)
+(el-get-bundle haml-mode)
 
 ;; Slim
 (el-get-bundle slim-mode)
