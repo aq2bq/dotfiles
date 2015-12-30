@@ -80,6 +80,10 @@ source $ZSH/oh-my-zsh.sh
 # alias ohmyzsh="mate ~/.oh-my-zsh"
 
 # Aliases
+export PGDATA=/usr/local/var/postgres
+alias postgres_start="pg_ctl -l /usr/local/var/postgres/server.log start"
+alias postgres_stop="pg_ctl -D /usr/local/var/postgres stop -s -m fast"
+
 alias be="bundle exec"
 case ${OSTYPE} in
     darwin*)
