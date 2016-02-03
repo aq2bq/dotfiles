@@ -2,7 +2,7 @@
   :commands anzu-mode
   :init
   (global-anzu-mode +1)
-  :bind 
+  :bind
   (("C-c r" . anzu-query-replace)
    ("C-c C-m" . anzu-query-replace-at-cursor-thing))
   :config

@@ -34,7 +34,7 @@
 (setq tab-width 2)
 
 ;; replace inputting yes-no to y-n
-(fset 'yes-or-no-p 'y-or-n-p) 
+(fset 'yes-or-no-p 'y-or-n-p)
 
 ;; highlight a blank-space of end of line
 (setq-default show-trailing-whitespace t)
@@ -78,7 +78,8 @@
 
 (el-get-bundle smart-compile)
 (el-get-bundle anzu)
-(el-get-bundle flycheck)
+(el-get-bundle seq)
+(el-get-bundle flycheck/flycheck)
 (el-get-bundle flycheck-color-mode-line)
 
 ;; Markdown
@@ -111,7 +112,7 @@
 
 
 ;; JS / JSX / Coffee Script
-(el-get-bundle js2-mode)
+(el-get-bundle mooz/js2-mode)
 (el-get-bundle coffee-mode)
 (el-get-bundle web-mode)
 
@@ -120,9 +121,18 @@
 (el-get-bundle flymake-sass)
 (el-get-bundle haml-mode)
 
+;; HTML
+(el-get-bundle ac-html)
+(el-get-bundle html5)
+
 ;; Slim
 (el-get-bundle slim-mode)
 
+;; Elixir
+(el-get-bundle elixir-lang/emacs-elixir) ;; elixir-mode
+(el-get-bundle alchemist)
+(el-get-bundle syohex/emacs-ac-alchemist)
+(add-hook 'elixir-mode-hook 'ac-alchemist-setup)
 
 ;; -----------
 ;; Appearance
