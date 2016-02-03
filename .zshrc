@@ -115,30 +115,30 @@ bindkey '^r' peco-select-history
 # Setting rbenv
 export PATH="$HOME/.rbenv/shims:$PATH"
 eval "$(rbenv init -)"
-# if [ -d ${HOME}/.rbenv ]; then
-#     export PATH=$HOME/.rbenv/bin:$PATH
-#     eval "$(rbenv init -)"
-#     . ${HOME}/.rbenv/completions/rbenv.zsh
-#     export BUNDLER_EDITOR='emacsclient'
-# fi
-# if [[ ! -o interactive ]]; then
-#     return
-# fi
+if [ -d ${HOME}/.rbenv ]; then
+    export PATH=$HOME/.rbenv/bin:$PATH
+    eval "$(rbenv init -)"
+    . ${HOME}/.rbenv/completions/rbenv.zsh
+    export BUNDLER_EDITOR='emacsclient'
+fi
+if [[ ! -o interactive ]]; then
+    return
+fi
 
-# compctl -K _rbenv rbenv
+compctl -K _rbenv rbenv
 
-# _rbenv() {
-#     local words completions
-#     read -cA words
+_rbenv() {
+    local words completions
+    read -cA words
 
-#     if [ "${#words}" -eq 2 ]; then
-# 	completions="$(rbenv commands)"
-#     else
-# 	completions="$(rbenv completions ${words[2,-2]})"
-#     fi
+    if [ "${#words}" -eq 2 ]; then
+	completions="$(rbenv commands)"
+    else
+	completions="$(rbenv completions ${words[2,-2]})"
+    fi
 
-#     reply=("${(ps:\n:)completions}")
-# }
+    reply=("${(ps:\n:)completions}")
+}
 
 # Exectable "git status" & "ls" on hitting Enter
 function do_enter() {
