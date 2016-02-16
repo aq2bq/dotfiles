@@ -8,4 +8,6 @@
 	 ("[Rr]akefile$" . ruby-mode))
   :bind (("C-c c" . smart-compile))
   :interpreter "ruby"
+  :config
+  (setq ruby-insert-encoding-magic-comment nil)
 )
