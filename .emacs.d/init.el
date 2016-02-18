@@ -49,6 +49,7 @@
 (set-terminal-coding-system     'utf-8)
 (set-keyboard-coding-system     'utf-8)
 (set-clipboard-coding-system    'utf-8)
+(setenv "LC_ALL" "ja_JP.UTF-8")
 
 ;; disable generate backupfile
 (setq make-backup-files nil)
@@ -71,7 +72,8 @@
 (el-get-bundle! bind-key)
 (el-get-bundle! powerline)
 (el-get-bundle k1LoW/emacs-drill-instructor)
-(el-get-bundle auto-complete)
+(el-get-bundle! auto-complete)
+(el-get-bundle! yasnippet)
 ;; (el-get-bundle minibuf-isearch)
 ;; (el-get-bundle iswitchb-highlight)
 (el-get-bundle hlinum)
@@ -115,6 +117,8 @@
 (el-get-bundle mooz/js2-mode)
 (el-get-bundle coffee-mode)
 (el-get-bundle web-mode)
+(el-get-bundle tern) ;; require `npm install -g tern`
+(el-get-bundle js2-refactor)
 
 ;; SASS
 (el-get-bundle nex3/sass-mode)
