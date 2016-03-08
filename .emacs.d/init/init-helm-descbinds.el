@@ -1,5 +1,4 @@
-;; Helm Descbinds
-;; show all Bindings
-(helm-descbinds-mode t)
-(require 'bind-key)
-(bind-key "C-c k" 'helm-descbinds)
+(use-package helm-descbinds
+  :bind
+  ("C-c k" . helm-descbinds)
+  )

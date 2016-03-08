@@ -69,11 +69,12 @@
 
 ;; Emacs
 (el-get-bundle! use-package)
-(el-get-bundle! bind-key)
+; (el-get-bundle! bind-key)
+(el-get-bundle! let-alist)
 (el-get-bundle! powerline)
 (el-get-bundle k1LoW/emacs-drill-instructor)
 (el-get-bundle! auto-complete)
-(el-get-bundle! yasnippet)
+(el-get-bundle yasnippet)
 ;; (el-get-bundle minibuf-isearch)
 ;; (el-get-bundle iswitchb-highlight)
 (el-get-bundle hlinum)
@@ -114,6 +115,7 @@
 
 
 ;; JS / JSX / Coffee Script
+(el-get-bundle! cl-lib)
 (el-get-bundle mooz/js2-mode)
 (el-get-bundle coffee-mode)
 (el-get-bundle web-mode)
@@ -133,10 +135,9 @@
 (el-get-bundle slim-mode)
 
 ;; Elixir
-(el-get-bundle elixir-lang/emacs-elixir) ;; elixir-mode
+(el-get-bundle elixir) ;; elixir-mode
 (el-get-bundle alchemist)
 (el-get-bundle syohex/emacs-ac-alchemist)
-(add-hook 'elixir-mode-hook 'ac-alchemist-setup)
 
 ;; -----------
 ;; Appearance
