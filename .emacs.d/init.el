@@ -99,7 +99,7 @@
 (el-get-bundle magit)
 
 ;; Ruby / Rails
-(el-get-bundle zenspider/enhanced-ruby-mode)
+(el-get-bundle ruby-mode)
 (el-get-bundle ruby-block)
 (el-get-bundle ruby-electric)
 (el-get-bundle inf-ruby)
