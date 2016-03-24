@@ -63,6 +63,10 @@
 (let ((gls "/usr/local/bin/gls"))
   (if (file-exists-p gls) (setq insert-directory-program gls)))
 
+;; enable paste to region
+(delete-selection-mode t)
+
+
 ;; --------------------------
 ;; Bundle Packages
 ;; --------------------------
