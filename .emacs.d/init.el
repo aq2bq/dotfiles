@@ -67,6 +67,7 @@
 (delete-selection-mode t)
 
 
+
 ;; --------------------------
 ;; Bundle Packages
 ;; --------------------------
@@ -77,7 +78,10 @@
 (el-get-bundle! let-alist)
 (el-get-bundle! powerline)
 (el-get-bundle k1LoW/emacs-drill-instructor)
-(el-get-bundle! auto-complete)
+(el-get-bundle auto-complete)
+(el-get-bundle! company
+	:type github :pkgname "company-mode/company-mode"
+	(global-company-mode +1))
 (el-get-bundle yasnippet)
 ;; (el-get-bundle minibuf-isearch)
 ;; (el-get-bundle iswitchb-highlight)
@@ -124,7 +128,9 @@
 (el-get-bundle coffee-mode)
 (el-get-bundle web-mode)
 (el-get-bundle tern) ;; require `npm install -g tern`
+(el-get-bundle company-tern)
 (el-get-bundle js2-refactor)
+(el-get-bundle json-mode)
 
 ;; SASS
 (el-get-bundle nex3/sass-mode)

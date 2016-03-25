@@ -15,9 +15,3 @@
     (add-hook 'js2-mode-hook (lambda ()
 			       (bind-key "M-j" 'join-line-or-lines-in-region js2-mode-map))))
   )
-;; (use-package js2-refactor
-;;   :init
-;;   (add-hook 'js2-mode-hook 'js2-refactor-mode)
-;;   :config
-;;   (js2r-add-keybindings-with-prefix "C-c d")
-;;   )
