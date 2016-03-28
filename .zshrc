@@ -168,3 +168,7 @@ export PATH=$PATH:$GOROOT/bin:$GOPATH/bin
 
 # Setting node.js
 export PATH=$PATH:$HOME/.nodebrew/current/bin
+
+
+# New heroku Toolbelt
+alias heroku=/usr/local/heroku/bin/heroku
