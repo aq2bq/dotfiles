@@ -172,3 +172,8 @@ export PATH=$PATH:$HOME/.nodebrew/current/bin
 
 # New heroku Toolbelt
 alias heroku=/usr/local/heroku/bin/heroku
+
+
+# to Rust Cargo
+export PATH=$PATH:$HOME/.cargo/bin
+
