@@ -177,3 +177,4 @@ alias heroku=/usr/local/heroku/bin/heroku
 # to Rust Cargo
 export PATH=$PATH:$HOME/.cargo/bin
 
+export PATH="$HOME/.roswell/bin:$PATH"

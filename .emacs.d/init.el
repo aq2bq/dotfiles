@@ -74,14 +74,14 @@
 
 ;; Emacs
 (el-get-bundle! use-package)
-; (el-get-bundle! bind-key)
+					; (el-get-bundle! bind-key)
 (el-get-bundle! let-alist)
 (el-get-bundle! powerline)
 (el-get-bundle k1LoW/emacs-drill-instructor)
 (el-get-bundle auto-complete)
 (el-get-bundle! company
-	:type github :pkgname "company-mode/company-mode"
-	(global-company-mode +1))
+  :type github :pkgname "company-mode/company-mode"
+  (global-company-mode +1))
 (el-get-bundle yasnippet)
 ;; (el-get-bundle minibuf-isearch)
 ;; (el-get-bundle iswitchb-highlight)
@@ -148,6 +148,17 @@
 (el-get-bundle elixir) ;; elixir-mode
 (el-get-bundle alchemist)
 (el-get-bundle syohex/emacs-ac-alchemist)
+
+;; Lisp
+(el-get-bundle slime/slime
+  :features slime-company)
+(load (expand-file-name "~/.roswell/helper.el"))
+(setq inferior-lisp-program "ros -Q run")
+(setf slime-lisp-implementations
+      `((sbcl    ("sbcl" "--dynamic-space-size" "2000"))
+	(roswell ("ros" "-Q" "run"))))
+(setf slime-default-lisp 'roswell)
+
 
 ;; -----------
 ;; Appearance
@@ -216,3 +227,20 @@
 
 
 
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(anzu-deactivate-region t)
+ '(anzu-mode-lighter "")
+ '(anzu-search-threshold 1000)
+ '(anzu-use-migemo t)
+ '(robe-completing-read-func (quote helm-robe-completing-read))
+ '(send-mail-function (quote mailclient-send-it)))
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ )
