@@ -150,8 +150,8 @@
 (el-get-bundle syohex/emacs-ac-alchemist)
 
 ;; Lisp
-(el-get-bundle slime/slime
-  :features slime-company)
+(el-get-bundle ac-slime)
+(el-get-bundle slime/slime)
 (load (expand-file-name "~/.roswell/helper.el"))
 (setq inferior-lisp-program "ros -Q run")
 (setf slime-lisp-implementations
