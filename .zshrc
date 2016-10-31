@@ -177,4 +177,10 @@ alias heroku=/usr/local/heroku/bin/heroku
 # to Rust Cargo
 export PATH=$PATH:$HOME/.cargo/bin
 
-export PATH="$HOME/.roswell/bin:$PATH"
+# roswell
+export PATH="$HOME/.roswell/bin:$HOME/.roswell/impls/x86-64/darwin/sbcl-bin/1.2.11/bin/:$PATH"
+
+# Python
+export PYENV_ROOT=${HOME}/.pyenv
+export PATH=${PYENV_ROOT}/bin:$PATH
+if which pyenv > /dev/null; then eval "$(pyenv init -)"; fi
