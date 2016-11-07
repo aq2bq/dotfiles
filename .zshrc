@@ -94,6 +94,8 @@ case ${OSTYPE} in
     ;;
 esac
 export EDITOR="emacs -nw"
+export LESS='-g -i -M -R -S -W -z-4 -x4'
+
 
 # Enable peco
 function peco-select-history() {
