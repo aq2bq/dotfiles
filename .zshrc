@@ -83,6 +83,7 @@ source $ZSH/oh-my-zsh.sh
 export PGDATA=/usr/local/var/postgres
 alias postgres_start="pg_ctl -l /usr/local/var/postgres/server.log start"
 alias postgres_stop="pg_ctl -D /usr/local/var/postgres stop -s -m fast"
+alias flushdns="dscacheutil -flushcache"
 
 alias be="bundle exec"
 case ${OSTYPE} in
