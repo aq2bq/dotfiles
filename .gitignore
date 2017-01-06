@@ -14,7 +14,9 @@
 !/.emacs.d/init.el
 !/.emacs.d/init/*.el
 !/.emacs.d/Gemfile
-
+!/.config
+!/.config/fish
+!/.config/fish/config.fish
 
 # Ignore from TARGETS
 /.emacs.d/auto-save-list*
@@ -29,3 +31,8 @@
 /.emacs.d/elpa
 /.emacs.d/recentf
 /.emacs.d/eshell
+/.config/omf
+/.config/heroku
+/.config/configstore
+/.config/fish/*
+

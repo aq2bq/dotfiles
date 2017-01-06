@@ -1,86 +1,21 @@
-# Path to your oh-my-zsh installation.
-export ZSH=$HOME/.oh-my-zsh
+HISTFILE=~/.histfile
+HISTSIZE=1000
+SAVEHIST=1000
+bindkey -e
+# End of lines configured by zsh-newuser-install
+# The following lines were added by compinstall
+# zstyle :compinstall filename '/home/da-terada/.zshrc'
+autoload -Uz compinit
+PS1="[%n@${HOST%%.*} %1~]%(!.#.$) "
+compinit
+# End of lines added by compinstall
+export EVENT_NOKQUEUE=1
 
-# Set name of the theme to load.
-# Look in ~/.oh-my-zsh/themes/
-# Optionally, if you set this to "random", it'll load a random theme each
-# time that oh-my-zsh is loaded.
-ZSH_THEME="robbyrussell"
-
-# Uncomment the following line to use case-sensitive completion.
-# CASE_SENSITIVE="true"
-
-# Uncomment the following line to disable bi-weekly auto-update checks.
-# DISABLE_AUTO_UPDATE="true"
-
-# Uncomment the following line to change how often to auto-update (in days).
-# export UPDATE_ZSH_DAYS=13
-
-# Uncomment the following line to disable colors in ls.
-# DISABLE_LS_COLORS="true"
-
-# Uncomment the following line to disable auto-setting terminal title.
-# DISABLE_AUTO_TITLE="true"
-
-# Uncomment the following line to enable command auto-correction.
-# ENABLE_CORRECTION="true"
-
-# Uncomment the following line to display red dots whilst waiting for completion.
-# COMPLETION_WAITING_DOTS="true"
-
-# Uncomment the following line if you want to disable marking untracked files
-# under VCS as dirty. This makes repository status check for large repositories
-# much, much faster.
-# DISABLE_UNTRACKED_FILES_DIRTY="true"
-
-# Uncomment the following line if you want to change the command execution time
-# stamp shown in the history command output.
-# The optional three formats: "mm/dd/yyyy"|"dd.mm.yyyy"|"yyyy-mm-dd"
-# HIST_STAMPS="mm/dd/yyyy"
-
-# Would you like to use another custom folder than $ZSH/custom?
-# ZSH_CUSTOM=/path/to/new-custom-folder
-
-# Which plugins would you like to load? (plugins can be found in ~/.oh-my-zsh/plugins/*)
-# Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
-# Example format: plugins=(rails git textmate ruby lighthouse)
-# Add wisely, as too many plugins slow down shell startup.
-plugins=(git)
-
-# User configuration
-
-export PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/usr/local/opt/coreutils/libexec/gnubin"
-# export MANPATH="/usr/local/man:$MANPATH"
-
-source $ZSH/oh-my-zsh.sh
-
-# You may need to manually set your language environment
-# export LANG=en_US.UTF-8
-
-# Preferred editor for local and remote sessions
-# if [[ -n $SSH_CONNECTION ]]; then
-#   export EDITOR='vim'
-# else
-#   export EDITOR='mvim'
-# fi
-
-# Compilation flags
-# export ARCHFLAGS="-arch x86_64"
-
-# ssh
-# export SSH_KEY_PATH="~/.ssh/dsa_id"
-
-# Set personal aliases, overriding those provided by oh-my-zsh libs,
-# plugins, and themes. Aliases can be placed here, though oh-my-zsh
-# users are encouraged to define aliases within the ZSH_CUSTOM folder.
-# For a full list of active aliases, run `alias`.
-#
-# Example aliases
-# alias zshconfig="mate ~/.zshrc"
-# alias ohmyzsh="mate ~/.oh-my-zsh"
-
-# Aliases
-export PGDATA=/usr/local/var/postgres
+#alias emacs="/usr/local/Cellar/emacs/24.3/Emacs.app/Contents/MacOS/Emacs -nw"
+alias vi='env LANG=ja_JP.UTF-8 /Applications/MacVim.app/Contents/MacOS/Vim "$@"'
+alias emacs="TERM=xterm-256color /usr/local/Cellar/emacs/24.3/bin/emacs -nw"
+alias be="bundle exec"
+alias atom="reattach-to-user-namespace atom"
 alias postgres_start="pg_ctl -l /usr/local/var/postgres/server.log start"
 alias postgres_stop="pg_ctl -D /usr/local/var/postgres stop -s -m fast"
 alias flushdns="dscacheutil -flushcache"
@@ -114,16 +49,19 @@ function peco-select-history() {
 }
 zle -N peco-select-history
 bindkey '^r' peco-select-history
+=======
+### Added by the Heroku Toolbelt
+export PATH="/usr/local/bin:$PATH:/usr/local/heroku/bin:$PATH:/usr/local/Cellar/imagemagick/6.7.7-6/bin:/Users/pememo/.rbenv/shims:$HOME/.nodebrew/current/bin"
+export PGDATA=/usr/local/var/postgres
 
-# Setting rbenv
-export PATH="$HOME/.rbenv/shims:$PATH"
-eval "$(rbenv init -)"
-if [ -d ${HOME}/.rbenv ]; then
-    export PATH=$HOME/.rbenv/bin:$PATH
-    eval "$(rbenv init -)"
-    . ${HOME}/.rbenv/completions/rbenv.zsh
-    export BUNDLER_EDITOR='emacsclient'
+alias j="autojump"
+if [ -f `brew --prefix`/etc/autojump ]; then
+    . `brew --prefix`/etc/autojump
 fi
+
+
+# rbenv
+eval "$(rbenv init -)"
 if [[ ! -o interactive ]]; then
     return
 fi
@@ -131,19 +69,37 @@ fi
 compctl -K _rbenv rbenv
 
 _rbenv() {
-    local words completions
-    read -cA words
+  local words completions
+  read -cA words
 
-    if [ "${#words}" -eq 2 ]; then
-	completions="$(rbenv commands)"
-    else
-	completions="$(rbenv completions ${words[2,-2]})"
-    fi
+  if [ "${#words}" -eq 2 ]; then
+    completions="$(rbenv commands)"
+  else
+    completions="$(rbenv completions ${words[2,-2]})"
+  fi
 
-    reply=("${(ps:\n:)completions}")
+  reply=("${(ps:\n:)completions}")
 }
 
-# Exectable "git status" & "ls" on hitting Enter
+# VCSの情報を取得するzshの便利関数 vcs_infoを使う
+autoload -Uz vcs_info
+
+# 表示フォーマットの指定
+# %b ブランチ情報
+# %a アクション名(mergeなど)
+zstyle ':vcs_info:*' formats '[%b]'
+zstyle ':vcs_info:*' actionformats '[%b|%a]'
+precmd () {
+    psvar=()
+    LANG=en_US.UTF-8 vcs_info
+    [[ -n "$vcs_info_msg_0_" ]] && psvar[1]="$vcs_info_msg_0_"
+}
+
+# バージョン管理されているディレクトリにいれば表示，そうでなければ非表示
+RPROMPT="%1(v|%F{green}%1v%f|)"
+
+
+# Enterでgit statusとls
 function do_enter() {
     if [ -n "$BUFFER" ]; then
         zle accept-line
@@ -163,27 +119,56 @@ function do_enter() {
 }
 zle -N do_enter
 bindkey '^m' do_enter
+###-begin-npm-completion-###
+#
+# npm command completion script
+#
+# Installation: npm completion >> ~/.bashrc  (or ~/.zshrc)
+# Or, maybe: npm completion > /usr/local/etc/bash_completion.d/npm
+#
 
-# Setting Go
-export GOROOT=/usr/lib/go
-export GOPATH=$HOME/go
-export PATH=$PATH:$GOROOT/bin:$GOPATH/bin
+COMP_WORDBREAKS=${COMP_WORDBREAKS/=/}
+COMP_WORDBREAKS=${COMP_WORDBREAKS/@/}
+export COMP_WORDBREAKS
 
-# Setting node.js
-export PATH=$PATH:$HOME/.nodebrew/current/bin
-
-
-# New heroku Toolbelt
-alias heroku=/usr/local/heroku/bin/heroku
-
-
-# to Rust Cargo
-export PATH=$PATH:$HOME/.cargo/bin
-
-# roswell
-export PATH="$HOME/.roswell/bin:$HOME/.roswell/impls/x86-64/darwin/sbcl-bin/1.2.11/bin/:$PATH"
-
-# Python
-export PYENV_ROOT=${HOME}/.pyenv
-export PATH=${PYENV_ROOT}/bin:$PATH
-if which pyenv > /dev/null; then eval "$(pyenv init -)"; fi
+if type complete &>/dev/null; then
+  _npm_completion () {
+    local si="$IFS"
+    IFS=$'\n' COMPREPLY=($(COMP_CWORD="$COMP_CWORD" \
+                           COMP_LINE="$COMP_LINE" \
+                           COMP_POINT="$COMP_POINT" \
+                           npm completion -- "${COMP_WORDS[@]}" \
+                           2>/dev/null)) || return $?
+    IFS="$si"
+  }
+  complete -F _npm_completion npm
+elif type compdef &>/dev/null; then
+  _npm_completion() {
+    si=$IFS
+    compadd -- $(COMP_CWORD=$((CURRENT-1)) \
+                 COMP_LINE=$BUFFER \
+                 COMP_POINT=0 \
+                 npm completion -- "${words[@]}" \
+                 2>/dev/null)
+    IFS=$si
+  }
+  compdef _npm_completion npm
+elif type compctl &>/dev/null; then
+  _npm_completion () {
+    local cword line point words si
+    read -Ac words
+    read -cn cword
+    let cword-=1
+    read -l line
+    read -ln point
+    si="$IFS"
+    IFS=$'\n' reply=($(COMP_CWORD="$cword" \
+                       COMP_LINE="$line" \
+                       COMP_POINT="$point" \
+                       npm completion -- "${words[@]}" \
+                       2>/dev/null)) || return $?
+    IFS="$si"
+  }
+  compctl -K _npm_completion npm
+fi
+###-end-npm-completion-###
