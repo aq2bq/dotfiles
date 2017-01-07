@@ -114,6 +114,9 @@
 ;; Git
 (el-get-bundle magit)
 
+;; fish
+(el-get-bundle emacs-fish)
+
 ;; Ruby / Rails
 (el-get-bundle ruby-mode)
 (el-get-bundle ruby-block)

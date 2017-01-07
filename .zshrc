@@ -18,38 +18,6 @@ alias be="bundle exec"
 alias atom="reattach-to-user-namespace atom"
 alias postgres_start="pg_ctl -l /usr/local/var/postgres/server.log start"
 alias postgres_stop="pg_ctl -D /usr/local/var/postgres stop -s -m fast"
-alias flushdns="dscacheutil -flushcache"
-
-alias be="bundle exec"
-case ${OSTYPE} in
-    darwin*)
-	alias emacs="/usr/local/Cellar/emacs/24.5/bin/emacs -nw"
-    ;;
-    linux*)
-	alias emacs="/usr/bin/emacsclient -nw"
-    ;;
-esac
-export EDITOR="emacs -nw"
-export LESS='-g -i -M -R -S -W -z-4 -x4'
-
-
-# Enable peco
-function peco-select-history() {
-    local tac
-    if which tac > /dev/null; then
-        tac="tac"
-    else
-        tac="tail -r"
-    fi
-    BUFFER=$(\history -n 1 | \
-        eval $tac | \
-        peco --query "$LBUFFER")
-    CURSOR=$#BUFFER
-    zle clear-screen
-}
-zle -N peco-select-history
-bindkey '^r' peco-select-history
-=======
 ### Added by the Heroku Toolbelt
 export PATH="/usr/local/bin:$PATH:/usr/local/heroku/bin:$PATH:/usr/local/Cellar/imagemagick/6.7.7-6/bin:/Users/pememo/.rbenv/shims:$HOME/.nodebrew/current/bin"
 export PGDATA=/usr/local/var/postgres
@@ -58,7 +26,6 @@ alias j="autojump"
 if [ -f `brew --prefix`/etc/autojump ]; then
     . `brew --prefix`/etc/autojump
 fi
-
 
 # rbenv
 eval "$(rbenv init -)"
