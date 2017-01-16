@@ -8,6 +8,7 @@ alias flushdns="dscacheutil -flushcache"
 
 set -x LESS '-g -i -M -R -S -W -z-4 -x4'
 set -x PGDATA /usr/local/var/postgres
+set -x PATH $HOME/.nodebrew/current/bin $PATH
 
 function do_enter
   set -l query (commandline)
