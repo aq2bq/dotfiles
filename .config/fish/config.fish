@@ -5,10 +5,11 @@ alias postgres_start="pg_ctl -l /usr/local/var/postgres/server.log start"
 alias postgres_stop="pg_ctl -D /usr/local/var/postgres stop -s -m fast"
 alias be="bundle exec"
 alias flushdns="dscacheutil -flushcache"
+alias terminal-notifier="reattach-to-user-namespace terminal-notifier"
 
 set -x LESS '-g -i -M -R -S -W -z-4 -x4'
 set -x PGDATA /usr/local/var/postgres
-set -x PATH $HOME/.nodebrew/current/bin $HOME/.cargo/bin $PATH
+set -x PATH $HOME/.nodebrew/current/bin $HOME/.cargo/bin /usr/local/heroku/bin $PATH
 
 function do_enter
   set -l query (commandline)
