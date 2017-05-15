@@ -7,6 +7,9 @@ alias be="bundle exec"
 alias flushdns="dscacheutil -flushcache"
 alias terminal-notifier="reattach-to-user-namespace terminal-notifier"
 
+# https://github.com/takaaki-kasai/git-foresta
+alias gf="~/bin/git-foresta | less -RSX"
+
 set -x LESS '-g -i -M -R -S -W -z-4 -x4'
 set -x PGDATA /usr/local/var/postgres
 set -x PATH $HOME/.nodebrew/current/bin $HOME/.cargo/bin /usr/local/heroku/bin $PATH
