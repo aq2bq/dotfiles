@@ -81,7 +81,14 @@
 
 ;; Emacs
 (el-get-bundle! use-package)
-					; (el-get-bundle! bind-key)
+;; (el-get-bundle! bind-key)
+
+;; Dark theme for (spac[e]macs) that supports GUI and terminal
+;; https://github.com/madhat2r/madhat2r-theme
+(el-get-bundle! madhat2r-theme
+  :type github :pkgname "madhat2r/madhat2r-theme"
+  (load-theme 'madhat2r t))
+
 (el-get-bundle! let-alist)
 (el-get-bundle! powerline)
 (el-get-bundle k1LoW/emacs-drill-instructor)
