@@ -149,6 +149,14 @@
 (el-get-bundle js2-refactor)
 (el-get-bundle json-mode)
 
+;; for vue.js
+(el-get-bundle mmm-mode)
+(el-get-bundle AdamNiederer/vue-html-mode)
+(el-get-bundle AdamNiederer/ssass-mode)
+(el-get-bundle AdamNiederer/vue-mode)
+(el-get-bundle Fanael/edit-indirect)
+(el-get-bundle highlight-symbol)
+
 ;; SASS
 (el-get-bundle nex3/sass-mode)
 (el-get-bundle flymake-sass)
