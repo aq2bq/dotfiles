@@ -1,5 +1,3 @@
-set fish_plugins theme git rbenv rails brew bundler gem osx pbcopy better-alias gi peco z tmux
-
 alias emacs="env TERM=xterm-256color /usr/local/Cellar/emacs/25.3/bin/emacs -nw"
 alias postgres_start="pg_ctl -l /usr/local/var/postgres/server.log start"
 alias postgres_stop="pg_ctl -D /usr/local/var/postgres stop -s -m fast"
@@ -9,10 +7,11 @@ alias terminal-notifier="reattach-to-user-namespace terminal-notifier"
 
 # https://github.com/takaaki-kasai/git-foresta
 alias gf="~/bin/git-foresta | less -RSX"
+alias hd="hexdump -C"
 
 set -x LESS '-g -i -M -R -S -W -z-4 -x4'
 set -x PGDATA /usr/local/var/postgres
-set -x PATH $HOME/.nodebrew/current/bin $HOME/.cargo/bin /usr/local/heroku/bin $PATH
+set -x PATH $HOME/.nodebrew/current/bin $HOME/.cargo/bin $PATH
 
 function do_enter
   set -l query (commandline)
