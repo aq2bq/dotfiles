@@ -39,6 +39,7 @@
 
 ;; set tab width
 (setq tab-width 2)
+(setq-default indent-tabs-mode nil)
 
 ;; replace inputting yes-no to y-n
 (fset 'yes-or-no-p 'y-or-n-p)
