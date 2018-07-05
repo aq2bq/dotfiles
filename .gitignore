@@ -32,8 +32,11 @@
 /.emacs.d/elpa
 /.emacs.d/recentf
 /.emacs.d/eshell
+/.emacs.d/tramp
+/.config/Amazon
 /.config/omf
 /.config/heroku
 /.config/configstore
 /.config/fish/*
 /.config/fisherman
+/.config/yarn

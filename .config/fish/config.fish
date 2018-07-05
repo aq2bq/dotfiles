@@ -8,6 +8,7 @@ alias terminal-notifier="reattach-to-user-namespace terminal-notifier"
 # https://github.com/takaaki-kasai/git-foresta
 alias gf="~/bin/git-foresta | less -RSX"
 alias hd="hexdump -C"
+alias chrome="/Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome"
 
 set -x LESS '-g -i -M -R -S -W -z-4 -x4'
 set -x PGDATA /usr/local/var/postgres
