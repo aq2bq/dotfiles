@@ -190,6 +190,11 @@
 (setf slime-default-lisp 'roswell)
 
 
+;; Go
+(el-get-bundle go-mode)
+(el-get-bundle company-go :url "https://raw.githubusercontent.com/nsf/gocode/master/emacs-company/company-go.el")
+
+
 ;; -----------
 ;; Appearance
 ;; -----------
@@ -266,6 +271,7 @@
  '(anzu-mode-lighter "")
  '(anzu-search-threshold 1000)
  '(anzu-use-migemo t)
+ '(package-selected-packages (quote (company-go)))
  '(robe-completing-read-func (quote helm-robe-completing-read))
  '(send-mail-function (quote mailclient-send-it)))
 (custom-set-faces
