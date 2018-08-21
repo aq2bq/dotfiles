@@ -9,34 +9,18 @@ alias terminal-notifier="reattach-to-user-namespace terminal-notifier"
 alias gf="~/bin/git-foresta | less -RSX"
 alias hd="hexdump -C"
 alias chrome="/Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome"
+alias gore="gore -autoimport"
 
+set GOROOT (go env GOROOT)
+set GOPATH (go env GOPATH)
 set -x LESS '-g -i -M -R -S -W -z-4 -x4'
-set -x PGDATA /usr/local/var/postgres
-set -x PATH $HOME/.nodebrew/current/bin $HOME/.cargo/bin $PATH
-
-function do_enter
-  set -l query (commandline)
-
-  if test -n $query
-    echo
-    eval $query
-    commandline ''
-  else
-    echo
-    ls
-    if test (git rev-parse --is-inside-work-tree 2> /dev/null)
-      echo
-      echo (set_color yellow)--- git status ---(set_color normal)
-      git status -sb
-    end
-  end
-  commandline -f repaint
-end
+set -x PGDATA /usr/local/var/postgress
+set -x PATH $HOME/.nodebrew/current/bin $HOME/.cargo/bin $GOPATH/bin $PATH
 
 function fish_user_key_bindings
   # TODO: could not bind to enter-key because it conflicts with the original operation of enter-key.
   # bind \cm do_enter # Ctrl+m, Enter
-
   bind \cj do_enter # Ctrl+j
   bind \cr peco_select_history # Bind for peco history to Ctrl+r
+  bind \x1b peco_src # Ctrl + [
 end
