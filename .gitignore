@@ -16,6 +16,7 @@
 !/.emacs.d/Gemfile
 !/.config
 !/.config/fish
+!/.config/fish/functions
 !/.config/fish/config.fish
 !/bin
 
@@ -37,6 +38,6 @@
 /.config/omf
 /.config/heroku
 /.config/configstore
-/.config/fish/*
+/.config/fish/fishd.*
 /.config/fisherman
 /.config/yarn
