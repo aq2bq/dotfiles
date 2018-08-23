@@ -1,4 +1,4 @@
-alias emacs="env TERM=xterm-256color /usr/local/Cellar/emacs/25.3/bin/emacs -nw"
+alias emacs="env TERM=xterm-256color /usr/local/Cellar/emacs/26.1_1/bin/emacs -nw"
 # alias postgres_start="pg_ctl -l /usr/local/var/postgres/server.log start"
 # alias postgres_stop="pg_ctl -D /usr/local/var/postgres stop -s -m fast"
 # => use `brew services start postgresql` instead of there
