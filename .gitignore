@@ -39,5 +39,6 @@
 /.config/heroku
 /.config/configstore
 /.config/fish/fishd.*
-/.config/fisherman
+/.config/fisher
 /.config/yarn
+/.config/neofetch

@@ -1,16 +1,17 @@
+if not functions -q fisher
+    set -q XDG_CONFIG_HOME; or set XDG_CONFIG_HOME ~/.config
+    curl https://git.io/fisher --create-dirs -sLo $XDG_CONFIG_HOME/fish/functions/fisher.fish
+    fish -c fisher
+end
+
 alias emacs="env TERM=xterm-256color /usr/local/Cellar/emacs/26.1_1/bin/emacs -nw"
 alias julia="/Applications/Julia-1.0.app/Contents/Resources/julia/bin/julia"
-# alias postgres_start="pg_ctl -l /usr/local/var/postgres/server.log start"
-# alias postgres_stop="pg_ctl -D /usr/local/var/postgres stop -s -m fast"
-# => use `brew services start postgresql` instead of there
-
 alias be="bundle exec"
 alias flushdns="dscacheutil -flushcache"
 alias terminal-notifier="reattach-to-user-namespace terminal-notifier"
-
-# https://github.com/takaaki-kasai/git-foresta
-alias gf="~/bin/git-foresta | less -RSX"
+alias gf="~/bin/git-foresta | less -RSX" # https://github.com/takaaki-kasai/git-foresta
 alias hd="hexdump -C"
+alias l="less"
 alias chrome="/Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome"
 alias gore="gore -autoimport"
 
@@ -20,10 +21,6 @@ set -x LESS '-g -i -M -R -S -W -z-4 -x4'
 set -x PGDATA /usr/local/var/postgress
 set -x PATH $HOME/.nodebrew/current/bin $HOME/.cargo/bin $GOPATH/bin $PATH
 
-function fish_user_key_bindings
-  # TODO: could not bind to enter-key because it conflicts with the original operation of enter-key.
-  # bind \cm do_enter # Ctrl+m, Enter
-  bind \cj do_enter # Ctrl+j
-  bind \cr peco_select_history # Bind for peco history to Ctrl+r
-  bind \x1b peco_src # Ctrl + [
-end
+bind \cj on_enter # Ctrl+j
+bind \cr peco_select_history # Bind for peco history to Ctrl+r
+# bind \x1b peco_select_ghq_repository # Ctrl + [
