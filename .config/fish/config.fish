@@ -14,6 +14,7 @@ alias hd="hexdump -C"
 alias l="less"
 alias chrome="/Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome"
 alias gore="gore -autoimport"
+alias t="open -a Typora"
 
 set GOROOT (go env GOROOT)
 set GOPATH (go env GOPATH)
@@ -23,4 +24,4 @@ set -x PATH $HOME/.nodebrew/current/bin $HOME/.cargo/bin $HOME/.rbenv/shims $GOP
 
 bind \cj on_enter # Ctrl+j
 bind \cr peco_select_history # Bind for peco history to Ctrl+r
-# bind \x1b peco_select_ghq_repository # Ctrl + [
+bind \co peco_select_ghq_repository # Ctrl + o
