@@ -1,8 +1,6 @@
 ;;Ruby
 (use-package ruby-mode
   :commands ruby-mode
-  :init
-  (add-hook 'ruby-mode-hook 'ruby-electric-mode)
   :mode (("\\.rb$" . ruby-mode)
 	 ("Gemfile$" . ruby-mode)
 	 ("Capfile$" . ruby-mode)

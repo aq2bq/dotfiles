@@ -138,7 +138,7 @@
 (el-get-bundle rails-el)
 (el-get-bundle yaml-mode)
 (el-get-bundle masutaka/emacs-helm-bundle-show)
-
+(el-get-bundle blue0513/spec-jump.el)
 
 ;; JS / JSX / Coffee Script
 (el-get-bundle! cl-lib)
