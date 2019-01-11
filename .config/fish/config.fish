@@ -15,6 +15,7 @@ alias l="less"
 alias chrome="/Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome"
 alias gore="gore -autoimport"
 alias t="open -a Typora"
+alias re="ruby -e"
 
 set GOROOT (go env GOROOT)
 set GOPATH (go env GOPATH)
