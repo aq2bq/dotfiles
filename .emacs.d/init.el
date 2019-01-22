@@ -93,8 +93,7 @@
 (el-get-bundle! let-alist)
 (el-get-bundle! powerline)
 (el-get-bundle k1LoW/emacs-drill-instructor)
-(el-get-bundle auto-complete)
-(el-get-bundle! company
+(el-get-bundle company
   :type github :pkgname "company-mode/company-mode"
   (global-company-mode +1))
 (el-get-bundle yasnippet)
@@ -145,7 +144,6 @@
   :features spec-jump)
 
 ;; JS / JSX / Coffee Script
-(el-get-bundle! cl-lib)
 (el-get-bundle mooz/js2-mode)
 (el-get-bundle coffee-mode)
 (el-get-bundle web-mode)
@@ -172,7 +170,7 @@
 (el-get-bundle haml-mode)
 
 ;; HTML
-(el-get-bundle ac-html)
+;; (el-get-bundle ac-html) ;; dependents on auto-complete
 (el-get-bundle html5)
 
 ;; Slim
@@ -184,6 +182,7 @@
 (el-get-bundle syohex/emacs-ac-alchemist)
 
 ;; Lisp
+;; (el-get-bundle! cl-lib)
 ;; (el-get-bundle ac-slime)
 ;; (el-get-bundle slime/slime)
 ;; (load (expand-file-name "~/.roswell/helper.el"))
