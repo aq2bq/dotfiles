@@ -1,18 +1,11 @@
-;;Ruby
 (use-package ruby-mode
-  :commands ruby-mode
   :mode (("\\.rb$" . ruby-mode)
 	 ("Gemfile$" . ruby-mode)
 	 ("Capfile$" . ruby-mode)
 	 ("Guardfile$" . ruby-mode)
 	 ("[Rr]akefile$" . ruby-mode))
-  :bind (("C-c c" . smart-compile))
+  :bind (("M-s M-s" . spec-jump))
   :interpreter "ruby"
   :config
-  (setq
-   smart-compile-alist
-	(append
-	 '(("\\.rb$" . "ruby %f"))
-	 ))
   (setq ruby-insert-encoding-magic-comment nil)
 )
