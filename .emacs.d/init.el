@@ -93,9 +93,7 @@
 (el-get-bundle! let-alist)
 (el-get-bundle! powerline)
 (el-get-bundle k1LoW/emacs-drill-instructor)
-(el-get-bundle company
-  :type github :pkgname "company-mode/company-mode"
-  (global-company-mode +1))
+(el-get-bundle company-mode)
 (el-get-bundle yasnippet)
 ;; (el-get-bundle minibuf-isearch)
 ;; (el-get-bundle iswitchb-highlight)
