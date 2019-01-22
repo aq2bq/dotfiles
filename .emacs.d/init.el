@@ -18,7 +18,6 @@
 ;; just comment it out by adding a semicolon to the start of the line.
 ;; You may delete these explanatory comments.
 ;; (package-initialize)
-
 (when load-file-name
   (setq user-emacs-directory (file-name-directory load-file-name)))
 
@@ -122,6 +121,10 @@
 ;; fish
 (el-get-bundle emacs-fish)
 
+;;lsp
+(el-get-bundle elpa:jsonrpc)
+(el-get-bundle joaotavora/eglot)
+
 ;; Ruby / Rails
 (el-get-bundle ruby-mode)
 (el-get-bundle ruby-block)
@@ -130,8 +133,8 @@
 (el-get-bundle inf-ruby)
 (el-get-bundle rcodetools)
 (el-get-bundle rubocop)
-(el-get-bundle robe-mode)
-(el-get-bundle helm-robe)
+;; (el-get-bundle robe-mode) ;; Use eglot instead
+;; (el-get-bundle helm-robe) ;; Use eglot instead
 (el-get-bundle rspec-mode)
 (el-get-bundle rails-el)
 (el-get-bundle yaml-mode)
@@ -271,8 +274,8 @@
  '(anzu-mode-lighter "")
  '(anzu-search-threshold 1000)
  '(anzu-use-migemo t)
- '(package-selected-packages (quote (company-go)))
- '(robe-completing-read-func (quote helm-robe-completing-read))
+ '(package-selected-packages (quote (jsonrpc company-go)))
+ ;; '(robe-completing-read-func (quote helm-robe-completing-read))
  '(send-mail-function (quote mailclient-send-it)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
