@@ -129,6 +129,7 @@
 (el-get-bundle ruby-mode)
 (el-get-bundle ruby-block)
 (el-get-bundle ruby-electric)
+
 (el-get-bundle inf-ruby)
 (el-get-bundle rcodetools)
 (el-get-bundle rubocop)
@@ -138,7 +139,10 @@
 (el-get-bundle rails-el)
 (el-get-bundle yaml-mode)
 (el-get-bundle masutaka/emacs-helm-bundle-show)
-(el-get-bundle blue0513/spec-jump.el)
+(el-get-bundle counsel in abo-abo/swiper) ;; require for spec-jump
+(el-get-bundle blue0513/spec-jump.el
+  :name spec-jump
+  :features spec-jump)
 
 ;; JS / JSX / Coffee Script
 (el-get-bundle! cl-lib)
@@ -180,20 +184,19 @@
 (el-get-bundle syohex/emacs-ac-alchemist)
 
 ;; Lisp
-(el-get-bundle ac-slime)
-(el-get-bundle slime/slime)
-(load (expand-file-name "~/.roswell/helper.el"))
-(setq inferior-lisp-program "ros -Q run")
-(setf slime-lisp-implementations
-      `((sbcl    ("sbcl" "--dynamic-space-size" "2000"))
-	(roswell ("ros" "-Q" "run"))))
-(setf slime-default-lisp 'roswell)
+;; (el-get-bundle ac-slime)
+;; (el-get-bundle slime/slime)
+;; (load (expand-file-name "~/.roswell/helper.el"))
+;; (setq inferior-lisp-program "ros -Q run")
+;; (setf slime-lisp-implementations
+;;       `((sbcl    ("sbcl" "--dynamic-space-size" "2000"))
+;; 	(roswell ("ros" "-Q" "run"))))
+;; (setf slime-default-lisp 'roswell)
 
 
 ;; Go
 (el-get-bundle go-mode)
 (el-get-bundle company-go :url "https://raw.githubusercontent.com/nsf/gocode/master/emacs-company/company-go.el")
-
 
 ;; -----------
 ;; Appearance
