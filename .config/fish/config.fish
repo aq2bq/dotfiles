@@ -22,6 +22,7 @@ set GOPATH (go env GOPATH)
 set -x LESS '-g -i -M -R -S -W -z-4 -x4'
 set -x PGDATA /usr/local/var/postgress
 set -x PATH $HOME/.nodebrew/current/bin $HOME/.cargo/bin $HOME/.rbenv/shims $GOPATH/bin $PATH
+set -x HOMEBREW_INSTALL_CLEANUP 1
 
 bind \cj on_enter # Ctrl+j
 bind \cr peco_select_history # Bind for peco history to Ctrl+r
