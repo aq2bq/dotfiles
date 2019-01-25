@@ -12,6 +12,7 @@ alias terminal-notifier="reattach-to-user-namespace terminal-notifier"
 alias gf="~/bin/git-foresta | less -RSX" # https://github.com/takaaki-kasai/git-foresta
 alias hd="hexdump -C"
 alias l="less"
+alias cat="bat"
 alias chrome="/Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome"
 alias gore="gore -autoimport"
 alias t="open -a Typora"
