@@ -129,7 +129,6 @@
 (el-get-bundle ruby-mode)
 (el-get-bundle ruby-block)
 (el-get-bundle ruby-electric)
-
 (el-get-bundle inf-ruby)
 (el-get-bundle rcodetools)
 (el-get-bundle rubocop)
