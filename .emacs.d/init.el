@@ -103,6 +103,7 @@
 (el-get-bundle seq)
 (el-get-bundle flycheck/flycheck)
 (el-get-bundle flycheck-color-mode-line)
+(el-get-bundle which-key)
 
 ;; Markdown
 (el-get-bundle markdown-mode)
