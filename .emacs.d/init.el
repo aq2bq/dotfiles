@@ -97,7 +97,7 @@
 ;; (el-get-bundle minibuf-isearch)
 ;; (el-get-bundle iswitchb-highlight)
 (el-get-bundle hlinum)
-
+(el-get-bundle DarthFennec/highlight-indent-guides)
 (el-get-bundle smart-compile)
 (el-get-bundle anzu)
 (el-get-bundle seq)
