@@ -28,3 +28,8 @@ set -x HOMEBREW_INSTALL_CLEANUP 1
 bind \cj on_enter # Ctrl+j
 bind \cr peco_select_history # Bind for peco history to Ctrl+r
 bind \co peco_select_ghq_repository # Ctrl + o
+
+# The next line updates PATH for the Google Cloud SDK.
+# requires installed google-cloud-sdk
+# https://cloud.google.com/sdk/downloads?hl=JA#mac
+if [ -f $HOME/google-cloud-sdk/path.fish.inc ]; . $HOME/google-cloud-sdk/path.fish.inc; end
