@@ -1,3 +1,5 @@
+status --is-interactive; and source (nodenv init -|psub)
+
 if not functions -q fisher
   set -q XDG_CONFIG_HOME; or set XDG_CONFIG_HOME ~/.config
  curl https://git.io/fisher --create-dirs -sLo $XDG_CONFIG_HOME/fish/functions/fisher.fish
@@ -22,7 +24,7 @@ set GOROOT (go env GOROOT)
 set GOPATH (go env GOPATH)
 set -x LESS '-g -i -M -R -S -W -z-4 -x4'
 set -x PGDATA /usr/local/var/postgress
-set -x PATH $HOME/.nodebrew/current/bin $HOME/.cargo/bin $HOME/.rbenv/shims $GOPATH/bin $PATH
+set -x PATH $HOME/nodenv/shims $HOME/.cargo/bin $HOME/.rbenv/shims $GOPATH/bin $PATH
 set -x HOMEBREW_INSTALL_CLEANUP 1
 
 bind \cj on_enter # Ctrl+j
