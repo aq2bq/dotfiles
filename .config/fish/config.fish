@@ -6,7 +6,7 @@ if not functions -q fisher
   fish -c fisher
 end
 
-alias emacs="env TERM=xterm-256color /usr/local/Cellar/emacs/26.1_1/bin/emacs -nw"
+alias emacs="env TERM=xterm-256color /usr/local/Cellar/emacs/26.2/bin/emacs -nw"
 alias julia="/Applications/Julia-1.0.app/Contents/Resources/julia/bin/julia"
 alias be="bundle exec"
 alias flushdns="dscacheutil -flushcache"
