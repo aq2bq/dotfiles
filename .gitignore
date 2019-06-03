@@ -33,11 +33,13 @@
 /.emacs.d/recentf
 /.emacs.d/eshell
 /.emacs.d/tramp
+/.emacs.d/transient/
 /.config/Amazon
 /.config/omf
 /.config/heroku
 /.config/configstore
 /.config/fish/fishd.*
+/.config/fish/fish_variables
 /.config/fisher
 /.config/yarn
 /.config/neofetch
