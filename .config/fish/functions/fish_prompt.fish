@@ -33,12 +33,14 @@
 #     set -g theme_display_ruby no
 #     set -g theme_display_user ssh
 #     set -g theme_display_hostname ssh
+#     set -g theme_display_sudo_user yes
 #     set -g theme_display_vi no
 #     set -g theme_display_nvm yes
 #     set -g theme_avoid_ambiguous_glyphs yes
 #     set -g theme_powerline_fonts no
 #     set -g theme_nerd_fonts yes
 #     set -g theme_show_exit_status yes
+#     set -g theme_display_jobs_verbose yes
 #     set -g default_user your_normal_user
 #     set -g theme_color_scheme dark
 #     set -g fish_prompt_pwd_dir_length 0
@@ -415,13 +417,19 @@ function __bobthefish_prompt_status -S -a last_status -d 'Display flags for a no
     # will be wrong. But I can't think of a single reason that would happen, and
     # it is literally 99.5% faster to check it this way, so that's a tradeoff I'm
     # willing to make.
-    [ -w / ]
+    [ -w / -o -w /private/ ]
     and [ (id -u) -eq 0 ]
     and set superuser 1
 
     # Jobs display
-    jobs -p >/dev/null
-    and set bg_jobs 1
+    if [ "$theme_display_jobs_verbose" = 'yes' ]
+        set bg_jobs (jobs -p | wc -l)
+        [ "$bg_jobs" -eq 0 ]
+        and set bg_jobs # clear it out so it doesn't show when `0`
+    else
+        jobs -p >/dev/null
+        and set bg_jobs 1
+    end
 
     if [ "$nonzero" -o "$superuser" -o "$bg_jobs" ]
         __bobthefish_start_segment $color_initial_segment_exit
@@ -449,7 +457,11 @@ function __bobthefish_prompt_status -S -a last_status -d 'Display flags for a no
         if [ "$bg_jobs" ]
             set_color normal
             set_color -b $color_initial_segment_jobs
-            echo -n $bg_job_glyph
+            if [ "$theme_display_jobs_verbose" = 'yes' ]
+                echo -ns $bg_job_glyph $bg_jobs ' '
+            else
+                echo -n $bg_job_glyph
+            end
         end
     end
 end
@@ -646,6 +658,9 @@ function __bobthefish_prompt_user -S -d 'Display current user and hostname'
     [ "$theme_display_user" = 'yes' -o \( "$theme_display_user" != 'no' -a -n "$SSH_CLIENT" \) -o \( -n "$default_user" -a "$USER" != "$default_user" \) ]
     and set -l display_user
 
+    [ "$theme_display_sudo_user" = 'yes' -a -n "$SUDO_USER" ]
+    and set -l display_sudo_user
+
     [ "$theme_display_hostname" = 'yes' -o \( "$theme_display_hostname" != 'no' -a -n "$SSH_CLIENT" \) ]
     and set -l display_hostname
 
@@ -654,8 +669,17 @@ function __bobthefish_prompt_user -S -d 'Display current user and hostname'
         echo -ns (whoami)
     end
 
-    if set -q display_hostname
+    if set -q display_sudo_user
         if set -q display_user
+            echo -ns ' '
+        else
+            __bobthefish_start_segment $color_username
+        end
+        echo -ns "($SUDO_USER)"
+    end
+
+    if set -q display_hostname
+        if set -q display_user; or set -q display_sudo_user
             # reset colors without starting a new segment...
             # (so we can have a bold username and non-bold hostname)
             set_color normal
@@ -668,6 +692,7 @@ function __bobthefish_prompt_user -S -d 'Display current user and hostname'
     end
 
     set -q display_user
+    or set -q display_sudo_user
     or set -q display_hostname
     and echo -ns ' '
 end
