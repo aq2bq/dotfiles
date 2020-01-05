@@ -7,7 +7,7 @@ if not functions -q fisher
 end
 
 alias emacs="env TERM=xterm-256color /usr/local/Cellar/emacs/26.3/bin/emacs -nw"
-alias julia="/Applications/Julia-1.0.app/Contents/Resources/julia/bin/julia"
+alias julia="/Applications/Julia-1.3.app/Contents/Resources/julia/bin/julia"
 alias be="bundle exec"
 alias flushdns="dscacheutil -flushcache"
 alias terminal-notifier="reattach-to-user-namespace terminal-notifier"
