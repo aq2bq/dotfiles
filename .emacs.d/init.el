@@ -103,7 +103,8 @@
 (el-get-bundle seq)
 (el-get-bundle flycheck/flycheck)
 (el-get-bundle flycheck-color-mode-line)
-(el-get-bundle which-key)
+(el-get-bundle which-key
+  (which-key-mode))
 
 ;; Markdown
 (el-get-bundle markdown-mode)
@@ -123,7 +124,8 @@
 (el-get-bundle emacs-fish)
 
 ;;lsp
-(el-get-bundle elpa:jsonrpc)
+(el-get-bundle jsonrpc
+  :url "https://github.com/emacs-mirror/emacs/blob/master/lisp/jsonrpc.el")
 (el-get-bundle joaotavora/eglot)
 
 ;; Ruby / Rails
@@ -274,8 +276,7 @@
  '(anzu-mode-lighter "")
  '(anzu-search-threshold 1000)
  '(anzu-use-migemo t)
- '(package-selected-packages (quote (jsonrpc company-go)))
- ;; '(robe-completing-read-func (quote helm-robe-completing-read))
+ '(package-selected-packages (quote (nil jsonrpc company-go)))
  '(send-mail-function (quote mailclient-send-it)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.

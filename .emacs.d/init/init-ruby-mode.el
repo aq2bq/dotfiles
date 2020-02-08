@@ -23,8 +23,6 @@
 	 ("Capfile$" . ruby-mode)
 	 ("Guardfile$" . ruby-mode)
 	 ("[Rr]akefile$" . ruby-mode))
-  :bind (:map ruby-mode-map
-              ("M-s M-s" . spec-jump))
   :config
   (setq ruby-insert-encoding-magic-comment nil)
 )

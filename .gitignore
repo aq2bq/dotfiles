@@ -34,6 +34,7 @@
 /.emacs.d/eshell
 /.emacs.d/tramp
 /.emacs.d/transient/
+/.emacs.d/url
 /.config/Amazon
 /.config/omf
 /.config/heroku
