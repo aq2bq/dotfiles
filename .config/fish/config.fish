@@ -21,6 +21,7 @@ alias re="ruby -e"
 
 set GOROOT (go env GOROOT)
 set GOPATH (go env GOPATH)
+set CHEAT_CONFIG_PATH $HOME/.config/cheat/conf.yml
 set -x LESS '-g -i -M -R -S -W -z-4 -x4'
 set -x PGDATA /usr/local/var/postgress
 set -x PATH $HOME/nodenv/shims $HOME/.cargo/bin $HOME/.rbenv/shims $GOPATH/bin $PATH
