@@ -18,6 +18,7 @@ alias chrome="/Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome"
 alias gore="gore -autoimport"
 alias t="open -a Typora"
 alias re="ruby -e"
+alias c="curl https://corona-stats.online/Japan"
 
 set GOROOT (go env GOROOT)
 set GOPATH (go env GOPATH)
