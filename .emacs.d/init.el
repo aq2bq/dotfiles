@@ -82,7 +82,7 @@
 ;; Emacs
 (el-get-bundle! use-package)
 ;; (el-get-bundle! bind-key)
-
+(el-get-bundle yafolding)
 ;; Dark theme for (spac[e]macs) that supports GUI and terminal
 ;; https://github.com/madhat2r/madhat2r-theme
 (el-get-bundle! madhat2r-theme
