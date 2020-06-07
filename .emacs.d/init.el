@@ -105,6 +105,7 @@
 (el-get-bundle flycheck-color-mode-line)
 (el-get-bundle which-key
   (which-key-mode))
+(el-get-bundle projectile)
 
 ;; Markdown
 (el-get-bundle markdown-mode)
