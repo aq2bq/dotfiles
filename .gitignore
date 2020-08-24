@@ -19,6 +19,7 @@
 !/.config/fish/functions
 !/.config/fish/config.fish
 !/bin
+!/keymaps
 
 # Ignore from TARGETS
 /.emacs.d/auto-save-list*
