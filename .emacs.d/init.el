@@ -258,7 +258,7 @@
   ((highlight-indent-guides-auto-enabled . t)
    (highlight-indent-guides-method . 'column))
   :init
-  (highlight-indent-guides-mode))
+  (add-hook 'prog-mode-hook 'highlight-indent-guides-mode))
 
 (leaf which-key
   :doc "minor mode for Emacs that displays the key bindings following your currently entered incomplete command (a prefix) in a popup."
