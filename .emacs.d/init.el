@@ -1,44 +1,44 @@
 ;;;
-;;; Emacs Client
+;; Global key settings
 ;;;
-;; run server
-;; (require 'server)
-;; (unless (server-running-p)
-;;   (server-start))
 
+;; Move to other window C-q
+(defun other-window-or-split (val)
+  (interactive)
+  (when (one-window-p)
+    (split-window-horizontally)
+    (split-window-vertically))
+  (other-window val))
 
+(global-set-key (kbd "C-q") (lambda () (interactive) (other-window-or-split 1)))
+(global-set-key (kbd "C-S-q") (lambda () (interactive) (other-window-or-split -1)))
+(global-set-key (kbd "C-h") 'delete-backward-char)
+(global-set-key (kbd "C-c C-c") 'comment-or-uncomment-region)
+(global-set-key (kbd "C-c n") 'next-buffer)
+(global-set-key (kbd "C-c b") 'previous-buffer)
+(global-set-key (kbd "C-x l") 'goto-line)
+(global-set-key (kbd "C--") 'undo)
+(setq mac-command-modifier 'super)
 
-;; -------------------------------------
-;; Initialize El-Get: package management
-;; -------------------------------------
-
-
-;; Added by Package.el.  This must come before configurations of
-;; installed packages.  Don't delete this line.  If you don't want it,
-;; just comment it out by adding a semicolon to the start of the line.
-;; You may delete these explanatory comments.
-;; (package-initialize)
-(when load-file-name
-  (setq user-emacs-directory (file-name-directory load-file-name)))
-
-(add-to-list 'load-path (locate-user-emacs-file "el-get/el-get"))
-(unless (require 'el-get nil 'noerror)
-  (with-current-buffer
-      (url-retrieve-synchronously
-       "https://raw.githubusercontent.com/dimitri/el-get/master/el-get-install.el")
-    (goto-char (point-max))
-    (eval-print-last-sexp)))
-
-;; Auto load configures init-/packagename/.el
-(setq el-get-user-package-directory (locate-user-emacs-file "init"))
-
-;; -------------------
+;;;
 ;; General Settings
-;; -------------------
+;;;
+
+;; メニューバーの非表示
+(menu-bar-mode -1)
+
+;; ツールバーの非表示
+(tool-bar-mode -1)
 
 ;; set tab width
 (setq tab-width 2)
 (setq-default indent-tabs-mode nil)
+
+;; 括弧を自動で補完する
+(electric-pair-mode 1)
+
+;; Highlight paren
+(show-paren-mode 1)
 
 ;; replace inputting yes-no to y-n
 (fset 'yes-or-no-p 'y-or-n-p)
@@ -51,7 +51,6 @@
 (setq file-name-coding-system 'utf-8)
 (setq locale-coding-system 'utf-8)
 (prefer-coding-system           'utf-8-unix)
-(setq                           default-buffer-file-coding-system 'utf-8)
 (set-buffer-file-coding-system  'utf-8)
 (set-terminal-coding-system     'utf-8)
 (set-keyboard-coding-system     'utf-8)
@@ -73,198 +72,244 @@
 ;; enable paste to region
 (delete-selection-mode t)
 
-
-
-;; --------------------------
-;; Bundle Packages
-;; --------------------------
-
-;; Emacs
-(el-get-bundle! use-package)
-;; (el-get-bundle! bind-key)
-(el-get-bundle yafolding)
-;; Dark theme for (spac[e]macs) that supports GUI and terminal
-;; https://github.com/madhat2r/madhat2r-theme
-(el-get-bundle! madhat2r-theme
-  :type github :pkgname "madhat2r/madhat2r-theme"
-  (load-theme 'madhat2r t))
-
-(el-get-bundle! let-alist)
-(el-get-bundle! powerline)
-(el-get-bundle k1LoW/emacs-drill-instructor)
-(el-get-bundle company-mode)
-(el-get-bundle yasnippet)
-;; (el-get-bundle minibuf-isearch)
-;; (el-get-bundle iswitchb-highlight)
-(el-get-bundle hlinum)
-(el-get-bundle DarthFennec/highlight-indent-guides)
-(el-get-bundle smart-compile)
-(el-get-bundle anzu)
-(el-get-bundle seq)
-(el-get-bundle flycheck/flycheck)
-(el-get-bundle flycheck-color-mode-line)
-(el-get-bundle which-key
-  (which-key-mode))
-(el-get-bundle projectile)
-
-;; Markdown
-(el-get-bundle markdown-mode)
-
-;; Helm
-(el-get-bundle helm)
-(el-get-bundle migemo)
-(el-get-bundle helm-migemo)
-(el-get-bundle helm-swoop)
-(el-get-bundle helm-descbinds)
-(el-get-bundle helm-ag)
-
-;; Git
-(el-get-bundle magit)
-
-;; fish
-(el-get-bundle emacs-fish)
-
-;;lsp
-(el-get-bundle jsonrpc
-  :url "https://github.com/emacs-mirror/emacs/blob/master/lisp/jsonrpc.el")
-(el-get-bundle joaotavora/eglot)
-
-;; Ruby / Rails
-(el-get-bundle ruby-mode)
-(el-get-bundle ruby-block)
-(el-get-bundle ruby-electric)
-(el-get-bundle inf-ruby)
-(el-get-bundle rcodetools)
-(el-get-bundle rubocop)
-;; (el-get-bundle robe-mode) ;; Use eglot instead
-;; (el-get-bundle helm-robe) ;; Use eglot instead
-(el-get-bundle rspec-mode)
-(el-get-bundle rails-el)
-(el-get-bundle yaml-mode)
-(el-get-bundle masutaka/emacs-helm-bundle-show)
-(el-get-bundle counsel in abo-abo/swiper) ;; require for spec-jump
-(el-get-bundle blue0513/spec-jump.el
-  :name spec-jump
-  :features spec-jump)
-
-;; JS / JSX / Coffee Script
-(el-get-bundle mooz/js2-mode)
-(el-get-bundle coffee-mode)
-(el-get-bundle web-mode)
-(el-get-bundle tern) ;; require `npm install -g tern`
-(el-get-bundle company-tern)
-(el-get-bundle js2-refactor)
-(el-get-bundle json-mode)
-
-;; for vue.js
-(el-get-bundle mmm-mode)
-(el-get-bundle AdamNiederer/vue-html-mode)
-(el-get-bundle AdamNiederer/ssass-mode)
-(el-get-bundle hlissner/emacs-pug-mode
-  :name pug-mode)
-(el-get-bundle AdamNiederer/vue-mode
-  :features pug-mode)
-(el-get-bundle Fanael/edit-indirect)
-(el-get-bundle highlight-symbol)
-
-
-;; SASS
-(el-get-bundle nex3/sass-mode)
-(el-get-bundle flymake-sass)
-(el-get-bundle haml-mode)
-
-;; HTML
-;; (el-get-bundle ac-html) ;; dependents on auto-complete
-(el-get-bundle html5)
-
-;; Slim
-(el-get-bundle slim-mode)
-
-;; Elixir
-(el-get-bundle elixir) ;; elixir-mode
-(el-get-bundle alchemist)
-(el-get-bundle syohex/emacs-ac-alchemist)
-
-;; Lisp
-;; (el-get-bundle! cl-lib)
-;; (el-get-bundle ac-slime)
-;; (el-get-bundle slime/slime)
-;; (load (expand-file-name "~/.roswell/helper.el"))
-;; (setq inferior-lisp-program "ros -Q run")
-;; (setf slime-lisp-implementations
-;;       `((sbcl    ("sbcl" "--dynamic-space-size" "2000"))
-;; 	(roswell ("ros" "-Q" "run"))))
-;; (setf slime-default-lisp 'roswell)
-
-
-;; Go
-(el-get-bundle go-mode)
-(el-get-bundle company-go :url "https://raw.githubusercontent.com/nsf/gocode/master/emacs-company/company-go.el")
-
-;; -----------
-;; Appearance
-;; -----------
-
-;; Highlight paren
-(show-paren-mode 1)
-
-;; Display line number(& hilight current line number)
-(global-linum-mode t)
-(setq linum-format "%4d|\s")
-(hlinum-activate)
-
-
-;; ------------
-;; Key Bindings
-;; ------------
-
-(require 'bind-key)
-
-;; Drill Instructor!!
-(require 'drill-instructor)
-(drill-instructor t)
-(setq drill-instructor-global t)
-
-;; Suspend EmacsClient
-;; (bind-key "C-x C-c" 'ns-do-hide-emacs)
-
-;; Exit EmacsClient
-;; (defalias 'exit 'save-buffers-kill-emacs)
-
-;; Backspace C-h
-;; (bind-key "C-h" 'delete-backward-char)
-(global-set-key (kbd "C-h") 'delete-backward-char)
-;; Toggle comment/uncomment
-(global-set-key (kbd "C-c C-c") 'comment-or-uncomment-region)
-
-;; Move to other window C-q
-(defun other-window-or-split (val)
-  (interactive)
-  (when (one-window-p)
-					;    (split-window-horizontally) ;split horizontally
-    (split-window-vertically) ;split vertically
-    )
-  (other-window val))
-
-(global-set-key (kbd "C-q") (lambda () (interactive) (other-window-or-split 1)))
-(global-set-key (kbd "C-S-q") (lambda () (interactive) (other-window-or-split -1)))
-
-;; Change buffer next/before C-c n/C-c b
-(global-set-key (kbd "C-c n") 'next-buffer)
-(global-set-key (kbd "C-c b") 'previous-buffer)
-
-;; Goto line C-x l
-(define-key ctl-x-map "l" 'goto-line)
-
-;; Incremental seach from buffer C-f
-(icomplete-mode 1)
-
-;; -----------
-;; Mouse
-;; -----------
-
 ;; Enable copy mouse drag region
 (setq mouse-drag-copy-region t)
+
+;;;
+;; Initialize
+;;;
+
+(require 'package)
+(require 'bytecomp)
+
+(eval-and-compile
+  (when (or load-file-name byte-compile-current-file)
+    (setq user-emacs-directory
+          (expand-file-name
+           (file-name-directory (or load-file-name byte-compile-current-file))))))
+
+(eval-and-compile
+  (customize-set-variable
+   'package-archives '(("gnu"   . "https://elpa.gnu.org/packages/")
+                       ("melpa" . "https://melpa.org/packages/")
+                       ("org"   . "https://orgmode.org/elpa/")))
+  (package-initialize)
+  (unless (package-installed-p 'leaf)
+    (package-refresh-contents)
+    (package-install 'leaf))
+
+  (leaf leaf-keywords
+    :ensure t
+    :init
+    ;; optional packages if you want to use :hydra, :el-get, :blackout,,,
+    (leaf hydra :ensure t)
+    (leaf el-get :ensure t)
+    (leaf blackout :ensure t)
+
+    :config
+    ;; initialize leaf-keywords.el
+    (leaf-keywords-init)))
+
+;;;
+;; Emacs global extentions
+;;;
+
+(provide 'init)
+
+;; (leaf srcery-theme
+;;   :ensure t
+;;   :config
+;;   (load-theme 'srcery t))
+;; (leaf madhat2r-theme
+;;   :ensure t
+;;   :config
+;;   (load-theme 'madhat2r t))
+(load-theme 'tango-dark t)
+
+(leaf company
+  :doc "Modular text completion framework"
+  :req "emacs-24.3"
+  :tag "matching" "convenience" "abbrev" "emacs>=24.3"
+  :url "http://company-mode.github.io/"
+  :emacs>= 24.3
+  :ensure t
+  :blackout t
+  :leaf-defer nil
+  :bind ((company-active-map
+          ("M-n" . nil)
+          ("M-p" . nil)
+          ("C-s" . company-filter-candidates)
+          ("C-n" . company-select-next)
+          ("C-p" . company-select-previous)
+          ;; ("<tab>" . company-complete-selection)
+          ("TAB" . company-select-next)
+          ("<backtab>" . company-select-previous))
+         (company-search-map
+          ("C-n" . company-select-next)
+          ("C-p" . company-select-previous)))
+  :custom ((company-idle-delay . 0)
+           (company-minimum-prefix-length . 1)
+           (company-transformers . '(company-sort-by-occurrence))
+           (company-selection-wrap-around . t))
+  :global-minor-mode global-company-mode)
+
+(leaf ivy
+  :doc "Incremental Vertical completYon"
+  :req "emacs-24.5"
+  :tag "matching" "emacs>=24.5"
+  :url "https://github.com/abo-abo/swiper"
+  :emacs>= 24.5
+  :ensure t
+  :blackout t
+  :leaf-defer nil
+  :custom
+  ((ivy-initial-inputs-alist . nil)
+   (ivy-re-builders-alist . '((t . ivy--regex-fuzzy)
+                              (swiper . ivy--regex-plus)
+                              (counsel-ag . ivy--regex-plus)
+                              (counsel-rg . ivy--regex-plus)))
+   (ivy-use-selectable-prompt . t)
+   (ivy-height . 30))
+  :global-minor-mode t
+  :config
+  (leaf swiper
+    :doc "Isearch with an overview. Oh, man!"
+    :req "emacs-24.5" "ivy-0.13.0"
+    :tag "matching" "emacs>=24.5"
+    :url "https://github.com/abo-abo/swiper"
+    :emacs>= 24.5
+    :ensure t
+    :bind (("C-s" . swiper)))
+
+  (leaf ag
+    :doc "Ag.el allows you to search using ag from inside Emacs. You can filter by file type, edit results inline, or find files."
+    :ensure t)
+
+  (leaf counsel
+    :doc "Various completion functions using Ivy"
+    :req "emacs-24.5" "swiper-0.13.0"
+    :tag "tools" "matching" "convenience" "emacs>=24.5"
+    :url "https://github.com/abo-abo/swiper"
+    :emacs>= 24.5
+    :ensure t
+    :blackout t
+    :bind (("C-S-s" . counsel-imenu)
+           ("C-c s" . counsel-ag)
+           ("C-x C-r" . counsel-recentf)
+           ("C-x C-b" . counsel-ibuffer))
+    :custom `((counsel-yank-pop-separator . "\n----------\n")
+              (counsel-find-file-ignore-regexp . ,(rx-to-string '(or "./" "../") 'no-group)))
+    :global-minor-mode t))
+
+(leaf ivy-rich
+
+
+
+  :doc "More friendly display transformer for ivy."
+  :req "emacs-24.5" "ivy-0.8.0"
+  :tag "ivy" "emacs>=24.5"
+  :emacs>= 24.5
+  :ensure t
+  :after ivy
+  :global-minor-mode t)
+
+(leaf prescient
+  :doc "Better sorting and filtering"
+  :req "emacs-25.1"
+  :tag "extensions" "emacs>=25.1"
+  :url "https://github.com/raxod502/prescient.el"
+  :emacs>= 25.1
+  :ensure t
+  :commands (prescient-persist-mode)
+  :custom `((prescient-aggressive-file-save . t)
+            (prescient-save-file . ,(locate-user-emacs-file "prescient")))
+  :global-minor-mode prescient-persist-mode)
+
+(leaf ivy-prescient
+  :doc "prescient.el + Ivy"
+  :req "emacs-25.1" "prescient-4.0" "ivy-0.11.0"
+  :tag "extensions" "emacs>=25.1"
+  :url "https://github.com/raxod502/prescient.el"
+  :emacs>= 25.1
+  :ensure t
+  :after prescient ivy
+  :custom ((ivy-prescient-retain-classic-highlighting . t))
+  :global-minor-mode t)
+
+(leaf yafolding
+  :doc "Folding code blocks based on indentation."
+  :url "https://github.com/zenozeng/yafolding.el"
+  :ensure t
+  :bind ("C-c i" . yafolding-toggle-element))
+
+(leaf linum-mode
+  :custom
+  ((global-linum-mode . t)
+   (linum-format . "%4d|\s")))
+
+(leaf hlinum
+  :doc "Extension for linum.el to highlight current line number"
+  :ensure t
+  :init (hlinum-activate))
+
+(leaf highlight-indent-guides
+  :ensure t
+  :custom
+  ((highlight-indent-guides-auto-enabled . t)
+   (highlight-indent-guides-method . 'column))
+  :init
+  (highlight-indent-guides-mode))
+
+(leaf which-key
+  :doc "minor mode for Emacs that displays the key bindings following your currently entered incomplete command (a prefix) in a popup."
+  :ensure t
+  :init (which-key-mode))
+
+(leaf flycheck
+  :doc "On-the-fly syntax checking"
+  :req "dash-2.12.1" "pkg-info-0.4" "let-alist-1.0.4" "seq-1.11" "emacs-24.3"
+  :tag "minor-mode" "tools" "languages" "convenience" "emacs>=24.3"
+  :url "http://www.flycheck.org"
+  :emacs>= 24.3
+  :ensure t
+  :bind (("M-n" . flycheck-next-error)
+         ("M-p" . flycheck-previous-error))
+  :global-minor-mode global-flycheck-mode)
+
+
+;;;
+;; Programming
+;;;
+
+(leaf eglot
+  :ensure t
+  :doc "Emacs Polyglot: an Emacs LSP client that stays out of your way"
+  :require t
+  :config
+  (add-to-list 'eglot-server-programs '(go-mode . ("gopls")))
+  (add-hook 'ruby-mode-hook 'eglot-ensure)
+  (add-hook 'go-mode-hook 'eglot-ensure))
+
+(leaf ruby-mode
+  :mode
+  (("\\.rb$" . ruby-mode)
+	 ("Gemfile$" . ruby-mode)
+	 ("Capfile$" . ruby-mode)
+	 ("Guardfile$" . ruby-mode)
+	 ("[Rr]akefile$" . ruby-mode))
+  :hook (electric-pair-mode rubocop-mode)
+  :config
+  (leaf rubocop
+    :ensure t))
+
+(leaf go-mode
+  :ensure t
+  :hook ((eglot-ensure))
+  :custom
+  ((gofmt-command . "goimports"))
+  :config
+  (add-hook 'before-save-hook 'gofmt-before-save))
+
 
 
 
@@ -273,12 +318,34 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(anzu-deactivate-region t)
- '(anzu-mode-lighter "")
- '(anzu-search-threshold 1000)
- '(anzu-use-migemo t)
- '(package-selected-packages (quote (nil jsonrpc company-go)))
- '(send-mail-function (quote mailclient-send-it)))
+ '(company-idle-delay 0)
+ '(company-minimum-prefix-length 1)
+ '(company-selection-wrap-around t)
+ '(company-transformers '(company-sort-by-occurrence))
+ '(counsel-find-file-ignore-regexp "\\(?:\\.\\(?:\\.?/\\)\\)")
+ '(counsel-yank-pop-separator "
+----------
+")
+ '(global-linum-mode t)
+ '(gofmt-command "goimports" t)
+ '(ivy-height 30)
+ '(ivy-initial-inputs-alist nil)
+ '(ivy-prescient-retain-classic-highlighting t)
+ '(ivy-re-builders-alist
+   '((t . ivy-prescient-re-builder)
+     (swiper . ivy--regex-plus)
+     (counsel-ag . ivy--regex-plus)
+     (counsel-rg . ivy--regex-plus)) t)
+ '(ivy-use-selectable-prompt t)
+ '(linum-format "%4d| ")
+ '(package-archives
+   '(("gnu" . "https://elpa.gnu.org/packages/")
+     ("melpa" . "https://melpa.org/packages/")
+     ("org" . "https://orgmode.org/elpa/")))
+ '(package-selected-packages
+   '(highlight-indent-guides madhat2r-theme srcery-theme go-mode eglot yafolding which-key leaf-keywords ivy-rich ivy-prescient hydra hlinum flycheck el-get counsel company blackout ag))
+ '(prescient-aggressive-file-save t)
+ '(prescient-save-file "~/.emacs.d/prescient"))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.

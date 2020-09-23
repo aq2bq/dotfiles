@@ -22,17 +22,18 @@
 !/keymaps
 
 # Ignore from TARGETS
-/.emacs.d/auto-save-list*
 /.emacs.d/#*
 /.emacs.d/.#*
 /.emacs.d/%*
+/.emacs.d/**/*.elc
 /.emacs.d/*.dat
 /.emacs.d/*~
+/.emacs.d/auto-save-list*
 /.emacs.d/el-get
-/.emacs.d/init/*.elc
 /.emacs.d/elpa
-/.emacs.d/recentf
 /.emacs.d/eshell
+/.emacs.d/prescient
+/.emacs.d/recentf
 /.emacs.d/tramp
 /.emacs.d/transient/
 /.emacs.d/url
