@@ -308,7 +308,14 @@
   :custom
   ((gofmt-command . "goimports"))
   :config
-  (add-hook 'before-save-hook 'gofmt-before-save))
+  (add-hook 'before-save-hook 'gofmt-before-save)
+  (leaf gotest
+    :doc "Run Go tests and programs from Emacs"
+    :ensure t
+    :bind (go-mode-map
+           ("C-c r" . go-run)
+           ("C-c t" . go-test-current-test)
+           ("C-c C-t" . go-test-current-file))))
 
 
 
@@ -327,7 +334,9 @@
 ----------
 ")
  '(global-linum-mode t)
- '(gofmt-command "goimports" t)
+ '(gofmt-command "goimports")
+ '(highlight-indent-guides-auto-enabled t)
+ '(highlight-indent-guides-method 'column)
  '(ivy-height 30)
  '(ivy-initial-inputs-alist nil)
  '(ivy-prescient-retain-classic-highlighting t)
@@ -343,7 +352,7 @@
      ("melpa" . "https://melpa.org/packages/")
      ("org" . "https://orgmode.org/elpa/")))
  '(package-selected-packages
-   '(highlight-indent-guides madhat2r-theme srcery-theme go-mode eglot yafolding which-key leaf-keywords ivy-rich ivy-prescient hydra hlinum flycheck el-get counsel company blackout ag))
+   '(gotest highlight-indent-guides madhat2r-theme srcery-theme go-mode eglot yafolding which-key leaf-keywords ivy-rich ivy-prescient hydra hlinum flycheck el-get counsel company blackout ag))
  '(prescient-aggressive-file-save t)
  '(prescient-save-file "~/.emacs.d/prescient"))
 (custom-set-faces
