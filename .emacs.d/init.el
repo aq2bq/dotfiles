@@ -317,8 +317,43 @@
            ("C-c t" . go-test-current-test)
            ("C-c C-t" . go-test-current-file))))
 
+(leaf slim-mode
+  :ensure t
+  :doc "slim-mode provides Emacs support for editing Slim templates. It's based on haml-mode.")
 
+(leaf js2-mode
+  :ensure t
+  :mode
+  (("\\.js$" . js2-mode))
+  :config
+  (add-hook 'js2-mode-hook (lambda()
+                             (tern-mode t)
+                             (flycheck-mode t)))
+  (leaf tern
+    :ensure t
+    :custom
+    (eval-after-load 'tern
+      '(progn
+         (require 'tern-auto-complete)
+         (tern-ac-setup))))
+  :custom
+  ((js2-basic-offset . 2)))
 
+(leaf typescript-mode
+  :ensure t
+  :config
+  (leaf tide
+    :doc "TypeScript Interactive Development Environment for Emacs"
+    :ensure t
+    :config
+    (add-hook 'typescript-mode-hook
+              (lambda ()
+                (tide-setup)
+                (tide-hl-identifier-mode t)
+                (flycheck-mode t)
+                (setq flycheck-check-syntax-automatically '(save mode-enabled))
+                (eldoc-mode t)
+                (company-mode-on)))))
 
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
@@ -333,8 +368,9 @@
  '(counsel-yank-pop-separator "
 ----------
 ")
+ '(flycheck-mode nil t)
  '(global-linum-mode t)
- '(gofmt-command "goimports")
+ '(gofmt-command "goimports" t)
  '(highlight-indent-guides-auto-enabled t)
  '(highlight-indent-guides-method 'column)
  '(ivy-height 30)
@@ -346,13 +382,15 @@
      (counsel-ag . ivy--regex-plus)
      (counsel-rg . ivy--regex-plus)) t)
  '(ivy-use-selectable-prompt t)
+ '(js-indent-level 2)
+ '(js2-basic-offset 2)
  '(linum-format "%4d| ")
  '(package-archives
    '(("gnu" . "https://elpa.gnu.org/packages/")
      ("melpa" . "https://melpa.org/packages/")
      ("org" . "https://orgmode.org/elpa/")))
  '(package-selected-packages
-   '(gotest highlight-indent-guides madhat2r-theme srcery-theme go-mode eglot yafolding which-key leaf-keywords ivy-rich ivy-prescient hydra hlinum flycheck el-get counsel company blackout ag))
+   '(tern tern-mode company-tern js2-mode tide typescript-mode slim-mode gotest highlight-indent-guides madhat2r-theme srcery-theme go-mode eglot yafolding which-key leaf-keywords ivy-rich ivy-prescient hydra hlinum flycheck el-get counsel company blackout ag))
  '(prescient-aggressive-file-save t)
  '(prescient-save-file "~/.emacs.d/prescient"))
 (custom-set-faces
