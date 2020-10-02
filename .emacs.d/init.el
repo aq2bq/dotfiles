@@ -311,12 +311,17 @@
 	 ("[Rr]akefile$" . ruby-mode))
   :hook (electric-pair-mode rubocop-mode)
   :config
+  (leaf ruby-electric
+    :ensure t
+    :hook (ruby-mode-hook . ruby-electric-mode))
   (leaf rubocop
     :ensure t)
   (leaf rspec-mode
     :ensure t
     :bind (rspec-mode-map
-           ("C-c t" . rspec-verify))))
+           ("C-c t" . rspec-verify)))
+  :custom
+  (ruby-insert-encoding-magic-comment . nil))
 
 (leaf go-mode
   :ensure t
@@ -376,3 +381,46 @@
 
 (provide 'init)
 
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(company-idle-delay 0)
+ '(company-minimum-prefix-length 1)
+ '(company-selection-wrap-around t)
+ '(company-transformers '(company-sort-by-occurrence))
+ '(counsel-find-file-ignore-regexp "\\(?:\\.\\(?:\\.?/\\)\\)")
+ '(counsel-yank-pop-separator "
+----------
+")
+ '(global-linum-mode t)
+ '(gofmt-command "goimports" t)
+ '(highlight-indent-guides-auto-enabled t)
+ '(highlight-indent-guides-method 'column)
+ '(ivy-ghq-short-list t t)
+ '(ivy-height 30)
+ '(ivy-initial-inputs-alist nil)
+ '(ivy-prescient-retain-classic-highlighting t)
+ '(ivy-re-builders-alist
+   '((t . ivy-prescient-re-builder)
+     (swiper . ivy--regex-plus)
+     (counsel-ag . ivy--regex-plus)
+     (counsel-rg . ivy--regex-plus)) t)
+ '(ivy-use-selectable-prompt t)
+ '(js2-basic-offset 2 t)
+ '(linum-format "%4d| ")
+ '(package-archives
+   '(("gnu" . "https://elpa.gnu.org/packages/")
+     ("melpa" . "https://melpa.org/packages/")
+     ("org" . "https://orgmode.org/elpa/")))
+ '(package-selected-packages
+   '(ruby-electric yaml-mode yafolding which-key tide tern srcery-theme slim-mode rubocop rspec-mode magit madhat2r-theme leaf-keywords kotlin-mode js2-mode ivy-rich ivy-prescient hydra hlinum highlight-indent-guides gotest el-get eglot counsel company blackout ag))
+ '(prescient-aggressive-file-save t)
+ '(prescient-save-file "~/.emacs.d/prescient"))
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ )
