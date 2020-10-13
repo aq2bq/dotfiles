@@ -241,6 +241,20 @@
   :custom ((ivy-prescient-retain-classic-highlighting . t))
   :global-minor-mode t)
 
+(leaf anzu
+  :doc "provides a minor mode which displays current match and total matches information in the mode-line in various search modes"
+  :ensure t
+  :bind
+  (("C-c r" . anzu-query-replace)
+   ("C-c C-m" . anzu-query-replace-at-cursor-thing))
+  :config
+  (custom-set-variables
+   '(anzu-mode-lighter "")
+   '(anzu-deactivate-region t)
+   '(anzu-search-threshold 1000))
+  :custom
+  (global-anzu-mode . t))
+
 (leaf yafolding
   :doc "Folding code blocks based on indentation."
   :url "https://github.com/zenozeng/yafolding.el"
@@ -298,6 +312,95 @@
 (leaf magit
   :ensure t)
 
+(leaf quickrun
+  :ensure t
+  :config
+  (quickrun-add-command "kotlin"
+    '((:command . "kotlin")
+      (:exec    . ("kotlinc %o %s" "%c %NKt %a"))
+      (:remove  . ("%nKt.class"))
+      (:tempfile . nil)
+      (:description . "Compile Kotlin file and execute")
+      )
+    :mode 'kotlin-mode))
+
+;; [Emacs] Typescript+JSXをなるべくweb-modeで編集するための設定
+;; https://qiita.com/BitPositive/items/da166ffd0c81f523be46
+(leaf web-mode
+  :ensure t
+  :mode "\\.[jt]sx\\'"
+  :config
+  (defun custom-web-mode-hook ()
+    (setq web-mode-attr-indent-offset nil)
+    (setq web-mode-markup-indent-offset 2)
+    (setq web-mode-css-indent-offset 4)
+    (setq web-mode-code-indent-offset 4)
+    (setq indent-tabs-mode nil)
+    (setq tab-width 2)
+    (setq web-mode-enable-current-element-highlight t)
+    (let ((case-fold-search nil))
+      (highlight-regexp "\\_<number\\|string\\|boolean\\|enum\\|unknown\\|any\\|void\\|null\\|undefined\\|never\\|object\\|symbol\\_>" 'font-lock-type-face)))
+  (add-hook 'web-mode-hook 'custom-web-mode-hook)
+  :custom
+  ;; Inherit colors from font-lock
+  (custom-set-faces
+   '(web-mode-doctype-face
+     ((t :inherit font-lock-doc-face)))
+   '(web-mode-html-tag-face
+     ((t :inherit font-lock-function-name-face)))
+   '(web-mode-html-attr-name-face
+     ((t :inherit font-lock-variable-name-face)))
+   '(web-mode-html-attr-value-face
+     ((t :inherit font-lock-string-face)))
+   '(web-mode-comment-face
+     ((t :inherit font-lock-comment-face)))
+   '(web-mode-server-comment-face
+     ((t :inherit font-lock-comment-face)))
+   '(web-mode-javascript-comment-face
+     ((t :inherit font-lock-comment-face)))
+   '(web-mode-json-comment-face
+     ((t :inherit font-lock-comment-face)))
+   '(web-mode-error-face
+     ((t :inherit font-lock-warning-face)))
+   '(web-mode-current-element-highlight-face
+     ((t :inherit font-lock-builtin-face)))
+   '(web-mode-html-tag-bracket-face
+     ((t :inherit font-lock-negation-char-face)))
+   '(web-mode-block-delimiter-face
+     ((t :inherit font-lock-negation-char-face)))
+   '(web-mode-javascript-string-face
+     ((t :inherit font-lock-string-face)))
+   '(web-mode-json-key-face
+     ((t :inherit font-lock-keyword-face)))
+   '(web-mode-json-string-face
+     ((t :inherit font-lock-string-face)))
+   '(web-mode-keyword-face
+     ((t :inherit font-lock-keyword-face)))
+   '(web-mode-param-name-face
+     ((t :inherit font-lock-variable-name-face)))
+   '(web-mode-preprocessor-face
+     ((t :inherit font-lock-preprocessor-face)))
+   '(web-mode-string-face
+     ((t :inherit font-lock-string-face)))
+   '(web-mode-type-face
+     ((t :inherit font-lock-type-face)))
+   '(web-mode-variable-name-face
+     ((t :inherit font-lock-variable-name-face)))
+   '(web-mode-function-call-face
+     ((t :inherit font-lock-function-name-face)))
+   '(web-mode-function-name-face
+     ((t :inherit font-lock-function-name-face)))
+   '(web-mode-warning-face
+     ((t :inherit font-lock-warning-face)))
+   '(web-mode-css-color-face
+     ((t :inherit font-lock-reference-face)))
+   '(web-mode-css-rule-face
+     ((t :inherit font-lock-function-name-face)))
+   '(web-mode-css-pseudo-class-face
+     ((t :inherit font-lock-function-name-face)))
+   '(web-mode-css-at-rule-face
+     ((t :inherit font-lock-keyword-face)))))
+
 (leaf yaml-mode
   :ensure t
   :mode "\\(\.yml\\|\.yaml\\)")
@@ -334,7 +437,7 @@
     :doc "Run Go tests and programs from Emacs"
     :ensure t
     :bind (go-mode-map
-           ("C-c r" . go-run)
+           ("C-c C-r" . go-run)
            ("C-c t" . go-test-current-test)
            ("C-c C-t" . go-test-current-file))))
 
@@ -362,6 +465,8 @@
 
 (leaf typescript-mode
   :ensure t
+  :bind (typescript-mode-map
+         ("C-c C-r" . quickrun))
   :config
   (leaf tide
     :doc "TypeScript Interactive Development Environment for Emacs"
@@ -386,6 +491,10 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(anzu-deactivate-region t)
+ '(anzu-mode-lighter "")
+ '(anzu-search-threshold 1000)
+ '(anzu-use-migemo t)
  '(company-idle-delay 0)
  '(company-minimum-prefix-length 1)
  '(company-selection-wrap-around t)
@@ -394,11 +503,12 @@
  '(counsel-yank-pop-separator "
 ----------
 ")
+ '(global-anzu-mode t)
  '(global-linum-mode t)
- '(gofmt-command "goimports" t)
+ '(gofmt-command "goimports")
  '(highlight-indent-guides-auto-enabled t)
  '(highlight-indent-guides-method 'column)
- '(ivy-ghq-short-list t t)
+ '(ivy-ghq-short-list t)
  '(ivy-height 30)
  '(ivy-initial-inputs-alist nil)
  '(ivy-prescient-retain-classic-highlighting t)
@@ -415,9 +525,10 @@
      ("melpa" . "https://melpa.org/packages/")
      ("org" . "https://orgmode.org/elpa/")))
  '(package-selected-packages
-   '(ruby-electric yaml-mode yafolding which-key tide tern srcery-theme slim-mode rubocop rspec-mode magit madhat2r-theme leaf-keywords kotlin-mode js2-mode ivy-rich ivy-prescient hydra hlinum highlight-indent-guides gotest el-get eglot counsel company blackout ag))
+   '(web-mode anzu quickrun ruby-electric yaml-mode yafolding which-key tide tern srcery-theme slim-mode rubocop rspec-mode magit madhat2r-theme leaf-keywords kotlin-mode js2-mode ivy-rich ivy-prescient hydra hlinum highlight-indent-guides gotest el-get eglot counsel company blackout ag))
  '(prescient-aggressive-file-save t)
- '(prescient-save-file "~/.emacs.d/prescient"))
+ '(prescient-save-file "~/.emacs.d/prescient")
+ '(ruby-insert-encoding-magic-comment nil t))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
