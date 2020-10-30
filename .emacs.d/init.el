@@ -293,6 +293,8 @@
   :ensure t
   :bind (("M-n" . flycheck-next-error)
          ("M-p" . flycheck-previous-error))
+  :config
+  (flycheck-may-check-automatically '(idle-change mode-enabled new-line save))
   :global-minor-mode global-flycheck-mode)
 
 
@@ -424,7 +426,8 @@
     :bind (rspec-mode-map
            ("C-c t" . rspec-verify)))
   :custom
-  (ruby-insert-encoding-magic-comment . nil))
+  (ruby-insert-encoding-magic-comment . nil)
+  (flycheck-checker 'ruby-rubocop))
 
 (leaf go-mode
   :ensure t
@@ -505,10 +508,10 @@
 ")
  '(global-anzu-mode t)
  '(global-linum-mode t)
- '(gofmt-command "goimports")
- '(highlight-indent-guides-auto-enabled t)
- '(highlight-indent-guides-method 'column)
- '(ivy-ghq-short-list t)
+ '(gofmt-command "goimports" t)
+ '(highlight-indent-guides-auto-enabled t t)
+ '(highlight-indent-guides-method 'column t)
+ '(ivy-ghq-short-list t t)
  '(ivy-height 30)
  '(ivy-initial-inputs-alist nil)
  '(ivy-prescient-retain-classic-highlighting t)
