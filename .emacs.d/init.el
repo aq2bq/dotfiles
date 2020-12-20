@@ -427,7 +427,8 @@
            ("C-c t" . rspec-verify)))
   :custom
   (ruby-insert-encoding-magic-comment . nil)
-  (flycheck-checker 'ruby-rubocop))
+  ;; (flycheck-checker 'ruby-rubocop)
+  )
 
 (leaf go-mode
   :ensure t
