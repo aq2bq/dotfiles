@@ -33,6 +33,7 @@
 /.emacs.d/elpa
 /.emacs.d/eshell
 /.emacs.d/prescient
+/.emacs.d/projects
 /.emacs.d/recentf
 /.emacs.d/tramp
 /.emacs.d/transient/
