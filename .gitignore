@@ -50,5 +50,6 @@
 /.config/neofetch
 /.config/omf
 /.config/yarn
+/.config/exercism
 
 projectile-bookmarks.eld
