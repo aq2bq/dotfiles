@@ -354,7 +354,7 @@
     :bind (rspec-mode-map
            ("C-c t" . rspec-verify)))
   :custom
-  (flycheck-disabled-checkers . '(ruby-rubylint))
+  (flycheck-disabled-checkers . '(ruby-rubylint ruby-reek))
   (ruby-insert-encoding-magic-comment . nil)
   (flycheck-checker 'ruby)
   )
