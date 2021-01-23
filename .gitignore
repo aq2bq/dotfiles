@@ -47,6 +47,7 @@
 /.config/gcloud
 /.config/gh
 /.config/heroku
+/.config/htop
 /.config/neofetch
 /.config/omf
 /.config/yarn
