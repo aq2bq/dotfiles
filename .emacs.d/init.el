@@ -32,7 +32,7 @@
 (tool-bar-mode -1)
 
 ;; set tab width
-(setq tab-width 2)
+(setq-default tab-width 2)
 (setq-default indent-tabs-mode nil)
 
 ;; 括弧を自動で補完する
@@ -252,13 +252,12 @@
   :bind
   (("C-c r" . anzu-query-replace)
    ("C-c C-m" . anzu-query-replace-at-cursor-thing))
-  :config
-  (custom-set-variables
-   '(anzu-mode-lighter "")
-   '(anzu-deactivate-region t)
-   '(anzu-search-threshold 1000))
   :custom
-  (global-anzu-mode . t))
+  ((global-anzu-mode . t)
+   (anzu-mode-lighter . "")
+   ((anzu-deactivate-region . t)
+    (anzu-deactivate-region . t)
+    (anzu-search-threshold . 1000))))
 
 (leaf yafolding
   :doc "Folding code blocks based on indentation."
@@ -406,6 +405,8 @@
   :mode (("\\.tsx\\'" . typescript-mode))
   :bind (typescript-mode-map
          ("C-c C-r" . quickrun))
+  :custom
+  ((typescript-indent-level . 2))
   :config
   (leaf mmm-mode
     :commands (mmm-mode)
