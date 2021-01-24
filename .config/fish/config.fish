@@ -36,3 +36,7 @@ bind \co peco_select_ghq_repository # Ctrl + o
 # requires installed google-cloud-sdk
 # https://cloud.google.com/sdk/downloads?hl=JA#mac
 if [ -f $HOME/google-cloud-sdk/path.fish.inc ]; . $HOME/google-cloud-sdk/path.fish.inc; end
+
+function elisptest --description='emacs -Q --batch -l $argv -f ert-run-tests-batch-and-exit'
+  emacs -Q --batch -l $argv -f ert-run-tests-batch-and-exit
+end
