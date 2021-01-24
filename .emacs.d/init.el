@@ -301,6 +301,11 @@
   (flycheck-may-check-automatically '(idle-change mode-enabled new-line save))
   :global-minor-mode global-flycheck-mode)
 
+(leaf fish-mode
+  :doc "Emacs major mode for fish shell scripts."
+  :ensure t
+  :custom
+  ((fish-indent-offset . 2)))
 
 ;;;
 ;; Programming
@@ -453,3 +458,54 @@
 
 (provide 'init)
 
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(anzu-deactivate-region t)
+ '(anzu-mode-lighter "")
+ '(anzu-search-threshold 1000)
+ '(company-idle-delay 0)
+ '(company-minimum-prefix-length 1)
+ '(company-selection-wrap-around t)
+ '(company-transformers '(company-sort-by-occurrence))
+ '(counsel-find-file-ignore-regexp "\\(?:\\.\\(?:\\.?/\\)\\)")
+ '(counsel-yank-pop-separator "
+----------
+")
+ '(flycheck-checker nil t)
+ '(flycheck-disabled-checkers '(ruby-rubylint ruby-reek))
+ '(global-anzu-mode t)
+ '(global-linum-mode t)
+ '(gofmt-command "goimports" t)
+ '(highlight-indent-guides-auto-enabled t)
+ '(highlight-indent-guides-method 'column)
+ '(ivy-ghq-short-list t t)
+ '(ivy-height 30)
+ '(ivy-initial-inputs-alist nil)
+ '(ivy-prescient-retain-classic-highlighting t)
+ '(ivy-re-builders-alist
+   '((t . ivy-prescient-re-builder)
+     (swiper . ivy--regex-plus)
+     (counsel-ag . ivy--regex-plus)
+     (counsel-rg . ivy--regex-plus)) t)
+ '(ivy-use-selectable-prompt t)
+ '(js2-basic-offset 2 t)
+ '(linum-format "%4d| ")
+ '(package-archives
+   '(("gnu" . "https://elpa.gnu.org/packages/")
+     ("melpa" . "https://melpa.org/packages/")
+     ("org" . "https://orgmode.org/elpa/")))
+ '(package-selected-packages
+   '(fish-mode yaml-mode yafolding which-key web-mode tide srcery-theme slim-mode ruby-electric rubocop rspec-mode quickrun mmm-mode magit leaf-keywords kotlin-mode js2-mode ivy-rich ivy-prescient hydra hlinum highlight-indent-guides gotest el-get eglot counsel company blackout anzu ag))
+ '(prescient-aggressive-file-save t)
+ '(prescient-save-file "~/.emacs.d/prescient")
+ '(ruby-insert-encoding-magic-comment nil t)
+ '(typescript-indent-level 2 t))
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ )
