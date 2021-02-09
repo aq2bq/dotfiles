@@ -346,7 +346,7 @@
 	 ("Capfile$" . ruby-mode)
 	 ("Guardfile$" . ruby-mode)
 	 ("[Rr]akefile$" . ruby-mode))
-  :hook (electric-pair-mode rubocop-mode)
+  :hook (electric-pair-mode rubocop-mode eldoc-mode)
   :config
   (leaf ruby-electric
     :ensure t
@@ -357,11 +357,14 @@
     :ensure t
     :bind (rspec-mode-map
            ("C-c t" . rspec-verify)))
+  (leaf yard-mode
+    :ensure t
+    :url "https://github.com/pd/yard-mode.el"
+    :hook (ruby-mode-hook . yard-mode))
   :custom
   (flycheck-disabled-checkers . '(ruby-rubylint ruby-reek))
   (ruby-insert-encoding-magic-comment . nil)
-  (flycheck-checker 'ruby)
-  )
+  (flycheck-checker 'ruby))
 
 (leaf go-mode
   :ensure t
@@ -474,6 +477,7 @@
  '(counsel-yank-pop-separator "
 ----------
 ")
+ '(fish-indent-offset 2 t)
  '(flycheck-checker nil t)
  '(flycheck-disabled-checkers '(ruby-rubylint ruby-reek))
  '(global-anzu-mode t)
@@ -481,7 +485,7 @@
  '(gofmt-command "goimports" t)
  '(highlight-indent-guides-auto-enabled t)
  '(highlight-indent-guides-method 'column)
- '(ivy-ghq-short-list t t)
+ '(ivy-ghq-short-list t)
  '(ivy-height 30)
  '(ivy-initial-inputs-alist nil)
  '(ivy-prescient-retain-classic-highlighting t)
@@ -498,10 +502,10 @@
      ("melpa" . "https://melpa.org/packages/")
      ("org" . "https://orgmode.org/elpa/")))
  '(package-selected-packages
-   '(fish-mode yaml-mode yafolding which-key web-mode tide srcery-theme slim-mode ruby-electric rubocop rspec-mode quickrun mmm-mode magit leaf-keywords kotlin-mode js2-mode ivy-rich ivy-prescient hydra hlinum highlight-indent-guides gotest el-get eglot counsel company blackout anzu ag))
+   '(yard-mode fish-mode yaml-mode yafolding which-key web-mode tide srcery-theme slim-mode ruby-electric rubocop rspec-mode quickrun mmm-mode magit leaf-keywords kotlin-mode js2-mode ivy-rich ivy-prescient hydra hlinum highlight-indent-guides gotest el-get eglot counsel company blackout anzu ag))
  '(prescient-aggressive-file-save t)
  '(prescient-save-file "~/.emacs.d/prescient")
- '(ruby-insert-encoding-magic-comment nil t)
+ '(ruby-insert-encoding-magic-comment nil)
  '(typescript-indent-level 2 t))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
