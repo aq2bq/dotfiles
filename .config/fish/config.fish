@@ -19,13 +19,17 @@ alias gore="gore -autoimport"
 alias t="open -a Typora"
 alias re="ruby -e"
 alias c="curl https://corona-stats.online/Japan"
+alias python="python3"
+alias pip="pip3"
+
+pyenv init - | source
 
 set GOROOT (go env GOROOT)
 set GOPATH (go env GOPATH)
 set CHEAT_CONFIG_PATH $HOME/.config/cheat/conf.yml
 set -x LESS '-g -i -M -R -S -W -z-4 -x4'
 set -x PGDATA /usr/local/var/postgress
-set -x PATH $HOME/nodenv/shims $HOME/.cargo/bin $HOME/.rbenv/shims (ruby -e 'print Gem.user_dir')/bin $GOPATH/bin $HOME/Library/Android/sdk/platform-tools $HOME/Library/Android/sdk/emulator $PATH
+set -x PATH $HOME/.pyenv/shims $HOME/nodenv/shims $HOME/.cargo/bin $HOME/.rbenv/shims (ruby -e 'print Gem.user_dir')/bin $GOPATH/bin $HOME/Library/Android/sdk/platform-tools $HOME/Library/Android/sdk/emulator $PATH
 set -x HOMEBREW_INSTALL_CLEANUP 1
 
 bind \cj on_enter # Ctrl+j
