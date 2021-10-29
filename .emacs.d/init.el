@@ -310,6 +310,9 @@
 ;; Programming
 ;;;
 
+(leaf yasnippet
+  :ensure t)
+
 (leaf eglot
   :ensure t
   :doc "Emacs Polyglot: an Emacs LSP client that stays out of your way"
@@ -318,6 +321,16 @@
   (add-to-list 'eglot-server-programs '(go-mode . ("gopls")))
   (add-hook 'ruby-mode-hook 'eglot-ensure)
   (add-hook 'go-mode-hook 'eglot-ensure))
+
+(leaf lsp-mode
+  :ensure t
+  :init (yas-global-mode)
+  :hook (rustic-mode . lsp)
+  :bind ("C-c h" . lsp-describe-thing-at-point)
+  :custom (lsp-rust-server 'rust-analyzer)
+  :config
+  (leaf lsp-ui
+  :ensure t))
 
 (leaf magit
   :ensure t)
@@ -380,6 +393,14 @@
            ("C-c t" . go-test-current-test)
            ("C-c C-t" . go-test-current-file))))
 
+(leaf rustic
+  :ensure t
+  :defvar (flycheck-checkers)
+  :defun (rust-format-region)
+  :custom ((rustic-format-on-save . t))
+  :config
+  (push 'rustic-clippy flycheck-checkers))
+
 (leaf slim-mode
   :ensure t
   :doc "slim-mode provides Emacs support for editing Slim templates. It's based on haml-mode.")
@@ -402,82 +423,80 @@
   :custom
   ((js2-basic-offset . 2)))
 
-(leaf web-mode
-  :ensure t
-  :mode ("\\.html\\'" "\\.php\\'" "\\.jsx\\'" "\\.tsx\\'" "\\.vue\\'" "\\.xml\\'")
-  :custom ((web-mode-attr-indent-offset . nil)
-	         (web-mode-markup-indent-offset . 2)
-	         (web-mode-css-indent-offset . 2)
-	         (web-mode-code-indent-offset . 2)
-	         (web-mode-sql-indent-offset . 2)
-	         (indent-tabs-mode)
-	         (tab-width . 2)
-	         (web-mode-script-padding . 0)
-	         (web-mode-style-padding . 0)
-	         (web-mode-block-padding . 0)
-	         (web-mode-enable-current-element-highlight . t)
-	         (web-mode-enable-current-column-highlight . t)
-	         (web-mode-enable-auto-closing . t)
-	         (web-mode-enable-auto-expanding . t)
-	         (web-mode-comment-style . 2))
-  :config
-  (add-to-list 'web-mode-comment-formats '("jsx" . "//" ))
-  (add-to-list 'web-mode-comment-formats '("javascript" . "//" ))
-  :hook (web-mode-hook . (lambda ()
-                           (when (string-suffix-p ".tsx" buffer-file-name)
-                             (flycheck-select-checker 'javascript-eslint)))))
-
-;; EmacsにおけるTypescript + React JSXの苦悩と良さげな設定について
-;; https://qiita.com/nuy/items/ebcb25ad14f02ab72790
-(leaf typescript-mode
-  :ensure t
-  :mode (("\\.tsx\\'" . typescript-mode))
-  :bind (typescript-mode-map
-         ("C-c C-r" . quickrun))
-  :custom
-  ((typescript-indent-level . 2))
-  :config
-  (leaf tide
-    :doc "TypeScript Interactive Development Environment for Emacs"
-    :ensure t
-    :config
-    (add-hook 'typescript-mode-hook
-              (lambda ()
-                (tide-setup)
-                (tide-hl-identifier-mode t)
-                (flycheck-mode t)
-                (setq flycheck-check-syntax-automatically '(save mode-enabled))
-                (eldoc-mode t)
-                (company-mode-on)))))
-(leaf mmm-mode
-  :url "https://github.com/purcell/mmm-mode"
-  :ensure t
-  :hook (typescript-mode-hook . mmm-mode)
-  :custom
-  ((mmm-global-mode . 'maybe)
-   (mmm-submode-decoration-level . 2))
-  :config
-  (mmm-add-classes
-   '((mmm-jsx-mode
-      :front "\\(return\s\\|n\s\\|(\n\s*\\)<"
-      :front-offset -1
-      :back ">\n?\s*)"
-      :back-offset 1
-      :submode web-mode)))
-  (mmm-add-mode-ext-class 'typescript-mode nil 'mmm-jsx-mode)
-
-  (defun mmm-reapply ()
-    (mmm-mode)
-    (mmm-mode))
-
-  (add-hook 'after-save-hook
-            (lambda ()
-              (when (string-match-p "\\.tsx?" buffer-file-name)
-                (mmm-reapply)
-                ))))
 
 (leaf kotlin-mode
   :ensure t)
 
 (provide 'init)
 
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(anzu-deactivate-region t)
+ '(anzu-mode-lighter "")
+ '(anzu-search-threshold 1000)
+ '(company-idle-delay 0)
+ '(company-minimum-prefix-length 1)
+ '(company-selection-wrap-around t)
+ '(company-transformers '(company-sort-by-occurrence))
+ '(counsel-find-file-ignore-regexp "\\(?:\\.\\(?:\\.?/\\)\\)")
+ '(counsel-yank-pop-separator "
+----------
+")
+ '(fish-indent-offset 2)
+ '(flycheck-checker nil t)
+ '(flycheck-disabled-checkers '(ruby-rubylint ruby-reek))
+ '(global-anzu-mode t)
+ '(global-linum-mode t)
+ '(gofmt-command "goimports" t)
+ '(highlight-indent-guides-auto-enabled t)
+ '(highlight-indent-guides-method 'column)
+ '(indent-tabs-mode nil)
+ '(ivy-ghq-short-list t t)
+ '(ivy-height 30)
+ '(ivy-initial-inputs-alist nil)
+ '(ivy-prescient-retain-classic-highlighting t)
+ '(ivy-re-builders-alist
+   '((t . ivy-prescient-re-builder)
+     (swiper . ivy--regex-plus)
+     (counsel-ag . ivy--regex-plus)
+     (counsel-rg . ivy--regex-plus)) t)
+ '(ivy-use-selectable-prompt t)
+ '(js2-basic-offset 2 t)
+ '(linum-format "%4d| ")
+ '(lsp-rust-server nil t)
+ '(mmm-global-mode 'maybe t)
+ '(mmm-submode-decoration-level 2 t)
+ '(package-archives
+   '(("gnu" . "https://elpa.gnu.org/packages/")
+     ("melpa" . "https://melpa.org/packages/")
+     ("org" . "https://orgmode.org/elpa/")))
+ '(package-selected-packages
+   '(lsp-ui yasnippet lsp-mode rustic yard-mode yaml-mode yafolding which-key web-mode tide tern srcery-theme slim-mode ruby-electric rubocop rspec-mode quickrun mmm-mode magit madhat2r-theme leaf-keywords kotlin-mode js2-mode ivy-rich ivy-prescient hydra hlinum highlight-indent-guides gotest fish-mode el-get eglot counsel company blackout async anzu ag))
+ '(prescient-aggressive-file-save t)
+ '(prescient-save-file "~/.emacs.d/prescient")
+ '(ruby-insert-encoding-magic-comment nil t)
+ '(rustic-format-on-save t t)
+ '(tab-width 2)
+ '(typescript-indent-level 2 t)
+ '(web-mode-attr-indent-offset nil t)
+ '(web-mode-block-padding 0 t)
+ '(web-mode-code-indent-offset 2 t)
+ '(web-mode-comment-style 2 t)
+ '(web-mode-css-indent-offset 2 t)
+ '(web-mode-enable-auto-closing t t)
+ '(web-mode-enable-auto-expanding t t)
+ '(web-mode-enable-current-column-highlight t t)
+ '(web-mode-enable-current-element-highlight t t)
+ '(web-mode-markup-indent-offset 2 t)
+ '(web-mode-script-padding 0 t)
+ '(web-mode-sql-indent-offset 2 t)
+ '(web-mode-style-padding 0 t))
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ )

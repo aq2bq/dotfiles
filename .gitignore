@@ -32,6 +32,7 @@
 /.emacs.d/el-get
 /.emacs.d/elpa
 /.emacs.d/eshell
+/.emacs.d/kkcrc
 /.emacs.d/prescient
 /.emacs.d/projects
 /.emacs.d/recentf
@@ -50,6 +51,7 @@
 /.config/htop
 /.config/neofetch
 /.config/omf
+/.config/pgcli
 /.config/yarn
 /.config/exercism
 
