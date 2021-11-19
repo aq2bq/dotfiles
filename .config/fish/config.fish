@@ -1,8 +1,9 @@
+set -x PATH /opt/homebrew/bin/ $HOME/.pyenv/shims $HOME/nodenv/shims $HOME/.cargo/bin $HOME/.rbenv/shims (ruby -e 'print Gem.user_dir')/bin $GOPATH/bin $HOME/Library/Android/sdk/platform-tools $HOME/Library/Android/sdk/emulator $PATH
 status --is-interactive; and source (nodenv init -|psub)
 
 if not functions -q fisher
   set -q XDG_CONFIG_HOME; or set XDG_CONFIG_HOME ~/.config
- curl https://git.io/fisher --create-dirs -sLo $XDG_CONFIG_HOME/fish/functions/fisher.fish
+  curl https://git.io/fisher --create-dirs -sLo $XDG_CONFIG_HOME/fish/functions/fisher.fish
   fish -c fisher
 end
 
@@ -29,7 +30,6 @@ set GOPATH (go env GOPATH)
 set CHEAT_CONFIG_PATH $HOME/.config/cheat/conf.yml
 set -x LESS '-g -i -M -R -S -W -z-4 -x4'
 set -x PGDATA /usr/local/var/postgress
-set -x PATH $HOME/.pyenv/shims $HOME/nodenv/shims $HOME/.cargo/bin $HOME/.rbenv/shims (ruby -e 'print Gem.user_dir')/bin $GOPATH/bin $HOME/Library/Android/sdk/platform-tools $HOME/Library/Android/sdk/emulator $PATH
 set -x HOMEBREW_INSTALL_CLEANUP 1
 
 bind \cj on_enter # Ctrl+j
