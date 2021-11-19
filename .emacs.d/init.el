@@ -311,7 +311,9 @@
 ;;;
 
 (leaf yasnippet
-  :ensure t)
+  :ensure t
+  :custom
+  (yas-snippet-dirs . '("~/.emacs.d/snippets")))
 
 (leaf eglot
   :ensure t
@@ -327,7 +329,12 @@
   :init (yas-global-mode)
   :hook (rustic-mode . lsp)
   :bind ("C-c h" . lsp-describe-thing-at-point)
-  :custom (lsp-rust-server 'rust-analyzer)
+  :custom
+  (lsp-rust-server 'rust-analyzer)
+  (lsp-rust-analyzer-cargo-watch-command "clippy")
+  (lsp-eldoc-render-all t)
+  (lsp-idle-delay 0.6)
+  (lsp-rust-analyzer-server-display-inlay-hints t)
   :config
   (leaf lsp-ui
   :ensure t))
@@ -429,74 +436,4 @@
 
 (provide 'init)
 
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(anzu-deactivate-region t)
- '(anzu-mode-lighter "")
- '(anzu-search-threshold 1000)
- '(company-idle-delay 0)
- '(company-minimum-prefix-length 1)
- '(company-selection-wrap-around t)
- '(company-transformers '(company-sort-by-occurrence))
- '(counsel-find-file-ignore-regexp "\\(?:\\.\\(?:\\.?/\\)\\)")
- '(counsel-yank-pop-separator "
-----------
-")
- '(fish-indent-offset 2)
- '(flycheck-checker nil t)
- '(flycheck-disabled-checkers '(ruby-rubylint ruby-reek))
- '(global-anzu-mode t)
- '(global-linum-mode t)
- '(gofmt-command "goimports" t)
- '(highlight-indent-guides-auto-enabled t)
- '(highlight-indent-guides-method 'column)
- '(indent-tabs-mode nil)
- '(ivy-ghq-short-list t t)
- '(ivy-height 30)
- '(ivy-initial-inputs-alist nil)
- '(ivy-prescient-retain-classic-highlighting t)
- '(ivy-re-builders-alist
-   '((t . ivy-prescient-re-builder)
-     (swiper . ivy--regex-plus)
-     (counsel-ag . ivy--regex-plus)
-     (counsel-rg . ivy--regex-plus)) t)
- '(ivy-use-selectable-prompt t)
- '(js2-basic-offset 2 t)
- '(linum-format "%4d| ")
- '(lsp-rust-server nil t)
- '(mmm-global-mode 'maybe t)
- '(mmm-submode-decoration-level 2 t)
- '(package-archives
-   '(("gnu" . "https://elpa.gnu.org/packages/")
-     ("melpa" . "https://melpa.org/packages/")
-     ("org" . "https://orgmode.org/elpa/")))
- '(package-selected-packages
-   '(lsp-ui yasnippet lsp-mode rustic yard-mode yaml-mode yafolding which-key web-mode tide tern srcery-theme slim-mode ruby-electric rubocop rspec-mode quickrun mmm-mode magit madhat2r-theme leaf-keywords kotlin-mode js2-mode ivy-rich ivy-prescient hydra hlinum highlight-indent-guides gotest fish-mode el-get eglot counsel company blackout async anzu ag))
- '(prescient-aggressive-file-save t)
- '(prescient-save-file "~/.emacs.d/prescient")
- '(ruby-insert-encoding-magic-comment nil t)
- '(rustic-format-on-save t t)
- '(tab-width 2)
- '(typescript-indent-level 2 t)
- '(web-mode-attr-indent-offset nil t)
- '(web-mode-block-padding 0 t)
- '(web-mode-code-indent-offset 2 t)
- '(web-mode-comment-style 2 t)
- '(web-mode-css-indent-offset 2 t)
- '(web-mode-enable-auto-closing t t)
- '(web-mode-enable-auto-expanding t t)
- '(web-mode-enable-current-column-highlight t t)
- '(web-mode-enable-current-element-highlight t t)
- '(web-mode-markup-indent-offset 2 t)
- '(web-mode-script-padding 0 t)
- '(web-mode-sql-indent-offset 2 t)
- '(web-mode-style-padding 0 t))
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- )
+
