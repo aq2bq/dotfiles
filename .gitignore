@@ -28,6 +28,7 @@
 /.emacs.d/**/*.elc
 /.emacs.d/*.dat
 /.emacs.d/*~
+/.emacs.d/.lsp-session*
 /.emacs.d/auto-save-list*
 /.emacs.d/el-get
 /.emacs.d/elpa

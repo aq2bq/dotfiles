@@ -19,17 +19,14 @@
 (global-set-key (kbd "C-x l") 'goto-line)
 (global-set-key (kbd "C--") 'undo)
 (global-set-key (kbd "C-x f") 'project-find-file)
-(setq mac-command-modifier 'super)
+(defvar mac-command-modifier 'super)
 
 ;;;
 ;; General Settings
 ;;;
 
 ;; メニューバーの非表示
-(menu-bar-mode -1)
-
-;; ツールバーの非表示
-(tool-bar-mode -1)
+(menu-bar-mode 0)
 
 ;; set tab width
 (setq-default tab-width 2)
@@ -67,7 +64,7 @@
 
 
 ;; for support `ls --dired`
-(let ((gls "/usr/local/bin/gls"))
+(let ((gls (shell-command-to-string "which gls")))
   (if (file-exists-p gls) (setq insert-directory-program gls)))
 
 ;; enable paste to region
@@ -278,9 +275,11 @@
 (leaf highlight-indent-guides
   :ensure t
   :custom
-  ((highlight-indent-guides-auto-enabled . t)
-   (highlight-indent-guides-method . 'column))
-  :hook (prog-mode-hook . highlight-indent-guides-mode))
+  ((highlight-indent-guides-method . 'column)
+   (highlight-indent-guides-auto-enabled . t)
+   (highlight-indent-guides-responsive . t))
+  :hook (prog-mode-hook . highlight-indent-guides-mode)
+)
 
 (leaf which-key
   :doc "minor mode for Emacs that displays the key bindings following your currently entered incomplete command (a prefix) in a popup."
@@ -293,6 +292,7 @@
   :tag "minor-mode" "tools" "languages" "convenience" "emacs>=24.3"
   :url "http://www.flycheck.org"
   :emacs>= 24.3
+  :defun (flycheck-may-check-automatically)
   :ensure t
   :bind (("M-n" . flycheck-next-error)
          ("M-p" . flycheck-previous-error))
@@ -319,6 +319,7 @@
   :ensure t
   :doc "Emacs Polyglot: an Emacs LSP client that stays out of your way"
   :require t
+  :defvar (eglot-server-programs)
   :config
   (add-to-list 'eglot-server-programs '(go-mode . ("gopls")))
   (add-hook 'ruby-mode-hook 'eglot-ensure)
@@ -330,15 +331,21 @@
   :hook (rustic-mode . lsp)
   :bind ("C-c h" . lsp-describe-thing-at-point)
   :custom
-  (lsp-rust-server 'rust-analyzer)
-  (lsp-rust-analyzer-cargo-watch-command "clippy")
-  (lsp-eldoc-render-all t)
-  (lsp-idle-delay 0.6)
-  (lsp-rust-analyzer-server-display-inlay-hints t)
+  ((lsp-message-project-root-warning . t)
+   (lsp-auto-guess-root . nil)
+   (lsp-rust-server . 'rust-analyzer)
+   (lsp-rust-analyzer-cargo-watch-command . "clippy")
+   (lsp-eldoc-render-all . t)
+   ;; (lsp-idle-delay . 0.1)
+   (lsp-rust-analyzer-server-display-inlay-hints . t))
   :config
-  (leaf lsp-ui
-  :ensure t))
-
+  (add-hook 'lsp-mode-hook 'lsp-ui-mode))
+(leaf lsp-ui
+  :ensure t
+  :custom
+  (lsp-ui-peek-always-show . t)
+  (lsp-ui-sideline-show-hover . t)
+  (lsp-ui-doc-enable . nil))
 (leaf magit
   :ensure t)
 
