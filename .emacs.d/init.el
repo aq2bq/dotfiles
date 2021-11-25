@@ -64,7 +64,7 @@
 
 
 ;; for support `ls --dired`
-(let ((gls (shell-command-to-string "which gls")))
+(let ((gls (substring (shell-command-to-string "which gls") 0 -1)))
   (if (file-exists-p gls) (setq insert-directory-program gls)))
 
 ;; enable paste to region
