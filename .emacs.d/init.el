@@ -13,7 +13,7 @@
 (global-set-key (kbd "C-q") (lambda () (interactive) (other-window-or-split 1)))
 (global-set-key (kbd "C-S-q") (lambda () (interactive) (other-window-or-split -1)))
 (global-set-key (kbd "C-h") 'delete-backward-char)
-(global-set-key (kbd "C-c C-c") 'comment-or-uncomment-region)
+(global-set-key (kbd "C-c /") 'comment-or-uncomment-region)
 (global-set-key (kbd "C-c n") 'next-buffer)
 (global-set-key (kbd "C-c b") 'previous-buffer)
 (global-set-key (kbd "C-x l") 'goto-line)
@@ -378,7 +378,8 @@
     :ensure t
     :hook (ruby-mode-hook . ruby-electric-mode))
   (leaf rubocop
-    :ensure t)
+    :ensure t
+    :bind (("C-c C-c f" . rubocop-autocorrect-current-file)))
   (leaf rspec-mode
     :ensure t
     :bind (rspec-mode-map
@@ -444,3 +445,4 @@
 (provide 'init)
 
 
+(put 'downcase-region 'disabled nil)
