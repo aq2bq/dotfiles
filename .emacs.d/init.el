@@ -279,7 +279,7 @@
    (highlight-indent-guides-auto-enabled . t)
    (highlight-indent-guides-responsive . t))
   :hook (prog-mode-hook . highlight-indent-guides-mode)
-)
+  )
 
 (leaf which-key
   :doc "minor mode for Emacs that displays the key bindings following your currently entered incomplete command (a prefix) in a popup."
@@ -329,7 +329,12 @@
   :ensure t
   :init (yas-global-mode)
   :hook (rustic-mode . lsp)
-  :bind ("C-c h" . lsp-describe-thing-at-point)
+  :bind
+  (lsp-mode-map ("C-c h" . lsp-describe-thing-at-point)
+   ("C-c C-c a" . lsp-execute-code-action)
+   ("C-c C-c e" . lsp-rust-analyzer-expand-macro)
+   ("C-c C-c r" . lsp-rename)
+   ("M-." . lsp-find-definition))
   :custom
   ((lsp-message-project-root-warning . t)
    (lsp-auto-guess-root . nil)
@@ -446,3 +451,20 @@
 
 
 (put 'downcase-region 'disabled nil)
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(package-archives
+   '(("gnu" . "https://elpa.gnu.org/packages/")
+     ("melpa" . "https://melpa.org/packages/")
+     ("org" . "https://orgmode.org/elpa/")))
+ '(package-selected-packages
+   '(yasnippet yard-mode yaml-mode yafolding which-key web-mode tide tern srcery-theme slim-mode rustic ruby-electric rubocop rspec-mode quickrun projectile mmm-mode magit madhat2r-theme lsp-ui leaf-keywords kotlin-mode js2-mode ivy-rich ivy-prescient hydra hlinum highlight-indent-guides gotest fish-mode el-get eglot counsel company blackout async anzu ag)))
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ )
