@@ -96,6 +96,7 @@
     (package-refresh-contents)
     (package-install 'leaf))
 
+  (leaf leaf-convert :ensure t)
   (leaf leaf-keywords
     :ensure t
     :init
@@ -111,11 +112,12 @@
 ;;;
 ;; Emacs global extentions
 ;;;
-
-(leaf srcery-theme
-  :ensure t
-  :config
-  (load-theme 'srcery t))
+(leaf doom-themes
+  :ensure t)
+;; (leaf srcery-theme
+;;   :ensure t
+;;   :config
+;;   (load-theme 'srcery t))
 ;; (leaf madhat2r-theme
 ;;   :ensure t
 ;;   :config
@@ -338,18 +340,30 @@
   :custom
   ((lsp-message-project-root-warning . t)
    (lsp-auto-guess-root . nil)
+   (lsp-restart . 'auto-restart)
+   (lsp-log-io . nil)
    (lsp-rust-server . 'rust-analyzer)
    (lsp-rust-analyzer-cargo-watch-command . "clippy")
    (lsp-eldoc-render-all . t)
    ;; (lsp-idle-delay . 0.1)
+   (lsp-rust-analyzer-cargo-load-out-dirs-from-check . t)
+   (lsp-rust-analyzer-proc-macro-enable . t)
    (lsp-rust-analyzer-server-display-inlay-hints . t))
   :config
   (add-hook 'lsp-mode-hook 'lsp-ui-mode))
+
 (leaf lsp-ui
   :ensure t
+  :commands lsp-ui-mode
   :custom
+  (lsp-ui-doc-border . (face-foreground 'default))
+  (lsp-ui-doc-enable . nil)
+  (lsp-ui-doc-header . t)
+  (lsp-ui-doc-include-signature . t)
   (lsp-ui-peek-always-show . t)
+  (lsp-ui-sideline-delay . 0.05)
   (lsp-ui-sideline-show-hover . t)
+  (lsp-ui-sideline-show-code-actions . t)
   (lsp-ui-doc-enable . nil))
 (leaf magit
   :ensure t)
@@ -450,21 +464,4 @@
 (provide 'init)
 
 
-(put 'downcase-region 'disabled nil)
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(package-archives
-   '(("gnu" . "https://elpa.gnu.org/packages/")
-     ("melpa" . "https://melpa.org/packages/")
-     ("org" . "https://orgmode.org/elpa/")))
- '(package-selected-packages
-   '(yasnippet yard-mode yaml-mode yafolding which-key web-mode tide tern srcery-theme slim-mode rustic ruby-electric rubocop rspec-mode quickrun projectile mmm-mode magit madhat2r-theme lsp-ui leaf-keywords kotlin-mode js2-mode ivy-rich ivy-prescient hydra hlinum highlight-indent-guides gotest fish-mode el-get eglot counsel company blackout async anzu ag)))
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- )
+
