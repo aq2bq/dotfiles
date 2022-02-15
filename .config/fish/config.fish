@@ -15,6 +15,8 @@ alias terminal-notifier="reattach-to-user-namespace terminal-notifier"
 alias gf="~/bin/git-foresta | less -RSX" # https://github.com/takaaki-kasai/git-foresta
 alias hd="hexdump -C"
 alias l="less"
+alias ls="lsd"
+alias csv="csview"
 alias chrome="/Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome"
 alias gore="gore -autoimport"
 alias t="open -a Typora"
@@ -31,6 +33,8 @@ set CHEAT_CONFIG_PATH $HOME/.config/cheat/conf.yml
 set -x LESS '-g -i -M -R -S -W -z-4 -x4'
 set -x PGDATA /usr/local/var/postgress
 set -x HOMEBREW_INSTALL_CLEANUP 1
+set -x ANDROID_SDK_ROOT $HOME/Library/Android/sdk
+set -x ANDROID_AVD_HOME $HOME/.android/avd
 
 bind \cj on_enter # Ctrl+j
 bind \cr peco_select_history # Bind for peco history to Ctrl+r
