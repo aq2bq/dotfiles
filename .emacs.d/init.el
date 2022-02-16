@@ -73,6 +73,17 @@
 ;; Enable copy mouse drag region
 (setq mouse-drag-copy-region t)
 
+;; use flash instead of beeping
+(setq visible-bell t)
+
+;; Again the emacs default is too low 4k considering that the some of the language server responses are in 800k - 3M range
+;; https://emacs-lsp.github.io/lsp-mode/page/performance/#increase-the-amount-of-data-which-emacs-reads-from-the-process
+(setq read-process-output-max (* 1024 1024)) ;; 1MB
+
+;; The default setting is too low for lsp-mode's needs due to the fact that client/server communication generates a lot of memory/garbage. 
+;; https://emacs-lsp.github.io/lsp-mode/page/performance/#adjust-gc-cons-threshold
+(setq gc-cons-threshold 100000000)
+
 ;;;
 ;; Initialize
 ;;;
@@ -112,8 +123,22 @@
 ;;;
 ;; Emacs global extentions
 ;;;
+
+(leaf cus-edit
+  :doc "tools for customizing Emacs and Lisp packages"
+  :tag "builtin" "faces" "help"
+  :custom `((custom-file . ,(locate-user-emacs-file "custom.el"))))
+
 (leaf doom-themes
-  :ensure t)
+  :ensure t
+  :config
+  (load-theme 'doom-dracula t nil)
+  (doom-themes-neotree-config)
+  :custom
+  (doom-dracula-brighter-comments . t)
+  (doom-modeline-bar . t)
+  (doom-themes-enable-italic . t)
+  (doom-themes-enable-bold . t))
 ;; (leaf srcery-theme
 ;;   :ensure t
 ;;   :config
@@ -324,13 +349,14 @@
   :defvar (eglot-server-programs)
   :config
   (add-to-list 'eglot-server-programs '(go-mode . ("gopls")))
-  (add-hook 'ruby-mode-hook 'eglot-ensure)
+  ;; (add-hook 'ruby-mode-hook 'eglot-ensure)
   (add-hook 'go-mode-hook 'eglot-ensure))
 
 (leaf lsp-mode
   :ensure t
   :init (yas-global-mode)
-  :hook (rustic-mode . lsp)
+  :hook ((rustic-mode . lsp-deferred)
+         (ruby-mode-hook . lsp-deferred))
   :bind
   (lsp-mode-map ("C-c h" . lsp-describe-thing-at-point)
    ("C-c C-c a" . lsp-execute-code-action)
@@ -342,10 +368,12 @@
    (lsp-auto-guess-root . nil)
    (lsp-restart . 'auto-restart)
    (lsp-log-io . nil)
-   (lsp-rust-server . 'rust-analyzer)
-   (lsp-rust-analyzer-cargo-watch-command . "clippy")
    (lsp-eldoc-render-all . t)
    ;; (lsp-idle-delay . 0.1)
+   (lsp-solargraph-use-bundler . t)
+   (lsp-solargraph-library-directories . '("~/.rbenv/shims/"))
+   (lsp-rust-server . 'rust-analyzer)
+   (lsp-rust-analyzer-cargo-watch-command . "clippy")
    (lsp-rust-analyzer-cargo-load-out-dirs-from-check . t)
    (lsp-rust-analyzer-proc-macro-enable . t)
    (lsp-rust-analyzer-server-display-inlay-hints . t))
@@ -354,17 +382,27 @@
 
 (leaf lsp-ui
   :ensure t
+  :after lsp-deffered
   :commands lsp-ui-mode
   :custom
   (lsp-ui-doc-border . (face-foreground 'default))
-  (lsp-ui-doc-enable . nil)
+  (lsp-ui-doc-enable . t)
+  (lsp-ui-doc-deley . 0.5)
   (lsp-ui-doc-header . t)
   (lsp-ui-doc-include-signature . t)
+  (lsp-ui-doc-max-width . 150)
+  (lsp-ui-doc-max-height . 30)
+  (lsp-ui-doc-position . 'at-point)
+  (lsp-ui-doc-use-childframe . nil)
+  (lsp-ui-doc-use-webkit . nil)
   (lsp-ui-peek-always-show . t)
+  (lsp-ui-peek-enable . t)
+  (lsp-ui-peek-peek-height . 20)
+  (lsp-ui-peek-list-width . 50)
+  (lsp-ui-peek-fontify . 'on-demand) ;; never, on-demand, or always
   (lsp-ui-sideline-delay . 0.05)
   (lsp-ui-sideline-show-hover . t)
-  (lsp-ui-sideline-show-code-actions . t)
-  (lsp-ui-doc-enable . nil))
+  (lsp-ui-sideline-show-code-actions . t))
 (leaf magit
   :ensure t)
 
@@ -462,6 +500,4 @@
   :ensure t)
 
 (provide 'init)
-
-
 
