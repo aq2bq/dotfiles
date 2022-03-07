@@ -25,6 +25,10 @@
 ;; General Settings
 ;;;
 
+;; Highlight current line
+(global-hl-line-mode t)
+
+
 ;; メニューバーの非表示
 (menu-bar-mode 0)
 
@@ -132,10 +136,13 @@
 (leaf doom-themes
   :ensure t
   :config
-  (load-theme 'doom-dracula t nil)
+  (load-theme 'doom-laserwave t nil)
+  ;; (load-theme 'doom-dracula t nil)
   (doom-themes-neotree-config)
   :custom
+  (doom-themes-visual-bell-config . t)
   (doom-dracula-brighter-comments . t)
+  (doom-dracula-comment-bg . t)
   (doom-modeline-bar . t)
   (doom-themes-enable-italic . t)
   (doom-themes-enable-bold . t))
