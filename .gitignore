@@ -30,6 +30,8 @@
 /.emacs.d/*~
 /.emacs.d/.lsp-session*
 /.emacs.d/auto-save-list*
+/.emacs.d/.cache
+/.emacs.d/custom.el
 /.emacs.d/el-get
 /.emacs.d/elpa
 /.emacs.d/eshell
@@ -49,7 +51,9 @@
 /.config/gcloud
 /.config/gh
 /.config/heroku
+/.config/karabiner/
 /.config/htop
+/.config/iterm2
 /.config/neofetch
 /.config/omf
 /.config/pgcli
