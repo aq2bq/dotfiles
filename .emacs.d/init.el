@@ -136,8 +136,8 @@
 (leaf doom-themes
   :ensure t
   :config
-  (load-theme 'doom-laserwave t nil)
-  ;; (load-theme 'doom-dracula t nil)
+  ;; (load-theme 'doom-laserwave t nil)
+  (load-theme 'doom-dracula t nil)
   (doom-themes-neotree-config)
   :custom
   (doom-themes-visual-bell-config . t)
@@ -363,7 +363,8 @@
   :ensure t
   :init (yas-global-mode)
   :hook ((rustic-mode . lsp-deferred)
-         (ruby-mode-hook . lsp-deferred))
+         (ruby-mode-hook . lsp-deferred)
+         (tsx-mode-hook . lsp-deferred))
   :bind
   (lsp-mode-map ("C-c h" . lsp-describe-thing-at-point)
    ("C-c C-c a" . lsp-execute-code-action)
@@ -377,13 +378,18 @@
    (lsp-log-io . nil)
    (lsp-eldoc-render-all . t)
    ;; (lsp-idle-delay . 0.1)
+   ;; ruby
    (lsp-solargraph-use-bundler . t)
    (lsp-solargraph-library-directories . '("~/.rbenv/shims/"))
+   ;; rust
    (lsp-rust-server . 'rust-analyzer)
    (lsp-rust-analyzer-cargo-watch-command . "clippy")
    (lsp-rust-analyzer-cargo-load-out-dirs-from-check . t)
    (lsp-rust-analyzer-proc-macro-enable . t)
-   (lsp-rust-analyzer-server-display-inlay-hints . t))
+   (lsp-rust-analyzer-server-display-inlay-hints . t)
+   ;; typescript/js
+   (lsp-eslint-enable . t) ;; requires run lsp-install-server
+   (lsp-eslint-autofix-on-save . t))
   :config
   (add-hook 'lsp-mode-hook 'lsp-ui-mode))
 
@@ -505,6 +511,20 @@
 
 (leaf kotlin-mode
   :ensure t)
+
+;; TypeScript/TSX
+(leaf tree-sitter
+  :ensure t
+  :config
+  (leaf tree-sitter-langs :ensure t)
+  (leaf *tsi :el-get "orzechowskid/tsi.el"))
+(leaf origami :ensure t)
+(leaf coverlay :ensure t)
+
+(leaf tsx-mode
+  :require origami tree-sitter tree-sitter-langs tsi coverlay
+  :el-get "orzechowskid/tsx-mode.el"
+  :mode "\\(\.ts\\|\.tsx\\)")
 
 (provide 'init)
 
