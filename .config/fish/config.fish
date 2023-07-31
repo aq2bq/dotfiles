@@ -7,9 +7,13 @@ if not functions -q fisher
   fish -c fisher
 end
 
-alias emacs="emacs -nw"
+# requires:
+# brew tap railwaycat/emacsmacport
+# brew install emacs-mac --with-modern-icon
+alias emacs="/opt/homebrew/opt/emacs-mac/bin/emacs -nw"
 alias julia="/Applications/Julia-1.5.app/Contents/Resources/julia/bin/julia"
 alias be="bundle exec"
+alias diff="delta"
 alias flushdns="dscacheutil -flushcache"
 alias terminal-notifier="reattach-to-user-namespace terminal-notifier"
 alias gf="~/bin/git-foresta | less -RSX" # https://github.com/takaaki-kasai/git-foresta
@@ -24,6 +28,7 @@ alias re="ruby -e"
 alias c="curl https://corona-stats.online/Japan"
 alias python="python3"
 alias pip="pip3"
+alias tf="terraform"
 
 pyenv init - | source
 
@@ -36,6 +41,9 @@ set -x HOMEBREW_INSTALL_CLEANUP 1
 set -x ANDROID_SDK_ROOT $HOME/Library/Android/sdk
 set -x ANDROID_AVD_HOME $HOME/.android/avd
 
+set -U theme_display_date no
+set -U theme_display_cmd_duration no
+
 bind \cj on_enter # Ctrl+j
 bind \cr peco_select_history # Bind for peco history to Ctrl+r
 bind \co peco_select_ghq_repository # Ctrl + o
@@ -47,4 +55,18 @@ if [ -f $HOME/google-cloud-sdk/path.fish.inc ]; . $HOME/google-cloud-sdk/path.fi
 
 function elisptest --description='emacs -Q --batch -l $argv -f ert-run-tests-batch-and-exit'
   emacs -Q --batch -l $argv -f ert-run-tests-batch-and-exit
+end
+
+# for Emacs: vterm
+# https://github.com/akermu/emacs-libvterm#shell-side-configuration
+function vterm_printf;
+  if begin; [  -n "$TMUX" ]  ; and  string match -q -r "screen|tmux" "$TERM"; end
+    # tell tmux to pass the escape sequences through
+    printf "\ePtmux;\e\e]%s\007\e\\" "$argv"
+  else if string match -q -- "screen*" "$TERM"
+    # GNU screen (screen, screen-256color, screen-256color-bce)
+    printf "\eP\e]%s\007\e\\" "$argv"
+  else
+    printf "\e]%s\e\\" "$argv"
+  end
 end

@@ -25,12 +25,50 @@
 ;; General Settings
 ;;;
 
+;; メタキーをaltに(GUI)
+(when (display-graphic-p)
+  (setq mac-option-modifier 'meta)
+  (setq mac-command-modifier 'super)
+  (global-set-key (kbd "s-c") 'kill-ring-save) ; コピー
+  (global-set-key (kbd "s-x") 'kill-region)    ; カット
+  (global-set-key (kbd "s-v") 'yank)           ; ペースト
+  (global-set-key (kbd "s-z") 'undo)           ; 元に戻す
+  (global-set-key (kbd "s-s") 'save-buffer)    ; 保存
+  (global-set-key (kbd "s-q") 'save-buffers-kill-terminal)
+  (global-set-key (kbd "C-c +") 'text-scale-increase)
+  (global-set-key (kbd "C-c -") 'text-scale-decrease)
+  (global-set-key (kbd "C-c 0") 'text-scale-adjust))
+
+;; GUIモード時の透明度設定
+(when (display-graphic-p)
+  (set-frame-parameter (selected-frame) 'alpha '(86 . 86))
+  (add-to-list 'default-frame-alist '(alpha . (86 . 86))))
+
 ;; Highlight current line
 (global-hl-line-mode t)
 
+(when (display-graphic-p)
+  (setq use-default-font-for-symbols nil)
+
+  ;; 1.すべて日本語対応フォントで表示するパターン
+  (set-face-attribute 'default nil
+                      :family "Cica"
+                      :height 180)
+
+  ;; ;; 2. ASCIIフォントと日本語フォントを区別するパターン
+  ;; ;; ASCIIフォントの設定
+  ;; (set-face-attribute 'default nil
+  ;;                     :family "Monoid"
+  ;;                     :height 140)
+  ;; ;; 非ASCIIフォントの設定
+  ;; ;; https://misohena.jp/blog/2017-09-26-symbol-font-settings-for-emacs25.html
+  ;; (set-fontset-font nil '(#x80 . #x10ffff) (font-spec :family "Cica" :size 18) nil 'prepend)
+)
 
 ;; メニューバーの非表示
 (menu-bar-mode 0)
+;; ツールバー(GUI)
+(tool-bar-mode 0)
 
 ;; set tab width
 (setq-default tab-width 2)
@@ -83,9 +121,15 @@
 ;; https://emacs-lsp.github.io/lsp-mode/page/performance/#increase-the-amount-of-data-which-emacs-reads-from-the-process
 (setq read-process-output-max (* 1024 1024)) ;; 1MB
 
-;; The default setting is too low for lsp-mode's needs due to the fact that client/server communication generates a lot of memory/garbage. 
+;; The default setting is too low for lsp-mode's needs due to the fact that
+;; client/server communication generates a lot of memory/garbage.
 ;; https://emacs-lsp.github.io/lsp-mode/page/performance/#adjust-gc-cons-threshold
 (setq gc-cons-threshold 100000000)
+
+;; 行数表示
+(global-display-line-numbers-mode)
+
+(setq window-divider-mode t)
 
 ;;;
 ;; Initialize
@@ -127,6 +171,11 @@
 ;; Emacs global extentions
 ;;;
 
+(leaf exec-path-from-shell
+  :doc "ensure environment variables inside Emacs look the same as in the user's shell"
+  :ensure t
+  :init (exec-path-from-shell-initialize))
+
 (leaf good-scroll
   :doc "Attempt at good pixel-based smooth scrolling in Emacs"
   :ensure t
@@ -144,25 +193,67 @@
   :tag "builtin" "faces" "help"
   :custom `((custom-file . ,(locate-user-emacs-file "custom.el"))))
 
+(leaf vterm
+  ;; requirements: brew install cmake
+  :doc "Emacs libvterm integration"
+  :url "https://github.com/akermu/emacs-libvterm"
+  :ensure t
+  :bind (vterm-mode-map
+         ("C-h" . vterm-send-backspace)
+         ("C-g" . vterm-send-escape)
+         ("C-l" . vterm-clear)
+         ("C-c C-c" . vterm--self-insert)
+         ("C-q" . other-window))
+  :hook (vterm-mode-hook . (lambda () (display-line-numbers-mode -1)))
+  :custom ((vterm-max-scrollback . 10000))
+)
+
+(leaf vterm-toggle
+  :doc "toggles between the vterm buffer and whatever buffer you are editing."
+  :ensure t
+  :custom (vterm-toggle-scope . 'project)
+  :bind (("C-s-t" . vterm-toggle)))
+
 (leaf doom-themes
   :ensure t
   :config
   ;; (load-theme 'doom-laserwave t nil)
   ;; (load-theme 'doom-dracula t nil)
-  (load-theme 'doom-challenger-deep t nil)
+  ;; (load-theme 'doom-challenger-deep t nil)
+  (load-theme 'doom-outrun-electric t nil)
   (doom-themes-neotree-config)
   :custom
   (doom-themes-visual-bell-config . t)
-  (doom-dracula-brighter-comments . t)
-  (doom-dracula-comment-bg . t)
-  (doom-modeline-bar . t)
   (doom-themes-enable-italic . t)
   (doom-themes-enable-bold . t)
+  (doom-modeline-bar . t)
+  (doom-outrun-electric-brighter-comments . t)
+  (doom-outrun-electric-brighter-modeline . t)
+  (doom-outrun-electric-comment-bg . nil)
+  (doom-dracula-brighter-comments . t)
+  (doom-dracula-comment-bg . t)
   (doom-challenger-deep-padded-modeline . t)
   (doom-challenger-deep-comment-bg . t)
   (doom-challenger-deep-brighter-comments . t)
   (doom-challenger-deep-brighter-modeline . t))
 
+(leaf ligature
+  :ensure t
+  :config
+  (ligature-set-ligatures 'prog-mode '("|||>" "<|||" "<==>" "<!--" "####" "~~>" "***" "||=" "||>"
+                                       ":::" "::=" "=:=" "===" "==>" "=!=" "=>>" "=<<" "=/=" "!=="
+                                       "!!." ">=>" ">>=" ">>>" ">>-" ">->" "->>" "-->" "---" "-<<"
+                                       "<~~" "<~>" "<*>" "<||" "<|>" "<$>" "<==" "<=>" "<=<" "<->"
+                                       "<--" "<-<" "<<=" "<<-" "<<<" "<+>" "</>" "###" "#_(" "..<"
+                                       "..." "+++" "/==" "///" "_|_" "www" "&&" "^=" "~~" "~@" "~="
+                                       "~>" "~-" "**" "*>" "*/" "||" "|}" "|]" "|=" "|>" "|-" "{|"
+                                       "[|" "]#" "::" ":=" ":>" ":<" "$>" "==" "=>" "!=" "!!" ">:"
+                                       ">=" ">>" ">-" "-~" "-|" "->" "--" "-<" "<~" "<*" "<|" "<:"
+                                       "<$" "<=" "<>" "<-" "<<" "<+" "</" "#{" "#[" "#:" "#=" "#!"
+                                       "##" "#(" "#?" "#_" "%%" ".=" ".-" ".." ".?" "+>" "++" "?:"
+                                       "?=" "?." "??" ";;" "/*" "/=" "/>" "//" "__" "~~" "(*" "*)"
+                                       "\\\\" "://"))
+  :custom ((global-ligature-mode . t)))
 
 ;; (leaf srcery-theme
 ;;   :ensure t
@@ -173,6 +264,31 @@
 ;;   :config
 ;;   (load-theme 'madhat2r t))
 ;; (load-theme 'tango-dark t)
+
+(leaf all-the-icons
+  :doc "A utility package to collect various Icon Fonts and propertize them within Emacs."
+  :ensure t
+  :if (display-graphic-p)) ;; require `M-x all-the-icons-install-fonts`
+
+(leaf centaur-tabs
+  :ensure t
+  :url "https://github.com/ema2159/centaur-tabs"
+  :config (centaur-tabs-mode t)
+  :bind ((centaur-tabs-mode-map
+          ("C-s-n" . centaur-tabs-forward-tab)
+          ("C-s-p" . centaur-tabs-backward-tab)))
+  :custom ((centaur-tabs-set-icons . t)
+           (centaur-tabs-style . "chamfer")
+           (centaur-tabs-set-bar . "over")) ;; To display an overline over the selected tab
+  )
+
+(leaf dirvish
+  :doc "Dirvish is an improved version of the Emacs inbuilt package Dired"
+  :url "https://github.com/alexluigit/dirvish"
+  :ensure t
+  :config (dirvish-override-dired-mode)
+  :custom ( ;; https://github.com/alexluigit/dirvish/blob/main/docs/CUSTOMIZING.org#dirvish-attributes
+           (dirvish-attributes . '(all-the-icons file-time file-size collapse subtree-state vc-state git-msg))))
 
 (leaf company
   :doc "Modular text completion framework"
@@ -230,8 +346,8 @@
     :doc "ghq interface"
     :if (executable-find "ghq")
     :ensure t
-    :bind (("C-x g" . consult-ghq-find))
-    :custom ((consult-ghq-function . 'consult-find)))
+    :bind (("s-g s-g" . consult-ghq-find))
+    :custom ((consult-ghq-find-function . 'dired)))
   (leaf consult-flycheck
     :ensure t)
   (leaf consult-lsp
@@ -241,100 +357,6 @@
 (leaf embark
   :ensure t
   :bind ("M-s" . embark-act))
-
-;; (leaf ivy
-;;   :doc "Incremental Vertical completYon"
-;;   :req "emacs-24.5"
-;;   :tag "matching" "emacs>=24.5"
-;;   :url "https://github.com/abo-abo/swiper"
-;;   :emacs>= 24.5
-;;   :ensure t
-;;   :blackout t
-;;   :leaf-defer nil
-;;   :custom
-;;   ((ivy-initial-inputs-alist . nil)
-;;    (ivy-re-builders-alist . '((t . ivy--regex-fuzzy)
-;;                               (swiper . ivy--regex-plus)
-;;                               (counsel-ag . ivy--regex-plus)
-;;                               (counsel-rg . ivy--regex-plus)))
-;;    (ivy-use-selectable-prompt . t)
-;;    (ivy-height . 30))
-;;   :global-minor-mode t
-;;   :config
-;;   (leaf swiper
-;;     :doc "Isearch with an overview. Oh, man!"
-;;     :req "emacs-24.5" "ivy-0.13.0"
-;;     :tag "matching" "emacs>=24.5"
-;;     :url "https://github.com/abo-abo/swiper"
-;;     :emacs>= 24.5
-;;     :ensure t
-;;     :bind (("C-s" . swiper)))
-
-;;   (leaf ag
-;;     :doc "Ag.el allows you to search using ag from inside Emacs. You can filter by file type, edit results inline, or find files."
-;;     :ensure t)
-
-;;   (leaf counsel
-;;     :doc "Various completion functions using Ivy"
-;;     :req "emacs-24.5" "swiper-0.13.0"
-;;     :tag "tools" "matching" "convenience" "emacs>=24.5"
-;;     :url "https://github.com/abo-abo/swiper"
-;;     :emacs>= 24.5
-;;     :ensure t
-;;     :blackout t
-;;     :config
-;;     (defun my-counsel-ag ()
-;;       (interactive)
-;;       (counsel-ag "" default-directory))
-;;     :bind (("C-S-s" . counsel-imenu)
-;;            ("C-c s" . my-counsel-ag)
-;;            ("C-x C-r" . counsel-recentf)
-;;            ("C-x C-b" . counsel-switch-buffer))
-;;     :custom `((counsel-yank-pop-separator . "\n----------\n")
-;;               (counsel-find-file-ignore-regexp . ,(rx-to-string '(or "./" "../") 'no-group)))
-;;     :global-minor-mode t))
-
-;; (leaf ivy-rich
-;;   :doc "More friendly display transformer for ivy."
-;;   :req "emacs-24.5" "ivy-0.8.0"
-;;   :tag "ivy" "emacs>=24.5"
-;;   :emacs>= 24.5
-;;   :ensure t
-;;   :after ivy
-;;   :global-minor-mode t)
-
-;; (leaf ivy-ghq
-;;   :if (executable-find "ghq")
-;;   :el-get (ivy-ghq
-;;            :type github
-;;            :pkgname "analyticd/ivy-ghq")
-;;   :bind (("C-x g" . ivy-ghq-open))
-;;   :custom
-;;   (ivy-ghq-short-list . t))
-
-
-;; (leaf prescient
-;;   :doc "Better sorting and filtering"
-;;   :req "emacs-25.1"
-;;   :tag "extensions" "emacs>=25.1"
-;;   :url "https://github.com/raxod502/prescient.el"
-;;   :emacs>= 25.1
-;;   :ensure t
-;;   :commands (prescient-persist-mode)
-;;   :custom `((prescient-aggressive-file-save . t)
-;;             (prescient-save-file . ,(locate-user-emacs-file "prescient")))
-;;   :global-minor-mode prescient-persist-mode)
-
-;; (leaf ivy-prescient
-;;   :doc "prescient.el + Ivy"
-;;   :req "emacs-25.1" "prescient-4.0" "ivy-0.11.0"
-;;   :tag "extensions" "emacs>=25.1"
-;;   :url "https://github.com/raxod502/prescient.el"
-;;   :emacs>= 25.1
-;;   :ensure t
-;;   :after prescient ivy
-;;   :custom ((ivy-prescient-retain-classic-highlighting . t))
-;;   :global-minor-mode t)
 
 (leaf anzu
   :doc "provides a minor mode which displays current match and total matches information in the mode-line in various search modes"
@@ -354,11 +376,6 @@
   :url "https://github.com/zenozeng/yafolding.el"
   :ensure t
   :bind ("C-c i" . yafolding-toggle-element))
-
-(leaf linum-mode
-  :custom
-  ((global-linum-mode . t)
-   (linum-format . "%4d|\s")))
 
 (leaf hlinum
   :doc "Extension for linum.el to highlight current line number"
@@ -424,7 +441,9 @@
   :hook ((rustic-mode . lsp-deferred)
          (ruby-mode-hook . lsp-deferred)
          (tsx-mode-hook . lsp-deferred)
-         (conf-toml-mode-hook . lsp-deferred)) ;; require: `cargo install taplo-cli --features lsp`
+         (conf-toml-mode-hook . lsp-deferred) ;; require: `cargo install taplo-cli --features lsp`
+         (terraform-mode-hook . lsp-deferred) ;; require `brew install hashicorp/tap/terraform-ls`
+         (lsp-mode-hook . lsp-ui-mode))
   :bind
   (("C-c h" . lsp-describe-thing-at-point)
    ("C-c C-c a" . lsp-execute-code-action)
@@ -437,6 +456,9 @@
    (lsp-log-io . nil)
    (lsp-eldoc-render-all . t)
    (lsp-lens-mode . t)
+   ;; (when (not (eq major-mode 'tsx-mode))
+   ;;   (lsp-semantic-tokens-enable . t)
+   ;;   (lsp-semantic-tokens-honor-refresh-requests . t))
    ;; (lsp-idle-delay . 0.1)
    ;; ruby
    (lsp-solargraph-use-bundler . t)
@@ -450,9 +472,34 @@
    ;; typescript/js
    (lsp-eslint-enable . t) ;; requires run lsp-install-server
    (lsp-eslint-autofix-on-save . t) ;; does not worked https://github.com/emacs-lsp/lsp-mode/issues/1842
+   ;; terraform
+   (lsp-disabled-clients . '(tfls)) ;; https://emacs-lsp.github.io/lsp-mode/page/lsp-terraform-ls/#server-note
+   (lsp-terraform-ls-enable-show-reference . t)
+   (lsp-enable-links . t)
+   (lsp-terraform-ls-prefill-required-fields . t)
    )
   :config
-  (add-hook 'lsp-mode-hook 'lsp-ui-mode))
+  ;; to fix `json-parse-error \u0000 is not allowed without JSON_ALLOW_NUL`
+  ;; ref:
+  ;; https://github.com/emacs-lsp/lsp-mode/issues/2681
+  ;; https://github.com/typescript-language-server/typescript-language-server/issues/559#issuecomment-1259470791
+  (leaf *avoid-null-on-parse-json-advice
+    :config
+    ;; same definition as mentioned earlier
+    (advice-add 'json-parse-string :around
+                (lambda (orig string &rest rest)
+                  (apply orig (replace-match "\\u0000" "" string)
+                         rest)))
+
+    ;; minor changes: saves excursion and uses search-forward instead of re-search-forward
+    (advice-add 'json-parse-buffer :around
+                (lambda (oldfn &rest args)
+	                (save-excursion
+                    (while (search-forward "\\u0000" nil t)
+                      (replace-match "" nil t)))
+		              (apply oldfn args)))
+    )
+)
 
 (leaf lsp-ui
   :ensure t
@@ -469,6 +516,7 @@
   (lsp-ui-doc-use-childframe . t)
   (lsp-ui-doc-use-webkit . nil)
   (lsp-ui-doc-show-with-cursor . t)
+  (lsp-ui-doc-show-with-mouse . t)
   (lsp-ui-peek-always-show . t)
   (lsp-ui-peek-enable . t)
   (lsp-ui-peek-peek-height . 20)
@@ -598,6 +646,20 @@
    ("\\.tsx$" . tsx-mode))
   :config
   (add-hook 'before-save-hook 'lsp-eslint-apply-all-fixes))
+
+(leaf scss-mode
+  :ensure t
+  :custom ((flycheck-checker . 'scss-stylelint)))
+
+
+(leaf terraform-mode
+  :ensure t
+  :custom ((terraform-format-on-save . t))
+  :config
+  (defun my-terraform-mode-setup ()
+    (when (eq major-mode 'terraform-mode)
+      (setq-local lsp-semantic-tokens-enable t)
+      (setq-local lsp-semantic-tokens-honor-refresh-requests t))))
 
 (provide 'init)
 
