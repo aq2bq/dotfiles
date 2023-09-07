@@ -41,8 +41,8 @@
 
 ;; GUIモード時の透明度設定
 (when (display-graphic-p)
-  (set-frame-parameter (selected-frame) 'alpha '(86 . 86))
-  (add-to-list 'default-frame-alist '(alpha . (86 . 86))))
+  (set-frame-parameter (selected-frame) 'alpha '(80 . 80))
+  (add-to-list 'default-frame-alist '(alpha . (80 . 80))))
 
 ;; Highlight current line
 (global-hl-line-mode t)
@@ -50,10 +50,14 @@
 (when (display-graphic-p)
   (setq use-default-font-for-symbols nil)
 
-  ;; 1.すべて日本語対応フォントで表示するパターン
   (set-face-attribute 'default nil
-                      :family "Cica"
-                      :height 180)
+                      :family "UDEV Gothic 35NFLG"
+                      :height 120)
+
+  ;; 1.すべて日本語対応フォントで表示するパターン
+  ;; (set-face-attribute 'default nil
+  ;;                     :family "Cica"
+  ;;                     :height 180)
 
   ;; ;; 2. ASCIIフォントと日本語フォントを区別するパターン
   ;; ;; ASCIIフォントの設定
