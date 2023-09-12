@@ -41,8 +41,8 @@
 
 ;; GUIモード時の透明度設定
 (when (display-graphic-p)
-  (set-frame-parameter (selected-frame) 'alpha '(80 . 80))
-  (add-to-list 'default-frame-alist '(alpha . (80 . 80))))
+  (set-frame-parameter (selected-frame) 'alpha '(85 . 85))
+  (add-to-list 'default-frame-alist '(alpha . (85 . 85))))
 
 ;; Highlight current line
 (global-hl-line-mode t)
@@ -52,7 +52,7 @@
 
   (set-face-attribute 'default nil
                       :family "UDEV Gothic 35NFLG"
-                      :height 120)
+                      :height 140)
 
   ;; 1.すべて日本語対応フォントで表示するパターン
   ;; (set-face-attribute 'default nil
@@ -444,7 +444,8 @@
   :init (yas-global-mode)
   :hook ((rustic-mode . lsp-deferred)
          (ruby-mode-hook . lsp-deferred)
-         (tsx-mode-hook . lsp-deferred)
+         (typescript-mode-hook . lsp-deferred)
+         (tsx-ts-mode-hook . lsp-deferred)
          (conf-toml-mode-hook . lsp-deferred) ;; require: `cargo install taplo-cli --features lsp`
          (terraform-mode-hook . lsp-deferred) ;; require `brew install hashicorp/tap/terraform-ls`
          (lsp-mode-hook . lsp-ui-mode))
@@ -614,15 +615,15 @@
   (("\\.js$" . js2-mode))
   :config
   (add-hook 'js2-mode-hook (lambda()
-                             (tern-mode t)
+                             ;; (tern-mode t)
                              (flycheck-mode t)))
-  (leaf tern
-    :ensure t
-    :custom
-    (eval-after-load 'tern
-      '(progn
-         (require 'tern-auto-complete)
-         (tern-ac-setup))))
+  ;; (leaf tern
+  ;;   :ensure t
+  ;;   :custom
+  ;;   (eval-after-load 'tern
+  ;;     '(progn
+  ;;        (require 'tern-auto-complete)
+  ;;        (tern-ac-setup))))
   :custom
   ((js2-basic-offset . 2)))
 
@@ -630,26 +631,31 @@
 (leaf kotlin-mode
   :ensure t)
 
-;; TypeScript/TSX
-(leaf tree-sitter
-  :ensure t
-  :config
-  (leaf tree-sitter-langs :ensure t)
-  (leaf *tsi :el-get "orzechowskid/tsi.el"))
-(leaf origami :ensure t)
-(leaf coverlay :ensure t)
 (leaf graphql-mode :ensure t)
-(leaf tsx-mode
-  :require origami tree-sitter tree-sitter-langs tsi coverlay
-  :el-get "orzechowskid/tsx-mode.el"
-  :bind
-  (tsx-mode-map
-   ("C-c C-c f" . lsp-eslint-apply-all-fixes))
-  :mode
-  (("\\.ts$" . tsx-mode)
-   ("\\.tsx$" . tsx-mode))
-  :config
-  (add-hook 'before-save-hook 'lsp-eslint-apply-all-fixes))
+
+;; - ref: Emacs 29 でTree-sitterを利用してシンタックスハイライトする
+;;   https://zenn.dev/hyakt/articles/42a1d237cdfa2a
+(leaf treesit
+  :custom ((treesit-font-lock-level . 4)))
+
+(leaf treesit-auto
+  :ensure t
+  :url "https://github.com/renzmann/treesit-auto"
+  :global-minor-mode global-treesit-auto-mode
+  :custom ((treesit-auto-install . t)
+           ;; https://github.com/renzmann/treesit-auto#keep-track-of-your-hooks
+           (ruby-ts-mode-hook . ruby-mode-hook)
+           (typescript-ts-mode-hook . typescript-mode-hook))
+  :config (global-treesit-auto-mode))
+
+(leaf typescript-mode
+  :ensure t
+  :mode (("\\.ts\\'" . typescript-mode)
+         ("\\.tsx\\'" . tsx-ts-mode))
+  :custom ((typescript-indent-level . 2)
+           (typescript-tsx-indent-offset . 2))
+  :hook (typescript-mode-hook . subword-mode)
+  :config (add-hook 'before-save-hook 'lsp-eslint-apply-all-fixes))
 
 (leaf scss-mode
   :ensure t
@@ -664,6 +670,26 @@
     (when (eq major-mode 'terraform-mode)
       (setq-local lsp-semantic-tokens-enable t)
       (setq-local lsp-semantic-tokens-honor-refresh-requests t))))
+
+;; Python
+(leaf python-mode
+  :ensure t
+  :doc "Python major mode"
+  :url "https://gitlab.com/groups/python-mode-devs"
+  :mode "\\.py\\'"
+  :custom `((py-keep-windows-configuration . t)
+            (python-indent-guess-indent-offset . t)
+            (python-indent-guess-indent-offset-verbose . nil)
+            (py-python-command . ,(if (executable-find "python3") "python3"
+                                    "python")))
+  :hook (python-mode-hook . my/python-basic-config)
+  :config
+  (leaf python-isort :ensure t)
+  (leaf blacken
+    :ensure t
+    :custom ((blacken-line-length . 91)
+             (blacken-skip-string-normalization . t))))
+
 
 (provide 'init)
 
