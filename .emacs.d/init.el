@@ -50,9 +50,14 @@
 (when (display-graphic-p)
   (setq use-default-font-for-symbols nil)
 
-  (set-face-attribute 'default nil
-                      :family "UDEV Gothic 35NFLG"
-                      :height 140)
+  (let ((size (if (>= (x-display-pixel-width) 4000) 140 120)))
+    (set-face-attribute 'default nil
+                        :family "UDEV Gothic 35NFLG"
+                        :height size))
+
+  ;; (set-face-attribute 'default nil
+  ;;                     :family "UDEV Gothic 35NFLG"
+  ;;                     :height 140)
 
   ;; 1.すべて日本語対応フォントで表示するパターン
   ;; (set-face-attribute 'default nil
@@ -321,6 +326,63 @@
            (company-selection-wrap-around . t))
   :global-minor-mode global-company-mode)
 
+;; lsp-modeと少し相性が悪く、標準になったeglotに移行してからつかうことにする
+;; 参考: https://naoking158.pages.dev/posts/corfu-with-lsp/
+;; (leaf corfu
+;;   :ensure t
+;;   :doc "Completion Overlay Region FUnction(alternative to company-mode)"
+;;   :url "https://github.com/minad/corfu"
+;;   :custom ((corfu-auto . t)
+;;            (corfu-auto-prefix . 1)
+;;            (corfu-auto-delay . 0)
+;;            (corfu-cycle . t) ;; Enable cycling for `corfu-next/previous'
+;;            (corfu-preselect 'prompt) ;; Always preselect the prompt
+;;            )
+;;   :bind (corfu-map ;; https://github.com/minad/corfu?tab=readme-ov-file#tab-and-go-completion
+;;          ;; ("TAB" . corfu-next)
+;;          ;; ("<tab>" . corfu-next)
+;;          ([tab] . corfu-next)
+;;          ;; ("S-TAB" . corfu-previous)
+;;          ([backtab] . corfu-previous)
+;;          ;; ("<backtab>" . corfu-previous)
+;; )
+;;   :init
+;;   (global-corfu-mode)
+;;   (corfu-popupinfo-mode))
+
+;; (leaf kind-icon
+;;   :ensure t
+;;   :after corfu
+;;   :custom
+;;   ((kind-icon-default-face . 'corfu-default))
+;;   :config (add-to-list 'corfu-margin-formatters #'kind-icon-margin-formatter))
+
+;; (leaf cape
+;;   :ensure t
+;;   :url "https://github.com/minad/cape"
+;;   :custom ((dabbrev-case-fold-search . t))
+;;   :bind (("C-c p p" . completion-at-point) ;; capf
+;;          ("C-c p t" . complete-tag)        ;; etags
+;;          ("C-c p d" . cape-dabbrev)        ;; or dabbrev-completion
+;;          ("C-c p h" . cape-history)
+;;          ("C-c p f" . cape-file)
+;;          ("C-c p k" . cape-keyword)
+;;          ("C-c p s" . cape-elisp-symbol)
+;;          ("C-c p e" . cape-elisp-block)
+;;          ("C-c p a" . cape-abbrev)
+;;          ("C-c p l" . cape-line)
+;;          ("C-c p w" . cape-dict)
+;;          ("C-c p :" . cape-emoji)
+;;          ("C-c p \\" . cape-tex)
+;;          ("C-c p _" . cape-tex)
+;;          ("C-c p ^" . cape-tex)
+;;          ("C-c p &" . cape-sgml)
+;;          ("C-c p r" . cape-rfc1345))
+;;   :config
+;;   (add-to-list 'completion-at-point-functions #'cape-dabbrev)
+;;   (add-to-list 'completion-at-point-functions #'cape-file)
+;;   (add-to-list 'completion-at-point-functions #'cape-elisp-block))
+
 
 ;; Emacsの次世代ミニバッファ補完UI
 ;; https://blog.tomoya.dev/posts/a-new-wave-has-arrived-at-emacs/
@@ -352,8 +414,6 @@
     :ensure t
     :bind (("s-g s-g" . consult-ghq-find))
     :custom ((consult-ghq-find-function . 'dired)))
-  (leaf consult-flycheck
-    :ensure t)
   (leaf consult-lsp
     :ensure t)
   (leaf embark-consult
@@ -387,32 +447,32 @@
   :init (hlinum-activate))
 
 (leaf highlight-indent-guides
+  :url "https://github.com/DarthFennec/highlight-indent-guides"
   :ensure t
   :custom
-  ((highlight-indent-guides-method . 'column)
+  ((highlight-indent-guides-method . 'fill)
    (highlight-indent-guides-auto-enabled . t)
    (highlight-indent-guides-responsive . t))
-  :hook (prog-mode-hook . highlight-indent-guides-mode)
-  )
+    :hook (((prog-mode-hook yaml-mode-hook) . highlight-indent-guides-mode)))
 
 (leaf which-key
   :doc "minor mode for Emacs that displays the key bindings following your currently entered incomplete command (a prefix) in a popup."
   :ensure t
   :init (which-key-mode))
 
-(leaf flycheck
-  :doc "On-the-fly syntax checking"
-  :req "dash-2.12.1" "pkg-info-0.4" "let-alist-1.0.4" "seq-1.11" "emacs-24.3"
-  :tag "minor-mode" "tools" "languages" "convenience" "emacs>=24.3"
-  :url "http://www.flycheck.org"
-  :emacs>= 24.3
-  :defun (flycheck-may-check-automatically)
-  :ensure t
-  :bind (("M-n" . flycheck-next-error)
-         ("M-p" . flycheck-previous-error))
-  :config
-  (flycheck-may-check-automatically '(idle-change mode-enabled new-line save))
-  :global-minor-mode global-flycheck-mode)
+;; (leaf flycheck
+;;   :doc "On-the-fly syntax checking"
+;;   :req "dash-2.12.1" "pkg-info-0.4" "let-alist-1.0.4" "seq-1.11" "emacs-24.3"
+;;   :tag "minor-mode" "tools" "languages" "convenience" "emacs>=24.3"
+;;   :url "http://www.flycheck.org"
+;;   :emacs>= 24.3
+;;   :defun (flycheck-may-check-automatically)
+;;   :ensure t
+;;   :bind (("M-n" . flycheck-next-error)
+;;          ("M-p" . flycheck-previous-error))
+;;   :config
+;;   (flycheck-may-check-automatically '(idle-change mode-enabled new-line save))
+;;   :global-minor-mode global-flycheck-mode)
 
 (leaf fish-mode
   :doc "Emacs major mode for fish shell scripts."
@@ -420,30 +480,76 @@
   :custom
   ((fish-indent-offset . 2)))
 
+(leaf nyan-mode
+  :doc "analog indicator of your position in the buffer"
+  :ensure t
+  :url "https://github.com/TeMPOraL/nyan-mode"
+  :init (nyan-mode)
+  :custom ((nyan-animate-nyancat . t)
+           (nyan-wavy-trail . t)))
+
 ;;;
 ;; Programming
 ;;;
+
+(leaf flymake
+  :ensure t
+  :bind (flymake-mode-map
+         ("C-x C-p" . flymake-goto-prev-error)
+         ("C-x C-n" . flymake-goto-next-error))
+  :custom ((flymake-no-changes-timeout . 2.0)  ;; 変更が加えられてからリントが開始されるまでの時間
+           (flymake-proc-legacy-flymake . t) ;; エラーメッセージのポップアップ
+           )
+  :config
+  (set-face-foreground 'flymake-errline "white")
+  (set-face-background 'flymake-errline "red4")
+  (set-face-foreground 'flymake-warnline "white")
+  (set-face-background 'flymake-warnline "goldenrod3"))
+
+(leaf flymake-diagnostic-at-point
+  :ensure t
+  :after flymake
+  :hook (flymake-mode-hook . flymake-diagnostic-at-point-mode)
+  ;; :custom (remove-hook 'flymake-diagnostic-functions 'flymake-proc-legacy-flymake)
+  )
 
 (leaf yasnippet
   :ensure t
   :custom
   (yas-snippet-dirs . '("~/.emacs.d/snippets")))
 
+(leaf smartparens
+  :url "https://github.com/Fuco1/smartparens"
+  :ensure t
+  :delight
+  :hook ((prog-mode-hook . smartparens-global-strict-mode))
+  :custom (electric-pair-mode . nil)
+  :config (require 'smartparens-config))
+
+(leaf rainbow-delimiters
+  :url "https://github.com/Fanael/rainbow-delimiters"
+  :ensure t
+  :hook ((prog-mode-hook . rainbow-delimiters-mode)))
+
 (leaf eglot
   :ensure t
   :doc "Emacs Polyglot: an Emacs LSP client that stays out of your way"
   :require t
   :defvar (eglot-server-programs)
+  :hook (
+         ;; (ruby-mode-hook . eglot-ensure)
+         (go-mode-hook . eglot-ensure)
+         ;; (python-mode-hook . eglot-ensure)
+         )
   :config
-  (add-to-list 'eglot-server-programs '(go-mode . ("gopls")))
-  ;; (add-hook 'ruby-mode-hook 'eglot-ensure)
-  (add-hook 'go-mode-hook 'eglot-ensure))
+  (add-to-list 'eglot-server-programs '(go-mode . ("gopls"))))
 
 (leaf lsp-mode
   :ensure t
   :init (yas-global-mode)
   :hook ((rustic-mode . lsp-deferred)
          (ruby-mode-hook . lsp-deferred)
+         (python-ts-mode-hook . lsp-deferred)
          (typescript-mode-hook . lsp-deferred)
          (tsx-ts-mode-hook . lsp-deferred)
          (conf-toml-mode-hook . lsp-deferred) ;; require: `cargo install taplo-cli --features lsp`
@@ -482,6 +588,7 @@
    (lsp-terraform-ls-enable-show-reference . t)
    (lsp-enable-links . t)
    (lsp-terraform-ls-prefill-required-fields . t)
+   ;; (lsp-completion-provider . :none) ;; ★補完にcorfuを使用する
    )
   :config
   ;; to fix `json-parse-error \u0000 is not allowed without JSON_ALLOW_NUL`
@@ -557,11 +664,10 @@
 	 ("Capfile$" . ruby-mode)
 	 ("Guardfile$" . ruby-mode)
 	 ("[Rr]akefile$" . ruby-mode))
-  :hook (electric-pair-mode rubocop-mode eldoc-mode)
+  :hook (electric-pair-mode rubocop-mode eldoc-mode ruby-electric-mode)
   :config
-  (leaf ruby-electric
-    :ensure t
-    :hook (ruby-mode-hook . ruby-electric-mode))
+  ;; (leaf ruby-electric
+  ;;   :ensure t)
   (leaf rubocop
     :ensure t
     :bind (("C-c C-c f" . rubocop-autocorrect-current-file)))
@@ -572,11 +678,13 @@
   (leaf yard-mode
     :ensure t
     :url "https://github.com/pd/yard-mode.el"
-    :hook (ruby-mode-hook . yard-mode))
+    :hook
+    (ruby-mode-hook . yard-mode)
+    (ruby-ts-mode-hook . yard-mode))
   :custom
-  (flycheck-disabled-checkers . '(ruby-rubylint ruby-reek))
-  (ruby-insert-encoding-magic-comment . nil)
-  (flycheck-checker 'ruby))
+  ;; (flycheck-disabled-checkers . '(ruby-rubylint ruby-reek))
+  ;; (flycheck-checker 'ruby)
+  (ruby-insert-encoding-magic-comment . nil))
 
 (leaf go-mode
   :ensure t
@@ -595,7 +703,7 @@
 
 (leaf rustic
   :ensure t
-  :defvar (flycheck-checkers)
+  ;; :defvar (flycheck-checkers)
   :defun (rust-format-region)
   :bind
   (rustic-mode-map
@@ -603,7 +711,8 @@
    ("C-c C-c t" . rustic-cargo-test))
   :custom ((rustic-format-on-save . t))
   :config
-  (push 'rustic-clippy flycheck-checkers))
+  ; (push 'rustic-clippy flycheck-checkers)
+)
 
 (leaf slim-mode
   :ensure t
@@ -613,10 +722,6 @@
   :ensure t
   :mode
   (("\\.js$" . js2-mode))
-  :config
-  (add-hook 'js2-mode-hook (lambda()
-                             ;; (tern-mode t)
-                             (flycheck-mode t)))
   ;; (leaf tern
   ;;   :ensure t
   ;;   :custom
@@ -633,21 +738,6 @@
 
 (leaf graphql-mode :ensure t)
 
-;; - ref: Emacs 29 でTree-sitterを利用してシンタックスハイライトする
-;;   https://zenn.dev/hyakt/articles/42a1d237cdfa2a
-(leaf treesit
-  :custom ((treesit-font-lock-level . 4)))
-
-(leaf treesit-auto
-  :ensure t
-  :url "https://github.com/renzmann/treesit-auto"
-  :global-minor-mode global-treesit-auto-mode
-  :custom ((treesit-auto-install . t)
-           ;; https://github.com/renzmann/treesit-auto#keep-track-of-your-hooks
-           (ruby-ts-mode-hook . ruby-mode-hook)
-           (typescript-ts-mode-hook . typescript-mode-hook))
-  :config (global-treesit-auto-mode))
-
 (leaf typescript-mode
   :ensure t
   :mode (("\\.ts\\'" . typescript-mode)
@@ -658,8 +748,7 @@
   :config (add-hook 'before-save-hook 'lsp-eslint-apply-all-fixes))
 
 (leaf scss-mode
-  :ensure t
-  :custom ((flycheck-checker . 'scss-stylelint)))
+  :ensure t)
 
 
 (leaf terraform-mode
@@ -680,16 +769,71 @@
   :custom `((py-keep-windows-configuration . t)
             (python-indent-guess-indent-offset . t)
             (python-indent-guess-indent-offset-verbose . nil)
-            (py-python-command . ,(if (executable-find "python3") "python3"
-                                    "python")))
-  :hook (python-mode-hook . my/python-basic-config)
-  :config
-  (leaf python-isort :ensure t)
-  (leaf blacken
-    :ensure t
-    :custom ((blacken-line-length . 91)
-             (blacken-skip-string-normalization . t))))
+            (py-python-command . ,(if (executable-find "rye run python") "rye run python"
+                                    "python"))))
+(leaf ruff-fix
+  :el-get (ruff-fix
+           :type github
+           :pkgname "mkt3/ruff-fix.el")
+  :hook (before-save-hook . ruff-fix-before-save))
 
+;; (leaf ruff-format
+;;   :url "https://github.com/scop/emacs-ruff-format"
+;;   :ensure t
+;;   :hook (python-mode-hook . ruff-format-on-save-mode)
+;;   :config
+;;   (leaf reformatter
+;;     :ensure t))
+
+;; https://beta.ruff.rs/docs/editor-integrations/#pycharm-external-tool
+;; https://mako-note.com/ja/emacs-ruff/
+(leaf flymake-ruff
+  :ensure t
+  :url "https://github.com/erickgnavar/flymake-ruff"
+  :hook (python-mode-hook . (lambda ()
+                              (flymake-ruff-load)
+                              (flymake-mode t))))
+(leaf lsp-pyright
+  :ensure t
+  :url "https://github.com/emacs-lsp/lsp-pyright"
+  :hook
+  (python-mode-hook . (lambda ()
+                              (require 'lsp-pyright)
+                              (lsp))))
+
+;; - ref: Emacs 29 でTree-sitterを利用してシンタックスハイライトする
+;;   https://zenn.dev/hyakt/articles/42a1d237cdfa2a
+(leaf treesit
+  :custom ((treesit-font-lock-level . 4)))
+
+(leaf treesit-auto
+  :ensure t
+  :url "https://github.com/renzmann/treesit-auto"
+  :global-minor-mode global-treesit-auto-mode
+  :custom ((treesit-auto-install . t)
+           ;; https://github.com/renzmann/treesit-auto#keep-track-of-your-hooks
+           (ruby-ts-mode-hook . ruby-mode-hook)
+           (python-ts-mode-hook . python-mode-hook)
+           (typescript-ts-mode-hook . typescript-mode-hook))
+  :config
+  (global-treesit-auto-mode))
+
+(leaf copilot
+  :el-get (copilot
+           :type github
+           :pkgname "zerolfx/copilot.el")
+  :config
+  (leaf editorconfig
+    :ensure t)
+  (leaf s
+    :ensure t)
+  (leaf dash
+    :ensure t)
+  :hook (prog-mode-hook . copilot-mode)
+  :bind ((copilot-completion-map
+          ("C-<return>" . copilot-accept-completion)
+          ("C-c n" . copilot-next-completion)
+          ("C-c b" . copilot-previous-completion))))
 
 (provide 'init)
 
