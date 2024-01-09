@@ -1,4 +1,4 @@
-set -x PATH /opt/homebrew/bin $HOME/.pyenv/shims $HOME/nodenv/shims $HOME/.cargo/bin $HOME/.rbenv/shims (ruby -e 'print Gem.user_dir')/bin $GOPATH/bin $HOME/Library/Android/sdk/platform-tools $HOME/Library/Android/sdk/emulator $PATH
+set -x PATH /opt/homebrew/bin $HOME/.rye/shims $HOME/nodenv/shims $HOME/.cargo/bin $HOME/.rbenv/shims (ruby -e 'print Gem.user_dir')/bin $GOPATH/bin $HOME/Library/Android/sdk/platform-tools $HOME/Library/Android/sdk/emulator $PATH
 status --is-interactive; and source (nodenv init -|psub)
 
 if not functions -q fisher
@@ -26,11 +26,7 @@ alias gore="gore -autoimport"
 alias t="open -a Typora"
 alias re="ruby -e"
 alias c="curl https://corona-stats.online/Japan"
-alias python="python3"
-alias pip="pip3"
 alias tf="terraform"
-
-pyenv init - | source
 
 set GOROOT (go env GOROOT)
 set GOPATH (go env GOPATH)
