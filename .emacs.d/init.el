@@ -226,10 +226,10 @@
 (leaf doom-themes
   :ensure t
   :config
-  ;; (load-theme 'doom-laserwave t nil)
+  (load-theme 'doom-laserwave t nil)
   ;; (load-theme 'doom-dracula t nil)
   ;; (load-theme 'doom-challenger-deep t nil)
-  (load-theme 'doom-outrun-electric t nil)
+  ;; (load-theme 'doom-outrun-electric t nil)
   (doom-themes-neotree-config)
   :custom
   (doom-themes-visual-bell-config . t)
@@ -499,6 +499,8 @@
          ("C-x C-n" . flymake-goto-next-error))
   :custom ((flymake-no-changes-timeout . 2.0)  ;; 変更が加えられてからリントが開始されるまでの時間
            (flymake-proc-legacy-flymake . t) ;; エラーメッセージのポップアップ
+           (flymake-start-syntax-check-on-newline . nil) ;; 行追加するごとにチェックしない
+           (flymake-start-syntax-check-on-find-file . nil) ;; ファイルを開いたときにチェックしない
            )
   :config
   (set-face-foreground 'flymake-errline "white")
@@ -522,9 +524,11 @@
   :url "https://github.com/Fuco1/smartparens"
   :ensure t
   :delight
-  :hook ((prog-mode-hook . smartparens-global-strict-mode))
+  :hook ((prog-mode-hook . smartparens-global-mode))
   :custom (electric-pair-mode . nil)
-  :config (require 'smartparens-config))
+  :config
+  (require 'smartparens-config)
+  (smartparens-strict-mode . nil))
 
 (leaf rainbow-delimiters
   :url "https://github.com/Fanael/rainbow-delimiters"
@@ -548,7 +552,7 @@
   :ensure t
   :init (yas-global-mode)
   :hook ((rustic-mode . lsp-deferred)
-         (ruby-mode-hook . lsp-deferred)
+         (ruby-ts-mode-hook . lsp-deferred)
          (python-ts-mode-hook . lsp-deferred)
          (typescript-mode-hook . lsp-deferred)
          (tsx-ts-mode-hook . lsp-deferred)
@@ -583,6 +587,7 @@
    ;; typescript/js
    (lsp-eslint-enable . t) ;; requires run lsp-install-server
    (lsp-eslint-autofix-on-save . t) ;; does not worked https://github.com/emacs-lsp/lsp-mode/issues/1842
+   (lsp-eslint-auto-fix-on-save . t)
    ;; terraform
    (lsp-disabled-clients . '(tfls)) ;; https://emacs-lsp.github.io/lsp-mode/page/lsp-terraform-ls/#server-note
    (lsp-terraform-ls-enable-show-reference . t)
@@ -653,38 +658,43 @@
       )
     :mode 'kotlin-mode))
 
+(leaf modeline-git-branch
+  :url "https://qiita.com/conao3/items/dc88bdadb0523ef95878"
+  :el-get (modeline-git-branch
+           :type github
+           :pkgname "acple/modeline-git-branch")
+  :require t
+  :config (modeline-git-branch-mode))
+
 (leaf yaml-mode
   :ensure t
   :mode "\\(\.yml\\|\.yaml\\)")
 
-(leaf ruby-mode
+(leaf ruby-ts-mode
   :mode
-  (("\\.rb$" . ruby-mode)
-	 ("Gemfile$" . ruby-mode)
-	 ("Capfile$" . ruby-mode)
-	 ("Guardfile$" . ruby-mode)
-	 ("[Rr]akefile$" . ruby-mode))
+  (("\\.rb$" . ruby-ts-mode)
+	 ("Gemfile$" . ruby-ts-mode)
+	 ("Capfile$" . ruby-ts-mode)
+	 ("Guardfile$" . ruby-ts-mode)
+	 ("[Rr]akefile$" . ruby-ts-mode))
   :hook (electric-pair-mode rubocop-mode eldoc-mode ruby-electric-mode)
   :config
   ;; (leaf ruby-electric
   ;;   :ensure t)
-  (leaf rubocop
-    :ensure t
-    :bind (("C-c C-c f" . rubocop-autocorrect-current-file)))
-  (leaf rspec-mode
-    :ensure t
-    :bind (rspec-mode-map
-           ("C-c t" . rspec-verify)))
-  (leaf yard-mode
-    :ensure t
-    :url "https://github.com/pd/yard-mode.el"
-    :hook
-    (ruby-mode-hook . yard-mode)
-    (ruby-ts-mode-hook . yard-mode))
   :custom
-  ;; (flycheck-disabled-checkers . '(ruby-rubylint ruby-reek))
-  ;; (flycheck-checker 'ruby)
   (ruby-insert-encoding-magic-comment . nil))
+(leaf rubocop
+  :ensure t
+  :bind (("C-c C-c f" . rubocop-autocorrect-current-file)))
+(leaf rspec-mode
+  :ensure t
+  :bind (rspec-mode-map
+         ("C-c t" . rspec-verify)))
+(leaf yard-mode
+  :ensure t
+  :url "https://github.com/pd/yard-mode.el"
+  :hook
+  (ruby-ts-mode-hook . yard-mode))
 
 (leaf go-mode
   :ensure t
@@ -812,7 +822,6 @@
   :global-minor-mode global-treesit-auto-mode
   :custom ((treesit-auto-install . t)
            ;; https://github.com/renzmann/treesit-auto#keep-track-of-your-hooks
-           (ruby-ts-mode-hook . ruby-mode-hook)
            (python-ts-mode-hook . python-mode-hook)
            (typescript-ts-mode-hook . typescript-mode-hook))
   :config
@@ -821,7 +830,7 @@
 (leaf copilot
   :el-get (copilot
            :type github
-           :pkgname "zerolfx/copilot.el")
+           :pkgname "copilot-emacs/copilot.el")
   :config
   (leaf editorconfig
     :ensure t)
@@ -832,8 +841,9 @@
   :hook (prog-mode-hook . copilot-mode)
   :bind ((copilot-completion-map
           ("C-<return>" . copilot-accept-completion)
-          ("C-c n" . copilot-next-completion)
-          ("C-c b" . copilot-previous-completion))))
+          ("C-c TAB" . copilot-accept-completion-by-word)
+          ("C-c f" . copilot-accept-completion-by-line))))
+
 
 (provide 'init)
 
