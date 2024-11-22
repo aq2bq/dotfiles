@@ -1,3 +1,6 @@
+;; Emacs for Mac
+;; brew install --cask emacs-mac-spacemacs-icon
+
 ;;;
 ;; Global key settings
 ;;;
@@ -19,6 +22,7 @@
 ;; (global-set-key (kbd "C-x l") 'goto-line)
 (global-set-key (kbd "C--") 'undo)
 (global-set-key (kbd "C-x f") 'project-find-file)
+(global-set-key (kbd "M-TAB") 'other-frame)
 (defvar mac-command-modifier 'super)
 
 ;;;
@@ -50,7 +54,7 @@
 (when (display-graphic-p)
   (setq use-default-font-for-symbols nil)
 
-  (let ((size (if (>= (x-display-pixel-width) 4000) 130 120)))
+  (let ((size (if (>= (x-display-pixel-width) 4000) 140 120)))
     (set-face-attribute 'default nil
                         :family "UDEV Gothic 35NFLG"
                         :height size))
@@ -187,12 +191,24 @@
   :ensure t
   :init (exec-path-from-shell-initialize))
 
-(leaf good-scroll
-  :doc "Attempt at good pixel-based smooth scrolling in Emacs"
+(leaf sublimity
+  :url "https://github.com/zk-phi/sublimity"
+  :doc "smooth-scrolling, minimap, and distraction-free writing"
   :ensure t
-  :bind (("C-v" . good-scroll-up-full-screen)
-         ("M-v" . good-scroll-down-full-screen))
-  :init (good-scroll-mode t))
+  :config
+  (require 'sublimity-scroll)
+  (require 'sublimity-attractive)
+  :custom ((sublimity-scroll-weight . 20)
+           (sublimity-scroll-drift-length . 5)
+           (sublimity-attractive-centering-width . 150)
+           (sublimity-mode . t)))
+
+;; (leaf good-scroll
+;;   :doc "Attempt at good pixel-based smooth scrolling in Emacs"
+;;   :ensure t
+;;   :bind (("C-v" . good-scroll-up-full-screen)
+;;          ("M-v" . good-scroll-down-full-screen))
+;;   :init (good-scroll-mode t))
 
 (leaf topsy
   :doc "simple alternative to `semantic-stickyfunc-mode`"
@@ -424,9 +440,14 @@
   :bind (("C-x C-b" . consult-buffer)
          ("C-x l" . consult-goto-line)
          ("C-s" . consult-line)
-         ("C-c s" . consult-ripgrep))
+         ("C-c s" . consult-ripgrep)
+         ("C-c C-s" . consult-ripgrep-specific-directory))
   ;; :custom ((consult-find-command . "fd --color=never --full-path ARG OPTS"))
   :config
+  (defun consult-ripgrep-specific-directory () ;; 都度対象ディレクトリを指定して検索できる
+    (interactive)
+    (let ((consult-project-function (lambda (_) default-directory)))
+      (consult-ripgrep (read-directory-name "Directory: "))))
   (leaf consult-ghq
     :doc "ghq interface"
     :if (executable-find "ghq")
@@ -511,23 +532,25 @@
   :bind (flymake-mode-map
          ("C-x C-p" . flymake-goto-prev-error)
          ("C-x C-n" . flymake-goto-next-error))
-  :custom ((flymake-no-changes-timeout . 2.0)  ;; 変更が加えられてからリントが開始されるまでの時間
+  :custom ((flymake-mode . nil)
+           (flymake-no-changes-timeout . 0.0)  ;; チェックの頻度を減らす場合は値(秒)を増やす
            (flymake-proc-legacy-flymake . t) ;; エラーメッセージのポップアップ
            (flymake-start-syntax-check-on-newline . nil) ;; 行追加するごとにチェックしない
            (flymake-start-syntax-check-on-find-file . nil) ;; ファイルを開いたときにチェックしない
-           )
+           (flymake-start-on-save-buffer . t)  ;; 保存時のみチェック
+           (flymake-diagnostic-functions . '(flymake-proc-legacy-flymake)))
   :config
   (set-face-foreground 'flymake-errline "white")
   (set-face-background 'flymake-errline "red4")
   (set-face-foreground 'flymake-warnline "white")
   (set-face-background 'flymake-warnline "goldenrod3"))
 
-(leaf flymake-diagnostic-at-point
-  :ensure t
-  :after flymake
-  :hook (flymake-mode-hook . flymake-diagnostic-at-point-mode)
-  ;; :custom (remove-hook 'flymake-diagnostic-functions 'flymake-proc-legacy-flymake)
-  )
+;; (leaf flymake-diagnostic-at-point
+;;   :ensure t
+;;   :after flymake
+;;   :hook (flymake-mode-hook . flymake-diagnostic-at-point-mode)
+;;   ;; :custom (remove-hook 'flymake-diagnostic-functions 'flymake-proc-legacy-flymake)
+;;   )
 
 (leaf yasnippet
   :ensure t
@@ -565,8 +588,9 @@
 (leaf lsp-mode
   :ensure t
   :init (yas-global-mode)
-  :hook ((rustic-mode . lsp-deferred)
+  :hook ((rust-mode . lsp-deferred)
          (ruby-ts-mode-hook . lsp-deferred)
+         (ruby-mode-hook . lsp-deferred)
          (python-ts-mode-hook . lsp-deferred)
          (typescript-mode-hook . lsp-deferred)
          (tsx-ts-mode-hook . lsp-deferred)
@@ -725,18 +749,27 @@
            ("C-c t" . go-test-current-test)
            ("C-c C-t" . go-test-current-file))))
 
-(leaf rustic
+;; (leaf rustic
+;;   :ensure t
+;;   ;; :defvar (flycheck-checkers)
+;;   :defun (rust-format-region)
+;;   :bind
+;;   (rustic-mode-map
+;;    ("C-c C-c e" . lsp-rust-analyzer-expand-macro)
+;;    ("C-c C-c t" . rustic-cargo-test))
+;;   :custom ((rustic-format-on-save . t))
+;;   :config
+;;   ; (push 'rustic-clippy flycheck-checkers)
+;; )
+(leaf rust-mode
+  :url "https://github.com/rust-lang/rust-mode"
   :ensure t
-  ;; :defvar (flycheck-checkers)
-  :defun (rust-format-region)
-  :bind
-  (rustic-mode-map
-   ("C-c C-c e" . lsp-rust-analyzer-expand-macro)
-   ("C-c C-c t" . rustic-cargo-test))
-  :custom ((rustic-format-on-save . t))
   :config
-  ; (push 'rustic-clippy flycheck-checkers)
-)
+  (leaf cargo
+    :ensure t
+    :hook (rust-mode-hook . cargo-minor-mode))
+  :custom ((rust-format-on-save . t)))
+
 
 (leaf slim-mode
   :ensure t
@@ -795,11 +828,12 @@
             (python-indent-guess-indent-offset-verbose . nil)
             (py-python-command . ,(if (executable-find "rye run python") "rye run python"
                                     "python"))))
-(leaf ruff-fix
-  :el-get (ruff-fix
-           :type github
-           :pkgname "mkt3/ruff-fix.el")
-  :hook (before-save-hook . ruff-fix-before-save))
+;; (leaf ruff-fix
+;;   :ensure t
+;;   :el-get (ruff-fix
+;;            :type github
+;;            :pkgname "mkt3/ruff-fix.el")
+;;   :hook (before-save-hook . ruff-fix-before-save))
 
 ;; (leaf ruff-format
 ;;   :url "https://github.com/scop/emacs-ruff-format"
@@ -834,10 +868,14 @@
   :ensure t
   :url "https://github.com/renzmann/treesit-auto"
   :global-minor-mode global-treesit-auto-mode
-  :custom ((treesit-auto-install . t)
+  :custom ((global-treesit-auto-modes . '((not ruby-mode)(not rust-mode)))
+           ;; (treesit-auto-langs . '(typescript))
+           (treesit-auto-install . t)
            ;; https://github.com/renzmann/treesit-auto#keep-track-of-your-hooks
-           (python-ts-mode-hook . python-mode-hook)
-           (typescript-ts-mode-hook . typescript-mode-hook))
+           ;; (python-ts-mode-hook . python-mode-hook)
+           ;; (typescript-ts-mode-hook . typescript-mode-hook)
+           )
+
   :config
   (global-treesit-auto-mode))
 
