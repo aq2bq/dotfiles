@@ -22,42 +22,7 @@
 !/keymaps
 
 # Ignore from TARGETS
-/.emacs.d/#*
-/.emacs.d/.#*
-/.emacs.d/%*
-/.emacs.d/**/*.elc
-/.emacs.d/*.dat
-/.emacs.d/*~
-/.emacs.d/.lsp-session*
-/.emacs.d/auto-save-list*
-/.emacs.d/.cache
-/.emacs.d/custom.el
-/.emacs.d/el-get
-/.emacs.d/elpa
-/.emacs.d/eshell
-/.emacs.d/kkcrc
-/.emacs.d/prescient
-/.emacs.d/projects
-/.emacs.d/recentf
-/.emacs.d/tramp
-/.emacs.d/transient/
-/.emacs.d/url
-/.config/Amazon
-/.config/cheat
-/.config/configstore
-/.config/fish/fishd.*
-/.config/fish/fish_variables
-/.config/fisher
-/.config/gcloud
-/.config/gh
-/.config/heroku
-/.config/karabiner/
-/.config/htop
-/.config/iterm2
-/.config/neofetch
-/.config/omf
-/.config/pgcli
-/.config/yarn
-/.config/exercism
+/.emacs.d
+/.config
 
 projectile-bookmarks.eld
