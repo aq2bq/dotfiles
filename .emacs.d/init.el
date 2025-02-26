@@ -926,15 +926,22 @@
   :ensure t
   :url "https://github.com/chep/copilot-chat.el"
   :bind (
-         ("C-c C-j" . copilot-chat-transient)
+         ("C-c C-p t" . copilot-chat-transient)
+         ("C-c C-p c" . copilot-chat-transient-buffers)
+         ("C-c C-p c" . copilot-chat-transient-code)
+         ("C-c C-p m" . copilot-chat-transient-magit)
          )
   :custom (
+           (copilot-chat-model . "gpt-4o")
+           ;; (copilot-chat-model . "o3-mini")
+           ;; (copilot-chat-model . "gemini-2.0-flash-001")
+           ;; (copilot-chat-model . "claude-3.5-sonnet")
            (copilot-chat-prompt-doc . "/doc 以下のコードについてドキュメントを書いてください。\n")
            (copilot-chat-prompt-explain . "/explain 日本語で説明してください。\n")
            (copilot-chat-prompt-fix . "/fix 問題箇所を修正して、修正内容の解説して。\n")
            (copilot-chat-prompt-optimize . "/optimize パフォーマンスと可読性を向上させるため、以下のコードを最適化してください。\n")
            (copilot-chat-prompt-review . "/review 以下のコードをレビューしてください。\n")
-           ))
+           (copilot-chat-commit-prompt . "/commit-message コミットメッセージを入力してください。変更理由や背景を箇条書きで付加すること\n")))
 
 (leaf ollama-buddy
   :ensure t
