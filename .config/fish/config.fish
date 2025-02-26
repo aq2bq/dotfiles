@@ -1,4 +1,4 @@
-set -x PATH /opt/homebrew/bin $HOME/.rye/shims $HOME/nodenv/shims $HOME/.cargo/bin $HOME/.rbenv/shims (ruby -e 'print Gem.user_dir')/bin $GOPATH/bin $HOME/Library/Android/sdk/platform-tools $HOME/Library/Android/sdk/emulator $PATH
+set -x PATH /opt/homebrew/bin $HOME/.rye/shims $HOME/nodenv/shims $HOME/.cargo/bin $HOME/.rbenv/shims (ruby -e 'print Gem.user_dir')/bin $GOPATH/bin $HOME/Library/Android/sdk/platform-tools $HOME/Library/Android/sdk/emulator $HOME/.local/bin $PATH
 status --is-interactive; and source (nodenv init -|psub)
 
 if not functions -q fisher
@@ -25,8 +25,10 @@ alias chrome="/Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome"
 alias gore="gore -autoimport"
 alias t="open -a Typora"
 alias re="ruby -e"
-alias c="curl https://corona-stats.online/Japan"
 alias tf="terraform"
+alias lgtm="figlet -f (random choice (basename -s .flf (ls /opt/homebrew/Cellar/figlet/2.2.5/share/figlet/fonts/*.flf))) LGTM"
+alias techie="cowsay -f (random choice (basename -s .cow (ls /opt/homebrew/Cellar/cowsay/3.04_1/share/cows/*.cow))) テクい！"
+alias llm="ollama run huggingface.co/mmnga/HODACHI-EZO-Common-9B-gemma-2-it-gguf:latest"
 
 set GOROOT (go env GOROOT)
 set GOPATH (go env GOPATH)
@@ -70,3 +72,5 @@ end
 # bun
 set --export BUN_INSTALL "$HOME/.bun"
 set --export PATH $BUN_INSTALL/bin $PATH
+
+

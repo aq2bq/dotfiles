@@ -101,6 +101,7 @@
 ;; highlight a blank-space of end of line
 (setq-default show-trailing-whitespace t)
 
+
 ;; encoding
 (set-language-environment       "Japanese")
 (setq file-name-coding-system 'utf-8)
@@ -361,63 +362,6 @@
            (company-selection-wrap-around . t))
   :global-minor-mode global-company-mode)
 
-;; lsp-modeと少し相性が悪く、標準になったeglotに移行してからつかうことにする
-;; 参考: https://naoking158.pages.dev/posts/corfu-with-lsp/
-;; (leaf corfu
-;;   :ensure t
-;;   :doc "Completion Overlay Region FUnction(alternative to company-mode)"
-;;   :url "https://github.com/minad/corfu"
-;;   :custom ((corfu-auto . t)
-;;            (corfu-auto-prefix . 1)
-;;            (corfu-auto-delay . 0)
-;;            (corfu-cycle . t) ;; Enable cycling for `corfu-next/previous'
-;;            (corfu-preselect 'prompt) ;; Always preselect the prompt
-;;            )
-;;   :bind (corfu-map ;; https://github.com/minad/corfu?tab=readme-ov-file#tab-and-go-completion
-;;          ;; ("TAB" . corfu-next)
-;;          ;; ("<tab>" . corfu-next)
-;;          ([tab] . corfu-next)
-;;          ;; ("S-TAB" . corfu-previous)
-;;          ([backtab] . corfu-previous)
-;;          ;; ("<backtab>" . corfu-previous)
-;; )
-;;   :init
-;;   (global-corfu-mode)
-;;   (corfu-popupinfo-mode))
-
-;; (leaf kind-icon
-;;   :ensure t
-;;   :after corfu
-;;   :custom
-;;   ((kind-icon-default-face . 'corfu-default))
-;;   :config (add-to-list 'corfu-margin-formatters #'kind-icon-margin-formatter))
-
-;; (leaf cape
-;;   :ensure t
-;;   :url "https://github.com/minad/cape"
-;;   :custom ((dabbrev-case-fold-search . t))
-;;   :bind (("C-c p p" . completion-at-point) ;; capf
-;;          ("C-c p t" . complete-tag)        ;; etags
-;;          ("C-c p d" . cape-dabbrev)        ;; or dabbrev-completion
-;;          ("C-c p h" . cape-history)
-;;          ("C-c p f" . cape-file)
-;;          ("C-c p k" . cape-keyword)
-;;          ("C-c p s" . cape-elisp-symbol)
-;;          ("C-c p e" . cape-elisp-block)
-;;          ("C-c p a" . cape-abbrev)
-;;          ("C-c p l" . cape-line)
-;;          ("C-c p w" . cape-dict)
-;;          ("C-c p :" . cape-emoji)
-;;          ("C-c p \\" . cape-tex)
-;;          ("C-c p _" . cape-tex)
-;;          ("C-c p ^" . cape-tex)
-;;          ("C-c p &" . cape-sgml)
-;;          ("C-c p r" . cape-rfc1345))
-;;   :config
-;;   (add-to-list 'completion-at-point-functions #'cape-dabbrev)
-;;   (add-to-list 'completion-at-point-functions #'cape-file)
-;;   (add-to-list 'completion-at-point-functions #'cape-elisp-block))
-
 
 ;; Emacsの次世代ミニバッファ補完UI
 ;; https://blog.tomoya.dev/posts/a-new-wave-has-arrived-at-emacs/
@@ -427,12 +371,21 @@
   :custom (completion-styles . '(orderless)))
 (leaf marginalia
   :ensure t
-  :init (marginalia-mode))
+  :doc "Enrich existing commands with completion annotations"
+  :init (marginalia-mode)
+  :global-minor-mode t)
 (leaf vertico
   :doc "ミニバッファ補完UI"
   :ensure t
   :global-minor-mode vertico-mode
   :custom ((vertico-count . 20)))
+(leaf embark
+  :ensure t
+  :bind (("C-." . embark-act)
+         (minibuffer-local-map
+          :package emacs
+          ("M-." . embark-dwim)
+          ("C-." . embark-act))))
 (leaf consult
   :doc "補完候補リストの作成と便利な補完コマンド"
   :url "https://github.com/minad/consult"
@@ -458,9 +411,7 @@
     :ensure t)
   (leaf embark-consult
     :ensure t))
-(leaf embark
-  :ensure t
-  :bind ("M-s" . embark-act))
+
 
 (leaf anzu
   :doc "provides a minor mode which displays current match and total matches information in the mode-line in various search modes"
@@ -495,20 +446,6 @@
   :ensure t
   :init (which-key-mode))
 
-;; (leaf flycheck
-;;   :doc "On-the-fly syntax checking"
-;;   :req "dash-2.12.1" "pkg-info-0.4" "let-alist-1.0.4" "seq-1.11" "emacs-24.3"
-;;   :tag "minor-mode" "tools" "languages" "convenience" "emacs>=24.3"
-;;   :url "http://www.flycheck.org"
-;;   :emacs>= 24.3
-;;   :defun (flycheck-may-check-automatically)
-;;   :ensure t
-;;   :bind (("M-n" . flycheck-next-error)
-;;          ("M-p" . flycheck-previous-error))
-;;   :config
-;;   (flycheck-may-check-automatically '(idle-change mode-enabled new-line save))
-;;   :global-minor-mode global-flycheck-mode)
-
 (leaf fish-mode
   :doc "Emacs major mode for fish shell scripts."
   :ensure t
@@ -522,6 +459,16 @@
   :init (nyan-mode)
   :custom ((nyan-animate-nyancat . t)
            (nyan-wavy-trail . t)))
+(leaf save-hist
+  :doc "Save minibuffer history"
+  :tag "builtin"
+  :custom ((savehist-mode . t)
+           (history-length . 1000)
+           (savehist-additional-variables . '(kill-ring search-ring regexp-search-ring))))
+(leaf autorevert
+  :doc "revert buffers when files on disk change"
+  :tag "builtin"
+  :global-minor-mode global-auto-revert-mode)
 
 ;;;
 ;; Programming
@@ -557,15 +504,21 @@
   :custom
   (yas-snippet-dirs . '("~/.emacs.d/snippets")))
 
-(leaf smartparens
-  :url "https://github.com/Fuco1/smartparens"
-  :ensure t
-  :delight
-  :hook ((prog-mode-hook . smartparens-global-mode))
-  :custom (electric-pair-mode . nil)
+;; (leaf smartparens
+;;   :url "https://github.com/Fuco1/smartparens"
+;;   :ensure t
+;;   :delight
+;;   :hook ((prog-mode-hook . smartparens-global-mode))
+;;   :custom (electric-pair-mode . nil)
+;;   :config
+;;   (require 'smartparens-config)
+;;   (smartparens-strict-mode . nil))
+(leaf paren
+  :doc "highlight matching paren"
+  :tag "builtin"
+  :custom (show-paren-style . 'mixed)
   :config
-  (require 'smartparens-config)
-  (smartparens-strict-mode . nil))
+  (show-paren-mode t))
 
 (leaf rainbow-delimiters
   :url "https://github.com/Fanael/rainbow-delimiters"
@@ -575,111 +528,180 @@
 (leaf eglot
   :ensure t
   :doc "Emacs Polyglot: an Emacs LSP client that stays out of your way"
-  :require t
-  :defvar (eglot-server-programs)
+  :bind (("C-c h" . eldoc-doc-buffer))
   :hook (
-         ;; (ruby-mode-hook . eglot-ensure)
-         (go-mode-hook . eglot-ensure)
-         ;; (python-mode-hook . eglot-ensure)
+         (ruby-ts-mode-hook . eglot-ensure)
+         (typescript-ts-mode-hook . eglot-ensure)
          )
-  :config
-  (add-to-list 'eglot-server-programs '(go-mode . ("gopls"))))
-
-(leaf lsp-mode
-  :ensure t
-  :init (yas-global-mode)
-  :hook ((rust-mode . lsp-deferred)
-         (ruby-ts-mode-hook . lsp-deferred)
-         (ruby-mode-hook . lsp-deferred)
-         (python-ts-mode-hook . lsp-deferred)
-         (typescript-mode-hook . lsp-deferred)
-         (tsx-ts-mode-hook . lsp-deferred)
-         (conf-toml-mode-hook . lsp-deferred) ;; require: `cargo install taplo-cli --features lsp`
-         (terraform-mode-hook . lsp-deferred) ;; require `brew install hashicorp/tap/terraform-ls`
-         (lsp-mode-hook . lsp-ui-mode))
-  :bind
-  (("C-c h" . lsp-describe-thing-at-point)
-   ("C-c C-c a" . lsp-execute-code-action)
-   ("C-c C-c r" . lsp-rename)
-   ("M-." . lsp-find-definition))
   :custom
-  ((lsp-message-project-root-warning . t)
-   (lsp-auto-guess-root . nil)
-   (lsp-restart . 'auto-restart)
-   (lsp-log-io . nil)
-   (lsp-eldoc-render-all . t)
-   (lsp-lens-mode . t)
-   ;; (when (not (eq major-mode 'tsx-mode))
-   ;;   (lsp-semantic-tokens-enable . t)
-   ;;   (lsp-semantic-tokens-honor-refresh-requests . t))
-   ;; (lsp-idle-delay . 0.1)
-   ;; ruby
-   (lsp-solargraph-use-bundler . t)
-   (lsp-solargraph-library-directories . '("~/.rbenv/shims/"))
-   ;; rust
-   (lsp-rust-server . 'rust-analyzer)
-   (lsp-rust-analyzer-cargo-watch-command . "clippy")
-   (lsp-rust-analyzer-cargo-load-out-dirs-from-check . t)
-   (lsp-rust-analyzer-proc-macro-enable . t)
-   (lsp-rust-analyzer-server-display-inlay-hints . t)
-   ;; typescript/js
-   (lsp-eslint-enable . t) ;; requires run lsp-install-server
-   (lsp-eslint-autofix-on-save . t) ;; does not worked https://github.com/emacs-lsp/lsp-mode/issues/1842
-   (lsp-eslint-auto-fix-on-save . t)
-   ;; terraform
-   (lsp-disabled-clients . '(tfls)) ;; https://emacs-lsp.github.io/lsp-mode/page/lsp-terraform-ls/#server-note
-   (lsp-terraform-ls-enable-show-reference . t)
-   (lsp-enable-links . t)
-   (lsp-terraform-ls-prefill-required-fields . t)
-   ;; (lsp-completion-provider . :none) ;; ★補完にcorfuを使用する
-   )
+  (eglot-inlay-hints-mode . t) ;; LSPインレイヒントのオン/オフを切り替えます
+  (eldoc-echo-area-use-multiline-p . t)
+  )
+(leaf eglot-booster
+  :ensure t
+  :after eglot
+  :global-minor-mode t)
+(leaf consult-eglot
+  :ensure t
+  :doc "A consulting-read interface for eglot."
+  :url "https://github.com/mohkale/consult-eglot"
+  :after eglot
   :config
-  ;; to fix `json-parse-error \u0000 is not allowed without JSON_ALLOW_NUL`
-  ;; ref:
-  ;; https://github.com/emacs-lsp/lsp-mode/issues/2681
-  ;; https://github.com/typescript-language-server/typescript-language-server/issues/559#issuecomment-1259470791
-  (leaf *avoid-null-on-parse-json-advice
-    :config
-    ;; same definition as mentioned earlier
-    (advice-add 'json-parse-string :around
-                (lambda (orig string &rest rest)
-                  (apply orig (replace-match "\\u0000" "" string)
-                         rest)))
-
-    ;; minor changes: saves excursion and uses search-forward instead of re-search-forward
-    (advice-add 'json-parse-buffer :around
-                (lambda (oldfn &rest args)
-	                (save-excursion
-                    (while (search-forward "\\u0000" nil t)
-                      (replace-match "" nil t)))
-		              (apply oldfn args)))
-    )
+  (leaf consult-eglot-embark
+    :ensure t
+    :after consult-eglot
+    :init (consult-eglot-embark-mode)))
+(leaf corfu
+  :ensure t
+  :doc "Completion Overlay Region FUnction(alternative to company-mode)"
+  :url "https://github.com/minad/corfu"
+  :init (global-corfu-mode)
+  :custom ((corfu-popupinfo-mode . t)
+           (corfu--auto . t)
+           (corfu-auto-prefix . 1)
+           (corfu-auto-delay . 0)
+           (corfu-cycle . t) ;; Enable cycling for `corfu-next/previous'
+           (corfu-preselect 'prompt) ;; Always preselect the prompt
+           )
+  :bind (corfu-map ;; https://github.com/minad/corfu?tab=readme-ov-file#tab-and-go-completion
+         ;; ("TAB" . corfu-next)
+         ;; ("<tab>" . corfu-next)
+         ([tab] . corfu-next)
+         ([backtab] . corfu-previous)
+         ;; ("S-TAB" . corfu-previous)
+         ;; ("<backtab>" . corfu-previous)
+         )
 )
-
-(leaf lsp-ui
+(leaf kind-icon
   :ensure t
-  :commands lsp-ui-mode
+  :after corfu
   :custom
-  (lsp-ui-doc-border . (face-foreground 'default))
-  (lsp-ui-doc-enable . t)
-  (lsp-ui-doc-deley . 0.5)
-  (lsp-ui-doc-header . t)
-  (lsp-ui-doc-include-signature . t)
-  (lsp-ui-doc-max-width . 150)
-  (lsp-ui-doc-max-height . 30)
-  (lsp-ui-doc-position . 'at-point)
-  (lsp-ui-doc-use-childframe . t)
-  (lsp-ui-doc-use-webkit . nil)
-  (lsp-ui-doc-show-with-cursor . t)
-  (lsp-ui-doc-show-with-mouse . t)
-  (lsp-ui-peek-always-show . t)
-  (lsp-ui-peek-enable . t)
-  (lsp-ui-peek-peek-height . 20)
-  (lsp-ui-peek-list-width . 50)
-  (lsp-ui-peek-fontify . 'on-demand) ;; never, on-demand, or always
-  (lsp-ui-sideline-delay . 0.05)
-  (lsp-ui-sideline-show-hover . t)
-  (lsp-ui-sideline-show-code-actions . t))
+  ((kind-icon-default-face . 'corfu-default))
+  :config (add-to-list 'corfu-margin-formatters #'kind-icon-margin-formatter))
+
+(leaf cape
+  :ensure t
+  :doc "Cape provides Completion At Point Extensions which can be used in combination with Corfu, Company or the default completion UI"
+  :url "https://github.com/minad/cape"
+  :custom ((dabbrev-case-fold-search . t))
+  :bind (("C-c p p" . completion-at-point) ;; capf
+         ("C-c p t" . complete-tag)        ;; etags
+         ("C-c p d" . cape-dabbrev)        ;; or dabbrev-completion
+         ("C-c p h" . cape-history)
+         ("C-c p f" . cape-file)
+         ("C-c p k" . cape-keyword)
+         ("C-c p s" . cape-elisp-symbol)
+         ("C-c p e" . cape-elisp-block)
+         ("C-c p a" . cape-abbrev)
+         ("C-c p l" . cape-line)
+         ("C-c p w" . cape-dict)
+         ("C-c p :" . cape-emoji)
+         ("C-c p \\" . cape-tex)
+         ("C-c p _" . cape-tex)
+         ("C-c p ^" . cape-tex)
+         ("C-c p &" . cape-sgml)
+         ("C-c p r" . cape-rfc1345))
+  :config
+  (add-to-list 'completion-at-point-functions #'cape-dabbrev)
+  (add-to-list 'completion-at-point-functions #'cape-file)
+  (add-to-list 'completion-at-point-functions #'cape-elisp-block))
+
+
+;; (leaf lsp-mode
+;;   :ensure t
+;;   :init (yas-global-mode)
+;;   :hook ((rust-mode . lsp-deferred)
+;;          (ruby-ts-mode-hook . lsp-deferred)
+;;          (ruby-mode-hook . lsp-deferred)
+;;          (python-ts-mode-hook . lsp-deferred)
+;;          (typescript-mode-hook . lsp-deferred)
+;;          (tsx-ts-mode-hook . lsp-deferred)
+;;          (conf-toml-mode-hook . lsp-deferred) ;; require: `cargo install taplo-cli --features lsp`
+;;          (terraform-mode-hook . lsp-deferred) ;; require `brew install hashicorp/tap/terraform-ls`
+;;          (lsp-mode-hook . lsp-ui-mode))
+;;   :bind
+;;   (("C-c h" . lsp-describe-thing-at-point)
+;;    ("C-c C-c a" . lsp-execute-code-action)
+;;    ("C-c C-c r" . lsp-rename)
+;;    ("M-." . lsp-find-definition))
+;;   :custom
+;;   ((lsp-message-project-root-warning . t)
+;;    (lsp-auto-guess-root . nil)
+;;    (lsp-restart . 'auto-restart)
+;;    (lsp-log-io . nil)
+;;    (lsp-eldoc-render-all . t)
+;;    (lsp-lens-mode . t)
+;;    ;; (when (not (eq major-mode 'tsx-mode))
+;;    ;;   (lsp-semantic-tokens-enable . t)
+;;    ;;   (lsp-semantic-tokens-honor-refresh-requests . t))
+;;    ;; (lsp-idle-delay . 0.1)
+;;    ;; ruby
+;;    (lsp-solargraph-use-bundler . t)
+;;    (lsp-solargraph-library-directories . '("~/.rbenv/shims/"))
+;;    ;; rust
+;;    (lsp-rust-server . 'rust-analyzer)
+;;    (lsp-rust-analyzer-cargo-watch-command . "clippy")
+;;    (lsp-rust-analyzer-cargo-load-out-dirs-from-check . t)
+;;    (lsp-rust-analyzer-proc-macro-enable . t)
+;;    (lsp-rust-analyzer-server-display-inlay-hints . t)
+;;    ;; typescript/js
+;;    (lsp-eslint-enable . t) ;; requires run lsp-install-server
+;;    (lsp-eslint-autofix-on-save . t) ;; does not worked https://github.com/emacs-lsp/lsp-mode/issues/1842
+;;    (lsp-eslint-auto-fix-on-save . t)
+;;    ;; terraform
+;;    (lsp-disabled-clients . '(tfls)) ;; https://emacs-lsp.github.io/lsp-mode/page/lsp-terraform-ls/#server-note
+;;    (lsp-terraform-ls-enable-show-reference . t)
+;;    (lsp-enable-links . t)
+;;    (lsp-terraform-ls-prefill-required-fields . t)
+;;    ;; (lsp-completion-provider . :none) ;; ★補完にcorfuを使用する
+;;    )
+;;   :config
+;;   ;; to fix `json-parse-error \u0000 is not allowed without JSON_ALLOW_NUL`
+;;   ;; ref:
+;;   ;; https://github.com/emacs-lsp/lsp-mode/issues/2681
+;;   ;; https://github.com/typescript-language-server/typescript-language-server/issues/559#issuecomment-1259470791
+;;   (leaf *avoid-null-on-parse-json-advice
+;;     :config
+;;     ;; same definition as mentioned earlier
+;;     (advice-add 'json-parse-string :around
+;;                 (lambda (orig string &rest rest)
+;;                   (apply orig (replace-match "\\u0000" "" string)
+;;                          rest)))
+
+;;     ;; minor changes: saves excursion and uses search-forward instead of re-search-forward
+;;     (advice-add 'json-parse-buffer :around
+;;                 (lambda (oldfn &rest args)
+;; 	                (save-excursion
+;;                     (while (search-forward "\\u0000" nil t)
+;;                       (replace-match "" nil t)))
+;; 		              (apply oldfn args)))
+;;     )
+;; )
+
+;; (leaf lsp-ui
+;;   :ensure t
+;;   :commands lsp-ui-mode
+;;   :custom
+;;   (lsp-ui-doc-border . (face-foreground 'default))
+;;   (lsp-ui-doc-enable . t)
+;;   (lsp-ui-doc-deley . 0.5)
+;;   (lsp-ui-doc-header . t)
+;;   (lsp-ui-doc-include-signature . t)
+;;   (lsp-ui-doc-max-width . 150)
+;;   (lsp-ui-doc-max-height . 30)
+;;   (lsp-ui-doc-position . 'at-point)
+;;   (lsp-ui-doc-use-childframe . t)
+;;   (lsp-ui-doc-use-webkit . nil)
+;;   (lsp-ui-doc-show-with-cursor . t)
+;;   (lsp-ui-doc-show-with-mouse . t)
+;;   (lsp-ui-peek-always-show . t)
+;;   (lsp-ui-peek-enable . t)
+;;   (lsp-ui-peek-peek-height . 20)
+;;   (lsp-ui-peek-list-width . 50)
+;;   (lsp-ui-peek-fontify . 'on-demand) ;; never, on-demand, or always
+;;   (lsp-ui-sideline-delay . 0.05)
+;;   (lsp-ui-sideline-show-hover . t)
+;;   (lsp-ui-sideline-show-code-actions . t))
 
 (leaf magit
   :ensure t)
@@ -883,6 +905,11 @@
   :el-get (copilot
            :type github
            :pkgname "copilot-emacs/copilot.el")
+  :custom
+  ;; 公式SDKを使うようになって以降設定しておかないとなぜか見つけてくれない
+  `(copilot-server-executable . ,(expand-file-name "~/.emacs.d/.cache/copilot/bin/copilot-language-server"))
+  (copilot-indent-offset-warning-disable . t)
+  (copilot-max-char-warning-disable . t) ;; スキーマ系の長大なファイルで警告が出るので無効化
   :config
   (leaf editorconfig
     :ensure t)
@@ -895,7 +922,119 @@
           ("C-<return>" . copilot-accept-completion)
           ("C-c TAB" . copilot-accept-completion-by-word)
           ("C-c f" . copilot-accept-completion-by-line))))
+(leaf copilot-chat
+  :ensure t
+  :url "https://github.com/chep/copilot-chat.el"
+  :bind (
+         ("C-c C-j" . copilot-chat-transient)
+         )
+  :custom (
+           (copilot-chat-prompt-doc . "/doc 以下のコードについてドキュメントを書いてください。\n")
+           (copilot-chat-prompt-explain . "/explain 日本語で説明してください。\n")
+           (copilot-chat-prompt-fix . "/fix 問題箇所を修正して、修正内容の解説して。\n")
+           (copilot-chat-prompt-optimize . "/optimize パフォーマンスと可読性を向上させるため、以下のコードを最適化してください。\n")
+           (copilot-chat-prompt-review . "/review 以下のコードをレビューしてください。\n")
+           ))
 
+(leaf ollama-buddy
+  :ensure t
+  :bind ("C-c l" . ollama-buddy-menu)
+  :config (ollama-buddy-enable-monitor)
+  :custom
+  (ollama-buddy-menu-columns . 4)
+  (ollama-buddy-command-definitions
+   .
+   '(
+     (open-chat :key 111 :description "Open Chat" :model nil :action
+                (lambda nil
+                  (pop-to-buffer
+                   (get-buffer-create ollama-buddy--chat-buffer))
+                  (when
+                      (=
+                       (buffer-size)
+                       0)
+                    (insert
+                     (ollama-buddy--create-intro-message)))
+                  (goto-char
+                   (point-max))))
+     (show-models :key 118 :description "View model status" :model nil :action ollama-buddy-show-model-status)
+     (swap-model :key 109 :description "Swap model" :model nil :action
+                 (lambda nil
+                   (if
+                       (not
+                        (ollama-buddy--ollama-running))
+                       (error "!!WARNING!! ollama server not running")
+                     (let
+                         ((new-model
+                           (completing-read "Model: "
+                                            (ollama-buddy--get-models)
+                                            nil t)))
+                       (setq ollama-buddy-default-model new-model)
+                       (setq ollama-buddy--current-model new-model)
+                       (ollama-buddy--update-status "Idle")))))
+     (help :key 104 :description "Help assistant" :model nil :action
+           (lambda nil
+             (pop-to-buffer
+              (get-buffer-create ollama-buddy--chat-buffer))
+             (goto-char
+              (point-max))
+             (insert
+              (ollama-buddy--create-intro-message))))
+     (send-region :key 108 :description "Send region" :model nil :action
+                  (lambda nil
+                    (ollama-buddy--send-with-command 'send-region)))
+     (refactor-code :key 114 :description "Refactor code" :model nil :prompt "以下のコードをリファクタリングしてください:" :action
+                    (lambda nil
+                      (ollama-buddy--send-with-command 'refactor-code)))
+     (git-commit :key 103 :description "Git commit message" :model nil :prompt "以下の内容に対して簡潔なGitコミットメッセージを書いてください:" :action
+                 (lambda nil
+                   (ollama-buddy--send-with-command 'git-commit)))
+     (describe-code :key 99 :description "Describe code" :model nil :prompt "以下のコードを説明してください:" :action
+                    (lambda nil
+                      (ollama-buddy--send-with-command 'describe-code)))
+     (dictionary-lookup :key 100 :description "Dictionary Lookup" :model nil :prompt-fn
+                        (lambda nil
+                          (concat "単語 {"
+                                  (buffer-substring-no-properties
+                                   (region-beginning)
+                                   (region-end))
+                                  "} の意味を辞書のように説明してください:"))
+                        :action
+                        (lambda nil
+                          (ollama-buddy--send-with-command 'dictionary-lookup)))
+     (synonym :key 110 :description "Word synonym" :model nil :prompt "この単語の類義語とその意味合いをリストアップしてください:" :action
+              (lambda nil
+                (ollama-buddy--send-with-command 'synonym)))
+     (proofread :key 112 :description "Proofread text" :model nil :prompt "誤字脱字やスペルを修正して:" :action
+                (lambda nil
+                  (ollama-buddy--send-with-command 'proofread)))
+     (make-concise :key 122 :description "Make concise" :model nil :prompt "元の意味を損なわず簡潔にして:" :action
+                   (lambda nil
+                     (ollama-buddy--send-with-command 'make-concise)))
+     (custom-prompt :key 101 :description "Custom prompt" :model nil :action
+                    (lambda nil
+                      (when-let
+                          ((prefix
+                            (read-string "Enter prompt prefix: " nil nil nil t)))
+                        (unless
+                            (string-empty-p prefix)
+                          (ollama-buddy--send prefix)))))
+     (save-chat :key 115 :description "Save chat" :model nil :action
+                (lambda nil
+                  (with-current-buffer ollama-buddy--chat-buffer
+                    (write-region
+                     (point-min)
+                     (point-max)
+                     (read-file-name "Save conversation to: ")
+                     'append-to-file nil))))
+     (kill-request :key 120 :description "Kill request" :model nil :action
+                   (lambda nil
+                     (delete-process ollama-buddy--active-process)))
+     (quit :key 113 :description "Quit" :model nil :action
+           (lambda nil
+             (message "Quit Ollama Shell menu.")))
+     ))
+  )
 
 (provide 'init)
 
