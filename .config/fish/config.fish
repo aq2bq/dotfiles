@@ -1,11 +1,11 @@
 set -x PATH /opt/homebrew/bin $HOME/.rye/shims $HOME/nodenv/shims $HOME/.cargo/bin $HOME/.rbenv/shims (ruby -e 'print Gem.user_dir')/bin $GOPATH/bin $HOME/Library/Android/sdk/platform-tools $HOME/Library/Android/sdk/emulator $HOME/.local/bin $PATH
 status --is-interactive; and source (nodenv init -|psub)
 
-if not functions -q fisher
-  set -q XDG_CONFIG_HOME; or set XDG_CONFIG_HOME ~/.config
-  curl https://git.io/fisher --create-dirs -sLo $XDG_CONFIG_HOME/fish/functions/fisher.fish
-  fish -c fisher
-end
+# if not functions -q fisher
+#   set -q XDG_CONFIG_HOME; or set XDG_CONFIG_HOME ~/.config
+#   curl https://git.io/fisher --create-dirs -sLo $XDG_CONFIG_HOME/fish/functions/fisher.fish
+#   fish -c fisher
+# end
 
 # requires:
 # brew tap railwaycat/emacsmacport
@@ -41,6 +41,9 @@ set -x ANDROID_AVD_HOME $HOME/.android/avd
 
 set -U theme_display_date no
 set -U theme_display_cmd_duration no
+# bun
+set --export BUN_INSTALL "$HOME/.bun"
+set --export PATH $BUN_INSTALL/bin $PATH
 
 bind \cj on_enter # Ctrl+j
 bind \cr peco_select_history # Bind for peco history to Ctrl+r
@@ -69,8 +72,33 @@ function vterm_printf;
   end
 end
 
-# bun
-set --export BUN_INSTALL "$HOME/.bun"
-set --export PATH $BUN_INSTALL/bin $PATH
 
+# デフォルトの翻訳モデル
+set -gx TRANSLATION_MODEL "huggingface.co/mmnga/HODACHI-EZO-Common-9B-gemma-2-it-gguf:latest"
+# set -gx TRANSLATION_MODEL "huggingface.co/mmnga/cyberagent-Mistral-Nemo-Japanese-Instruct-2408-gguf:latest"
+# set -gx TRANSLATION_MODEL "7shi/gemma-2-jpn-translate:2b-instruct-q8_0"
 
+# 共通のプロンプト（{LANG} を言語名に置き換える）
+# @note モデルの違いによって有効なプロンプトが異なる
+# set -gx TRANSLATION_PROMPT "Translate the following text into {LANG}. Output only the translation, and nothing else. Do NOT include greetings, explanations, acknowledgments, or any extra words. Do NOT chat. This is NOT a conversation:"
+set -gx TRANSLATION_PROMPT "just output {LANG} translation:"
+
+# 汎用翻訳関数
+function translate
+  set lang $argv[1]
+  set text $argv[2..-1]
+
+  # 言語ごとにプロンプトを動的に作成
+  set prompt (string replace "{LANG}" $lang $TRANSLATION_PROMPT)
+
+  ollama run $TRANSLATION_MODEL "$prompt $text"
+end
+
+# エイリアス（使いやすいように）
+function en
+  translate en $argv
+end
+
+function ja
+  translate ja $argv
+end
