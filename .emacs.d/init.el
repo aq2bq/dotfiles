@@ -181,7 +181,8 @@
 
     :config
     ;; initialize leaf-keywords.el
-    (leaf-keywords-init)))
+    (leaf-keywords-init))
+)
 
 ;;;
 ;; Emacs global extentions
@@ -203,13 +204,6 @@
            (sublimity-scroll-drift-length . 5)
            (sublimity-attractive-centering-width . 150)
            (sublimity-mode . t)))
-
-;; (leaf good-scroll
-;;   :doc "Attempt at good pixel-based smooth scrolling in Emacs"
-;;   :ensure t
-;;   :bind (("C-v" . good-scroll-up-full-screen)
-;;          ("M-v" . good-scroll-down-full-screen))
-;;   :init (good-scroll-mode t))
 
 (leaf topsy
   :doc "simple alternative to `semantic-stickyfunc-mode`"
@@ -331,9 +325,30 @@
   :doc "Dirvish is an improved version of the Emacs inbuilt package Dired"
   :url "https://github.com/alexluigit/dirvish"
   :ensure t
-  :config (dirvish-override-dired-mode)
-  :custom ( ;; https://github.com/alexluigit/dirvish/blob/main/docs/CUSTOMIZING.org#dirvish-attributes
-           (dirvish-attributes . '(all-the-icons file-time file-size collapse subtree-state vc-state git-msg))))
+  :bind ((dirvish-mode-map
+          ([tab] . dirvish-subtree-toggle)))
+  :init (dirvish)
+  :config
+  (dirvish-override-dired-mode)
+  (dirvish-peek-mode) ;; ミニバッファでファイルをプレビュー
+  (dirvish-side-follow-mode)
+  :custom
+  (dired-listing-switches . "-l --almost-all --human-readable --group-directories-first --no-group")
+  (dirvish-default-layout . '(0 0.4 0.6)) ;; 親ディレクトリを非表示
+  ;; (dirvish-side-width . 38)
+  ;; (dirvish-header-line-height . '(25 . 35))
+  (dirvish-header-line-format . '(:left (path) :right (free-space)))
+  (dirvish-mode-line-format . '(:left (sort symlink) :right (yank index)))
+  (dirvish-attributes . '(
+                          ;; vc-state      ;; バージョン管理の状態を左端に表示(Error: void-variable (dirvish-vc--always-ignored))
+                          ;; git-msg       ;; Gitのコミットメッセージをファイル名に追加(Error: void-variable (dirvish-vc--always-ignored))
+                          all-the-icons ;; ファイルのアイコン
+                          file-time     ;; 変更時刻
+                          file-size     ;; ファイルサイズ
+                          collapse      ;; ネストされたパスを折りたたむ
+                          subtree-state ;; ディレクトリの展開状態を表示
+                                        ))
+  )
 
 (leaf company
   :doc "Modular text completion framework"
@@ -343,7 +358,7 @@
   :emacs>= 24.3
   :ensure t
   :blackout t
-  :leaf-defer nil
+i  :leaf-defer nil
   :bind ((company-active-map
           ("M-n" . nil)
           ("M-p" . nil)
@@ -378,6 +393,9 @@
   :doc "ミニバッファ補完UI"
   :ensure t
   :global-minor-mode vertico-mode
+  :bind ((minibuffer-local-map (
+          ("C-l" . vertico-directory-up)
+                                )))
   :custom ((vertico-count . 20)))
 (leaf embark
   :ensure t
@@ -407,8 +425,8 @@
     :ensure t
     :bind (("s-g s-g" . consult-ghq-find))
     :custom ((consult-ghq-find-function . 'dired)))
-  (leaf consult-lsp
-    :ensure t)
+  ;; (leaf consult-lsp
+  ;;   :ensure t)
   (leaf embark-consult
     :ensure t))
 
@@ -473,7 +491,6 @@
 ;;;
 ;; Programming
 ;;;
-
 (leaf flymake
   :ensure t
   :bind (flymake-mode-map
@@ -492,27 +509,11 @@
   (set-face-foreground 'flymake-warnline "white")
   (set-face-background 'flymake-warnline "goldenrod3"))
 
-;; (leaf flymake-diagnostic-at-point
-;;   :ensure t
-;;   :after flymake
-;;   :hook (flymake-mode-hook . flymake-diagnostic-at-point-mode)
-;;   ;; :custom (remove-hook 'flymake-diagnostic-functions 'flymake-proc-legacy-flymake)
-;;   )
 
 (leaf yasnippet
   :ensure t
   :custom
   (yas-snippet-dirs . '("~/.emacs.d/snippets")))
-
-;; (leaf smartparens
-;;   :url "https://github.com/Fuco1/smartparens"
-;;   :ensure t
-;;   :delight
-;;   :hook ((prog-mode-hook . smartparens-global-mode))
-;;   :custom (electric-pair-mode . nil)
-;;   :config
-;;   (require 'smartparens-config)
-;;   (smartparens-strict-mode . nil))
 (leaf paren
   :doc "highlight matching paren"
   :tag "builtin"
@@ -536,6 +537,20 @@
   :custom
   (eglot-inlay-hints-mode . t) ;; LSPインレイヒントのオン/オフを切り替えます
   (eldoc-echo-area-use-multiline-p . t)
+  :config
+  ;; (add-to-list 'eglot-server-programs
+  ;;              ;; https://docs.basedpyright.com/latest/installation/ides/
+  ;;              '((python-mode python-ts-mode)
+  ;;                "rye" "run" "basedpyright" "--stdio"))
+  ;; (setq-default eglot-workspace-configuration
+  ;;               '(:basedpyright
+  ;;                 (:typeCheckingMode "recommended")
+  ;;                 :basedpyright.analysis
+  ;;                 (:diagnosticSeverityOverrides
+  ;;                  (:reportUnusedCallResult "none")
+  ;;                  :inlayHints
+  ;;                  (:callArgumentNames :json-false)
+  ;;                  )))
   )
 (leaf eglot-booster
   :ensure t
@@ -547,10 +562,11 @@
   :url "https://github.com/mohkale/consult-eglot"
   :after eglot
   :config
-  (leaf consult-eglot-embark
-    :ensure t
-    :after consult-eglot
-    :init (consult-eglot-embark-mode)))
+)
+(leaf consult-eglot-embark
+  :ensure t
+  :after consult-eglot
+  :init (consult-eglot-embark-mode))
 (leaf corfu
   :ensure t
   :doc "Completion Overlay Region FUnction(alternative to company-mode)"
@@ -607,124 +623,8 @@
   (add-to-list 'completion-at-point-functions #'cape-elisp-block))
 
 
-;; (leaf lsp-mode
-;;   :ensure t
-;;   :init (yas-global-mode)
-;;   :hook ((rust-mode . lsp-deferred)
-;;          (ruby-ts-mode-hook . lsp-deferred)
-;;          (ruby-mode-hook . lsp-deferred)
-;;          (python-ts-mode-hook . lsp-deferred)
-;;          (typescript-mode-hook . lsp-deferred)
-;;          (tsx-ts-mode-hook . lsp-deferred)
-;;          (conf-toml-mode-hook . lsp-deferred) ;; require: `cargo install taplo-cli --features lsp`
-;;          (terraform-mode-hook . lsp-deferred) ;; require `brew install hashicorp/tap/terraform-ls`
-;;          (lsp-mode-hook . lsp-ui-mode))
-;;   :bind
-;;   (("C-c h" . lsp-describe-thing-at-point)
-;;    ("C-c C-c a" . lsp-execute-code-action)
-;;    ("C-c C-c r" . lsp-rename)
-;;    ("M-." . lsp-find-definition))
-;;   :custom
-;;   ((lsp-message-project-root-warning . t)
-;;    (lsp-auto-guess-root . nil)
-;;    (lsp-restart . 'auto-restart)
-;;    (lsp-log-io . nil)
-;;    (lsp-eldoc-render-all . t)
-;;    (lsp-lens-mode . t)
-;;    ;; (when (not (eq major-mode 'tsx-mode))
-;;    ;;   (lsp-semantic-tokens-enable . t)
-;;    ;;   (lsp-semantic-tokens-honor-refresh-requests . t))
-;;    ;; (lsp-idle-delay . 0.1)
-;;    ;; ruby
-;;    (lsp-solargraph-use-bundler . t)
-;;    (lsp-solargraph-library-directories . '("~/.rbenv/shims/"))
-;;    ;; rust
-;;    (lsp-rust-server . 'rust-analyzer)
-;;    (lsp-rust-analyzer-cargo-watch-command . "clippy")
-;;    (lsp-rust-analyzer-cargo-load-out-dirs-from-check . t)
-;;    (lsp-rust-analyzer-proc-macro-enable . t)
-;;    (lsp-rust-analyzer-server-display-inlay-hints . t)
-;;    ;; typescript/js
-;;    (lsp-eslint-enable . t) ;; requires run lsp-install-server
-;;    (lsp-eslint-autofix-on-save . t) ;; does not worked https://github.com/emacs-lsp/lsp-mode/issues/1842
-;;    (lsp-eslint-auto-fix-on-save . t)
-;;    ;; terraform
-;;    (lsp-disabled-clients . '(tfls)) ;; https://emacs-lsp.github.io/lsp-mode/page/lsp-terraform-ls/#server-note
-;;    (lsp-terraform-ls-enable-show-reference . t)
-;;    (lsp-enable-links . t)
-;;    (lsp-terraform-ls-prefill-required-fields . t)
-;;    ;; (lsp-completion-provider . :none) ;; ★補完にcorfuを使用する
-;;    )
-;;   :config
-;;   ;; to fix `json-parse-error \u0000 is not allowed without JSON_ALLOW_NUL`
-;;   ;; ref:
-;;   ;; https://github.com/emacs-lsp/lsp-mode/issues/2681
-;;   ;; https://github.com/typescript-language-server/typescript-language-server/issues/559#issuecomment-1259470791
-;;   (leaf *avoid-null-on-parse-json-advice
-;;     :config
-;;     ;; same definition as mentioned earlier
-;;     (advice-add 'json-parse-string :around
-;;                 (lambda (orig string &rest rest)
-;;                   (apply orig (replace-match "\\u0000" "" string)
-;;                          rest)))
-
-;;     ;; minor changes: saves excursion and uses search-forward instead of re-search-forward
-;;     (advice-add 'json-parse-buffer :around
-;;                 (lambda (oldfn &rest args)
-;; 	                (save-excursion
-;;                     (while (search-forward "\\u0000" nil t)
-;;                       (replace-match "" nil t)))
-;; 		              (apply oldfn args)))
-;;     )
-;; )
-
-;; (leaf lsp-ui
-;;   :ensure t
-;;   :commands lsp-ui-mode
-;;   :custom
-;;   (lsp-ui-doc-border . (face-foreground 'default))
-;;   (lsp-ui-doc-enable . t)
-;;   (lsp-ui-doc-deley . 0.5)
-;;   (lsp-ui-doc-header . t)
-;;   (lsp-ui-doc-include-signature . t)
-;;   (lsp-ui-doc-max-width . 150)
-;;   (lsp-ui-doc-max-height . 30)
-;;   (lsp-ui-doc-position . 'at-point)
-;;   (lsp-ui-doc-use-childframe . t)
-;;   (lsp-ui-doc-use-webkit . nil)
-;;   (lsp-ui-doc-show-with-cursor . t)
-;;   (lsp-ui-doc-show-with-mouse . t)
-;;   (lsp-ui-peek-always-show . t)
-;;   (lsp-ui-peek-enable . t)
-;;   (lsp-ui-peek-peek-height . 20)
-;;   (lsp-ui-peek-list-width . 50)
-;;   (lsp-ui-peek-fontify . 'on-demand) ;; never, on-demand, or always
-;;   (lsp-ui-sideline-delay . 0.05)
-;;   (lsp-ui-sideline-show-hover . t)
-;;   (lsp-ui-sideline-show-code-actions . t))
-
 (leaf magit
   :ensure t)
-
-(leaf quickrun
-  :ensure t
-  :config
-  (quickrun-add-command "kotlin"
-    '((:command . "kotlin")
-      (:exec    . ("kotlinc %o %s" "%c %NKt %a"))
-      (:remove  . ("%nKt.class"))
-      (:tempfile . nil)
-      (:description . "Compile Kotlin file and execute")
-      )
-    :mode 'kotlin-mode))
-
-(leaf modeline-git-branch
-  :url "https://qiita.com/conao3/items/dc88bdadb0523ef95878"
-  :el-get (modeline-git-branch
-           :type github
-           :pkgname "acple/modeline-git-branch")
-  :require t
-  :config (modeline-git-branch-mode))
 
 (leaf yaml-mode
   :ensure t
@@ -756,6 +656,14 @@
   :hook
   (ruby-ts-mode-hook . yard-mode))
 
+(leaf typescript-ts-mode
+  :mode
+  (("\\.ts$" . typescript-ts-mode)
+   ("\\.tsx$" . typescript-ts-mode))
+  :hook (electric-pair-mode eldoc-mode)
+  :custom
+  ((typescript-indent-level . 2)))
+
 (leaf go-mode
   :ensure t
   :hook ((eglot-ensure))
@@ -771,18 +679,6 @@
            ("C-c t" . go-test-current-test)
            ("C-c C-t" . go-test-current-file))))
 
-;; (leaf rustic
-;;   :ensure t
-;;   ;; :defvar (flycheck-checkers)
-;;   :defun (rust-format-region)
-;;   :bind
-;;   (rustic-mode-map
-;;    ("C-c C-c e" . lsp-rust-analyzer-expand-macro)
-;;    ("C-c C-c t" . rustic-cargo-test))
-;;   :custom ((rustic-format-on-save . t))
-;;   :config
-;;   ; (push 'rustic-clippy flycheck-checkers)
-;; )
 (leaf rust-mode
   :url "https://github.com/rust-lang/rust-mode"
   :ensure t
@@ -797,38 +693,15 @@
   :ensure t
   :doc "slim-mode provides Emacs support for editing Slim templates. It's based on haml-mode.")
 
-(leaf js2-mode
-  :ensure t
-  :mode
-  (("\\.js$" . js2-mode))
-  ;; (leaf tern
-  ;;   :ensure t
-  ;;   :custom
-  ;;   (eval-after-load 'tern
-  ;;     '(progn
-  ;;        (require 'tern-auto-complete)
-  ;;        (tern-ac-setup))))
-  :custom
-  ((js2-basic-offset . 2)))
-
 
 (leaf kotlin-mode
   :ensure t)
 
 (leaf graphql-mode :ensure t)
 
-(leaf typescript-mode
-  :ensure t
-  :mode (("\\.ts\\'" . typescript-mode)
-         ("\\.tsx\\'" . tsx-ts-mode))
-  :custom ((typescript-indent-level . 2)
-           (typescript-tsx-indent-offset . 2))
-  :hook (typescript-mode-hook . subword-mode)
-  :config (add-hook 'before-save-hook 'lsp-eslint-apply-all-fixes))
 
 (leaf scss-mode
   :ensure t)
-
 
 (leaf terraform-mode
   :ensure t
@@ -850,36 +723,7 @@
             (python-indent-guess-indent-offset-verbose . nil)
             (py-python-command . ,(if (executable-find "rye run python") "rye run python"
                                     "python"))))
-;; (leaf ruff-fix
-;;   :ensure t
-;;   :el-get (ruff-fix
-;;            :type github
-;;            :pkgname "mkt3/ruff-fix.el")
-;;   :hook (before-save-hook . ruff-fix-before-save))
 
-;; (leaf ruff-format
-;;   :url "https://github.com/scop/emacs-ruff-format"
-;;   :ensure t
-;;   :hook (python-mode-hook . ruff-format-on-save-mode)
-;;   :config
-;;   (leaf reformatter
-;;     :ensure t))
-
-;; https://beta.ruff.rs/docs/editor-integrations/#pycharm-external-tool
-;; https://mako-note.com/ja/emacs-ruff/
-(leaf flymake-ruff
-  :ensure t
-  :url "https://github.com/erickgnavar/flymake-ruff"
-  :hook (python-mode-hook . (lambda ()
-                              (flymake-ruff-load)
-                              (flymake-mode t))))
-(leaf lsp-pyright
-  :ensure t
-  :url "https://github.com/emacs-lsp/lsp-pyright"
-  :hook
-  (python-mode-hook . (lambda ()
-                              (require 'lsp-pyright)
-                              (lsp))))
 
 ;; - ref: Emacs 29 でTree-sitterを利用してシンタックスハイライトする
 ;;   https://zenn.dev/hyakt/articles/42a1d237cdfa2a
@@ -902,12 +746,10 @@
   (global-treesit-auto-mode))
 
 (leaf copilot
-  :el-get (copilot
-           :type github
-           :pkgname "copilot-emacs/copilot.el")
+  :ensure t
   :custom
   ;; 公式SDKを使うようになって以降設定しておかないとなぜか見つけてくれない
-  `(copilot-server-executable . ,(expand-file-name "~/.emacs.d/.cache/copilot/bin/copilot-language-server"))
+  ;; `(copilot-server-executable . ,(expand-file-name "~/.emacs.d/.cache/copilot/bin/copilot-language-server"))
   (copilot-indent-offset-warning-disable . t)
   (copilot-max-char-warning-disable . t) ;; スキーマ系の長大なファイルで警告が出るので無効化
   :config
@@ -936,17 +778,16 @@
            ;; (copilot-chat-model . "o3-mini")
            ;; (copilot-chat-model . "gemini-2.0-flash-001")
            ;; (copilot-chat-model . "claude-3.5-sonnet")
-           (copilot-chat-prompt-doc . "/doc 以下のコードについてドキュメントを書いてください。\n")
-           (copilot-chat-prompt-explain . "/explain 日本語で説明してください。\n")
-           (copilot-chat-prompt-fix . "/fix 問題箇所を修正して、修正内容の解説して。\n")
-           (copilot-chat-prompt-optimize . "/optimize パフォーマンスと可読性を向上させるため、以下のコードを最適化してください。\n")
-           (copilot-chat-prompt-review . "/review 以下のコードをレビューしてください。\n")
-           (copilot-chat-commit-prompt . "/commit-message コミットメッセージを入力してください。変更理由や背景を箇条書きで付加すること\n")))
+           (copilot-chat-prompt-doc . "/doc 以下のコードについてドキュメントを書いて:\n")
+           (copilot-chat-prompt-explain . "/explain 日本語で説明:\n")
+           (copilot-chat-prompt-fix . "/fix 問題箇所を修正して、修正内容の解説して:\n")
+           (copilot-chat-prompt-optimize . "/optimize パフォーマンスと可読性を向上させるため、以下のコードを最適化:\n")
+           (copilot-chat-prompt-review . "/review 以下のコードをレビューして:\n")))
 
 (leaf ollama-buddy
   :ensure t
   :bind ("C-c l" . ollama-buddy-menu)
-  :config (ollama-buddy-enable-monitor)
+  :config ;; (ollama-buddy-enable-monitor)
   :custom
   (ollama-buddy-menu-columns . 4)
   (ollama-buddy-command-definitions
