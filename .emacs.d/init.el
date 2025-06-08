@@ -45,8 +45,8 @@
 
 ;; GUIモード時の透明度設定
 (when (display-graphic-p)
-  (set-frame-parameter (selected-frame) 'alpha '(90 . 90))
-  (add-to-list 'default-frame-alist '(alpha . (90 . 90))))
+  (set-frame-parameter (selected-frame) 'alpha '(85 . 85))
+  (add-to-list 'default-frame-alist '(alpha . (85 . 85))))
 
 ;; Highlight current line
 (global-hl-line-mode t)
@@ -54,7 +54,7 @@
 (when (display-graphic-p)
   (setq use-default-font-for-symbols nil)
 
-  (let ((size (if (>= (x-display-pixel-width) 4000) 140 120)))
+  (let ((size (if (>= (x-display-pixel-width) 4000) 130 120)))
     (set-face-attribute 'default nil
                         :family "UDEV Gothic 35NFLG"
                         :height size))
@@ -241,12 +241,12 @@
   :config
   ;; POP系
   ;; (load-theme 'doom-laserwave t nil)
-  ;; (load-theme 'doom-dracula t nil)
+  (load-theme 'doom-dracula t nil)
   ;; (load-theme 'doom-challenger-deep t nil)
   ;; (load-theme 'doom-outrun-electric t nil)
   ;; (load-theme 'doom-shades-of-purple t nil)
   ;; 青系
-  (load-theme 'doom-ephemeral t nil)
+  ;; (load-theme 'doom-ephemeral t nil)
   ;; (load-theme 'doom-nova t nil)
   ;; (load-theme 'doom-moonlight t nil)
   ;; (load-theme 'doom-palenight t nil)
@@ -305,10 +305,32 @@
 ;; (load-theme 'tango-dark t)
 
 (leaf all-the-icons
+  ;; require `M-x all-the-icons-install-fonts`
   :doc "A utility package to collect various Icon Fonts and propertize them within Emacs."
   :ensure t
-  :if (display-graphic-p)) ;; require `M-x all-the-icons-install-fonts`
-
+  :if (display-graphic-p)
+  :custom (
+           (all-the-icons-color-icons . t)
+           ))
+(leaf all-the-icons-nerd-fonts
+  :ensure t ;; requires: `brew install font-hack-nerd-font`
+  :if (display-graphic-p)
+  :custom ((all-the-icons-nerd-fonts-scale-factor . 1.0))
+  :config
+  (all-the-icons-nerd-fonts-prefer))
+(leaf all-the-icons-dired
+  :ensure t
+  :if (display-graphic-p)
+  :hook (dired-mode-hook . all-the-icons-dired-mode))
+(leaf all-the-icons-ibuffer
+  :ensure t
+  :if (display-graphic-p)
+  :hook (ibuffer-mode-hook . all-the-icons-ibuffer-mode))
+(leaf all-the-icons-completion
+  :ensure t
+  :if (display-graphic-p)
+  :hook (marginalia-mode-hook . all-the-icons-completion-marginalia-setup)
+  :init (all-the-icons-completion-mode))
 (leaf centaur-tabs
   :ensure t
   :url "https://github.com/ema2159/centaur-tabs"
@@ -320,35 +342,64 @@
            (centaur-tabs-style . "chamfer")
            (centaur-tabs-set-bar . "over")) ;; To display an overline over the selected tab
   )
-
-(leaf dirvish
-  :doc "Dirvish is an improved version of the Emacs inbuilt package Dired"
-  :url "https://github.com/alexluigit/dirvish"
+(leaf dashboard
   :ensure t
-  :bind ((dirvish-mode-map
-          ([tab] . dirvish-subtree-toggle)))
-  :init (dirvish)
-  :config
-  (dirvish-override-dired-mode)
-  (dirvish-peek-mode) ;; ミニバッファでファイルをプレビュー
-  (dirvish-side-follow-mode)
-  :custom
-  (dired-listing-switches . "-l --almost-all --human-readable --group-directories-first --no-group")
-  (dirvish-default-layout . '(0 0.4 0.6)) ;; 親ディレクトリを非表示
-  ;; (dirvish-side-width . 38)
-  ;; (dirvish-header-line-height . '(25 . 35))
-  (dirvish-header-line-format . '(:left (path) :right (free-space)))
-  (dirvish-mode-line-format . '(:left (sort symlink) :right (yank index)))
-  (dirvish-attributes . '(
-                          ;; vc-state      ;; バージョン管理の状態を左端に表示(Error: void-variable (dirvish-vc--always-ignored))
-                          ;; git-msg       ;; Gitのコミットメッセージをファイル名に追加(Error: void-variable (dirvish-vc--always-ignored))
-                          all-the-icons ;; ファイルのアイコン
-                          file-time     ;; 変更時刻
-                          file-size     ;; ファイルサイズ
-                          collapse      ;; ネストされたパスを折りたたむ
-                          subtree-state ;; ディレクトリの展開状態を表示
-                                        ))
-  )
+  :doc "An extensible emacs startup screen showing you what’s most important."
+  :url "https://github.com/emacs-dashboard/emacs-dashboard"
+  :if (display-graphic-p)
+  :init (dashboard-setup-startup-hook)
+  :custom (
+           (dashboard-vertically-center-content . t)
+           (dashboard-banner-logo-title . "明日できることは明日やる")
+           (dashboard-startup-banner . 'logo) ;; logo, or a file path
+           (dashboard-items . '((recents  . 10)
+                                (bookmarks . 5)
+                                (projects . 5)
+                                (agenda . 5)))
+           (dashboard-set-heading-icons . t)
+           (dashboard-set-file-icons . t)
+           (dashboard-display-icons-p . t)
+           (dashboard-icon-type . 'nerd-icons)
+           (dashboard-center-content . t)))
+
+;; (leaf dirvish
+;;   :doc "Dirvish is an improved version of the Emacs inbuilt package Dired"
+;;   :url "https://github.com/alexluigit/dirvish"
+;;   :ensure t
+;;   :bind ((dirvish-mode-map
+;;           ([tab] . dirvish-subtree-toggle)))
+;;   :init (dirvish)
+;;   :custom
+;;   (dirvish-override-dired-mode . nil)
+;;   (dirvish-side-follow-mode . nil) ;; サイドバーでのフォローを無効化(rotate.elのため)
+;;   (dirvish-peek-mode . nil) ;; ミニバッファでファイルをプレビューを無効化(rotate.elのため)
+;;   (dired-listing-switches . "-l --almost-all --human-readable --group-directories-first --no-group")
+;;   (dirvish-default-layout . '(0 0.4 0.6)) ;; 親ディレクトリを非表示
+;;   ;; (dirvish-side-width . 38)
+;;   ;; (dirvish-header-line-height . '(25 . 35))
+;;   (dirvish-header-line-format . '(:left (path) :right (free-space)))
+;;   (dirvish-mode-line-format . '(:left (sort symlink) :right (yank index)))
+;;   (dirvish-attributes . '(
+;;                           ;; vc-state      ;; バージョン管理の状態を左端に表示(Error: void-variable (dirvish-vc--always-ignored))
+;;                           ;; git-msg       ;; Gitのコミットメッセージをファイル名に追加(Error: void-variable (dirvish-vc--always-ignored))
+;;                           all-the-icons ;; ファイルのアイコン
+;;                           file-time     ;; 変更時刻
+;;                           file-size     ;; ファイルサイズ
+;;                           collapse      ;; ネストされたパスを折りたたむ
+;;                           subtree-state ;; ディレクトリの展開状態を表示
+;;                                         ))
+;;   )
+
+
+(leaf rotate
+  :doc "Rotate the current buffer to the next or previous buffer in the current window"
+  :url "https://github.com/daichirata/emacs-rotate"
+  :ensure t
+  :bind (
+         ("M-q" . rotate-window)
+         ;; ("C-x <right>" . rotate-window-right)
+         ;; ("C-x <left>" . rotate-window-left)
+         ))
 
 (leaf company
   :doc "Modular text completion framework"
@@ -386,7 +437,7 @@ i  :leaf-defer nil
   :custom (completion-styles . '(orderless)))
 (leaf marginalia
   :ensure t
-  :doc "Enrich existing commands with completion annotations"
+  :doc "ミニバッファの右側に追加情報を表示する"
   :init (marginalia-mode)
   :global-minor-mode t)
 (leaf vertico
@@ -403,7 +454,9 @@ i  :leaf-defer nil
          (minibuffer-local-map
           :package emacs
           ("M-." . embark-dwim)
-          ("C-." . embark-act))))
+          ("C-." . embark-act)))
+  :config (setopt embark-help-key "?") ;;  Embark が起動している時に ? を叩いたら help が出る
+  )
 (leaf consult
   :doc "補完候補リストの作成と便利な補完コマンド"
   :url "https://github.com/minad/consult"
@@ -412,7 +465,8 @@ i  :leaf-defer nil
          ("C-x l" . consult-goto-line)
          ("C-s" . consult-line)
          ("C-c s" . consult-ripgrep)
-         ("C-c C-s" . consult-ripgrep-specific-directory))
+         ("C-c C-s" . consult-ripgrep-specific-directory)
+         ("C-c C-r" . consult-recent-file))
   ;; :custom ((consult-find-command . "fd --color=never --full-path ARG OPTS"))
   :config
   (defun consult-ripgrep-specific-directory () ;; 都度対象ディレクトリを指定して検索できる
@@ -423,7 +477,7 @@ i  :leaf-defer nil
     :doc "ghq interface"
     :if (executable-find "ghq")
     :ensure t
-    :bind (("s-g s-g" . consult-ghq-find))
+    :bind (("M-g M-f" . consult-ghq-find))
     :custom ((consult-ghq-find-function . 'dired)))
   ;; (leaf consult-lsp
   ;;   :ensure t)
@@ -436,7 +490,7 @@ i  :leaf-defer nil
   :ensure t
   :bind
   (("C-c r" . anzu-query-replace)
-   ("C-c C-m" . anzu-query-replace-at-cursor-thing))
+   ("C-c RET" . anzu-query-replace-at-cursor-thing))
   :custom
   ((global-anzu-mode . t)
    (anzu-mode-lighter . "")
@@ -458,12 +512,25 @@ i  :leaf-defer nil
    (highlight-indent-guides-auto-enabled . t)
    (highlight-indent-guides-responsive . t))
     :hook (((prog-mode-hook yaml-mode-hook) . highlight-indent-guides-mode)))
-
+(leaf posframe
+  :ensure t
+  :doc "A library for creating child frames in Emacs")
 (leaf which-key
   :doc "minor mode for Emacs that displays the key bindings following your currently entered incomplete command (a prefix) in a popup."
   :ensure t
   :init (which-key-mode))
-
+(leaf keypression
+  :ensure t
+  :doc "Keystroke visualizer for Emacs"
+  :url "https://github.com/chuntaro/emacs-keypression"
+  :custom (
+           (keypression-use-child-frame . nil)
+           (keypression-fade-out-delay . 1)
+           (keypression-frame-justify . 'keypression-right-justified)
+           (keypression-frame-background-mode . t)
+           (keypression-cast-command-name . t)
+           (keypression-combine-same-keystrokes . t)
+           ))
 (leaf fish-mode
   :doc "Emacs major mode for fish shell scripts."
   :ensure t
@@ -496,11 +563,10 @@ i  :leaf-defer nil
   :bind (flymake-mode-map
          ("C-x C-p" . flymake-goto-prev-error)
          ("C-x C-n" . flymake-goto-next-error))
-  :custom ((flymake-mode . nil)
-           (flymake-no-changes-timeout . 0.0)  ;; チェックの頻度を減らす場合は値(秒)を増やす
+  :custom ((flymake-no-changes-timeout . 5)  ;; チェックの頻度を減らす場合は値(秒)を増やす
            (flymake-proc-legacy-flymake . t) ;; エラーメッセージのポップアップ
-           (flymake-start-syntax-check-on-newline . nil) ;; 行追加するごとにチェックしない
-           (flymake-start-syntax-check-on-find-file . nil) ;; ファイルを開いたときにチェックしない
+           (flymake-start-syntax-check-on-newline . t) ;; 行追加するごとにチェックするか
+           (flymake-start-syntax-check-on-find-file . t) ;; ファイルを開いたときにチェックするか
            (flymake-start-on-save-buffer . t)  ;; 保存時のみチェック
            (flymake-diagnostic-functions . '(flymake-proc-legacy-flymake)))
   :config
@@ -520,6 +586,12 @@ i  :leaf-defer nil
   :custom (show-paren-style . 'mixed)
   :config
   (show-paren-mode t))
+(leaf smartparens
+  :ensure t
+  :global-minor-mode show-smartparens-global-mode
+  :config
+  (require 'smartparens-ruby))
+
 
 (leaf rainbow-delimiters
   :url "https://github.com/Fanael/rainbow-delimiters"
@@ -530,14 +602,34 @@ i  :leaf-defer nil
   :ensure t
   :doc "Emacs Polyglot: an Emacs LSP client that stays out of your way"
   :bind (("C-c h" . eldoc-doc-buffer))
+  :preface
+  (defun my/setup-deno-if-applicable ()
+    "プロジェクトに deno.json があれば deno LSP に切り替える。"
+    (when (locate-dominating-file default-directory "deno.json")
+      (setq-local eglot-server-programs
+                  '((typescript-ts-mode . ("deno" "lsp"))))
+      (eglot-ensure)))
   :hook (
          (ruby-ts-mode-hook . eglot-ensure)
          (typescript-ts-mode-hook . eglot-ensure)
+         (typescript-ts-mode . my/setup-deno-if-applicable)
+         (before-save-hook . eglot-format-buffer)
          )
   :custom
   (eglot-inlay-hints-mode . t) ;; LSPインレイヒントのオン/オフを切り替えます
   (eldoc-echo-area-use-multiline-p . t)
   :config
+  ;; requires: `gem install lsp_router`'
+  ;; view log: `tail -F /tmp/lsp_router*`
+  ;; (add-to-list 'eglot-server-programs
+  ;;              '((ruby-mode ruby-ts-mode)
+  ;;                . ("lsp_router"
+  ;;                   "--error=/tmp/lsp_router.err"
+  ;;                   "~/.emacs.d/ruby-lsp_router.conf")))
+  ;;
+  ;; requires: `gem install ruby-lsp`
+  (add-to-list 'eglot-server-programs
+               '((ruby-mode ruby-ts-mode) "ruby-lsp"))
   ;; (add-to-list 'eglot-server-programs
   ;;              ;; https://docs.basedpyright.com/latest/installation/ides/
   ;;              '((python-mode python-ts-mode)
@@ -552,10 +644,12 @@ i  :leaf-defer nil
   ;;                  (:callArgumentNames :json-false)
   ;;                  )))
   )
+
 (leaf eglot-booster
   :ensure t
   :after eglot
   :global-minor-mode t)
+
 (leaf consult-eglot
   :ensure t
   :doc "A consulting-read interface for eglot."
@@ -588,6 +682,13 @@ i  :leaf-defer nil
          ;; ("<backtab>" . corfu-previous)
          )
 )
+(leaf eldoc-box
+  :ensure t
+  :url "https://github.com/casouri/eldoc-box"
+  :doc "Display documentation in a popup box"
+  :hook (
+         (eglot-managed-mode-hook . eldoc-box-hover-at-point-mode)
+         ))
 (leaf kind-icon
   :ensure t
   :after corfu
@@ -634,6 +735,7 @@ i  :leaf-defer nil
   :mode
   (("\\.rb$" . ruby-ts-mode)
 	 ("Gemfile$" . ruby-ts-mode)
+	 ("Steepfile$" . ruby-ts-mode)
 	 ("Capfile$" . ruby-ts-mode)
 	 ("Guardfile$" . ruby-ts-mode)
 	 ("[Rr]akefile$" . ruby-ts-mode))
@@ -774,10 +876,7 @@ i  :leaf-defer nil
          ("C-c C-p m" . copilot-chat-transient-magit)
          )
   :custom (
-           (copilot-chat-model . "gpt-4o")
-           ;; (copilot-chat-model . "o3-mini")
-           ;; (copilot-chat-model . "gemini-2.0-flash-001")
-           ;; (copilot-chat-model . "claude-3.5-sonnet")
+           (copilot-chat-default-model . "gpt-4.1")
            (copilot-chat-prompt-doc . "/doc 以下のコードについてドキュメントを書いて:\n")
            (copilot-chat-prompt-explain . "/explain 日本語で説明:\n")
            (copilot-chat-prompt-fix . "/fix 問題箇所を修正して、修正内容の解説して:\n")
