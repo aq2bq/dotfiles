@@ -4,6 +4,13 @@
 # Ignore files that include dot in name
 /.*
 
+# Ignore from TARGETS
+/.emacs.d/*
+/.config/*
+/bin
+
+projectile-bookmarks.eld
+
 
 # TARGETS
 !/.gitignore
@@ -13,16 +20,12 @@
 !/.emacs.d
 !/.emacs.d/init.el
 !/.emacs.d/init/*.el
+!/.emacs.d/lisp
+!/.emacs.d/lisp/*.el
 !/.emacs.d/Gemfile
 !/.config
-!/.config/fish
 !/.config/fish/functions
 !/.config/fish/config.fish
-!/bin
+
 !/keymaps
 
-# Ignore from TARGETS
-/.emacs.d
-/.config
-
-projectile-bookmarks.eld
