@@ -7,16 +7,9 @@ status --is-interactive; and source (nodenv init -|psub)
 #   fish -c fisher
 # end
 
-# requires:
-# brew tap railwaycat/emacsmacport
-# brew install emacs-mac --with-modern-icon
-alias emacs="/opt/homebrew/opt/emacs-mac/bin/emacs -nw"
-alias julia="/Applications/Julia-1.5.app/Contents/Resources/julia/bin/julia"
 alias be="bundle exec"
 alias diff="delta"
 alias flushdns="dscacheutil -flushcache"
-alias terminal-notifier="reattach-to-user-namespace terminal-notifier"
-alias gf="~/bin/git-foresta | less -RSX" # https://github.com/takaaki-kasai/git-foresta
 alias hd="hexdump -C"
 alias l="less"
 alias ls="lsd"
@@ -24,11 +17,10 @@ alias csv="csview"
 alias chrome="/Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome"
 alias gore="gore -autoimport"
 alias t="open -a Typora"
-alias re="ruby -e"
 alias tf="terraform"
 alias lgtm="figlet -f (random choice (basename -s .flf (ls /opt/homebrew/Cellar/figlet/2.2.5/share/figlet/fonts/*.flf))) LGTM"
-alias techie="cowsay -f (random choice (basename -s .cow (ls /opt/homebrew/Cellar/cowsay/3.04_1/share/cows/*.cow))) テクい！"
-alias llm="ollama run huggingface.co/mmnga/HODACHI-EZO-Common-9B-gemma-2-it-gguf:latest"
+alias techie="cowsay -f (random choice (basename -s .cow (ls /opt/homebrew/Cellar/cowsay/3.8.4/share/cowsay/cows/*.cow))) テクい！"
+alias llm="ollama run gemma3:12b"
 
 set GOROOT (go env GOROOT)
 set GOPATH (go env GOPATH)
@@ -74,13 +66,7 @@ end
 
 
 # デフォルトの翻訳モデル
-set -gx TRANSLATION_MODEL "huggingface.co/mmnga/HODACHI-EZO-Common-9B-gemma-2-it-gguf:latest"
-# set -gx TRANSLATION_MODEL "huggingface.co/mmnga/cyberagent-Mistral-Nemo-Japanese-Instruct-2408-gguf:latest"
-# set -gx TRANSLATION_MODEL "7shi/gemma-2-jpn-translate:2b-instruct-q8_0"
-
-# 共通のプロンプト（{LANG} を言語名に置き換える）
-# @note モデルの違いによって有効なプロンプトが異なる
-# set -gx TRANSLATION_PROMPT "Translate the following text into {LANG}. Output only the translation, and nothing else. Do NOT include greetings, explanations, acknowledgments, or any extra words. Do NOT chat. This is NOT a conversation:"
+set -gx TRANSLATION_MODEL "hf.co/unsloth/DeepSeek-R1-0528-Qwen3-8B-GGUF:Q4_K_XL"
 set -gx TRANSLATION_PROMPT "just output {LANG} translation:"
 
 # 汎用翻訳関数
