@@ -1,5 +1,3 @@
-(load "init-looks-theme")
-
 ;; Highlight current line
 (global-hl-line-mode t)
 ;; メニューバーの非表示
@@ -23,13 +21,13 @@
 
 (when (display-graphic-p)
   ;; GUIモード時の透明度設定
-  (set-frame-parameter (selected-frame) 'alpha '(85 . 85))
-  (add-to-list 'default-frame-alist '(alpha . (85 . 85)))
+  (set-frame-parameter (selected-frame) 'alpha '(90 . 90))
+  (add-to-list 'default-frame-alist '(alpha . (90 . 90)))
 
   (setq use-default-font-for-symbols nil)
 
   ;; フォント設定
-  (let ((size (if (>= (x-display-pixel-width) 4000) 130 120)))
+  (let ((size (if (>= (x-display-pixel-width) 4000) 120 120)))
     (set-face-attribute 'default nil
                         :family "UDEV Gothic 35NFLG"
                         :height size))
@@ -86,10 +84,10 @@
   :custom ((all-the-icons-nerd-fonts-scale-factor . 1.0))
   :config
   (all-the-icons-nerd-fonts-prefer))
-(leaf all-the-icons-dired
+(leaf nerd-icons-dired
   :ensure t
   :if (display-graphic-p)
-  :hook (dired-mode-hook . all-the-icons-dired-mode))
+  :hook (dired-mode-hook . nerd-icons-dired-mode))
 (leaf all-the-icons-ibuffer
   :ensure t
   :if (display-graphic-p)
@@ -136,3 +134,5 @@
            (dashboard-display-icons-p . t)
            (dashboard-icon-type . 'nerd-icons)
            (dashboard-center-content . t)))
+
+(load "init-looks-theme")

@@ -5,6 +5,7 @@
          (ruby-ts-mode-hook . lsp-deferred)
          (python-ts-mode-hook . lsp-deferred)
          (typescript-mode-hook . lsp-deferred)
+         (typescript-ts-mode-hook . lsp-deferred)
          (tsx-ts-mode-hook . lsp-deferred)
          (conf-toml-mode-hook . lsp-deferred) ;; require: `cargo install taplo-cli --features lsp`
          (terraform-mode-hook . lsp-deferred) ;; require `brew install hashicorp/tap/terraform-ls`
@@ -23,12 +24,15 @@
    (lsp-lens-mode . t)
    (lsp-completion-provider . :none) ;; to completion using corfu
    (lsp-enable-links . t)
+   (lsp-disabled-clients . '(pyls pylsp))
 
    ;; ruby --
-   ;; (lsp-solargraph-use-bundler . t)
-   ;; (lsp-solargraph-library-directories . '("~/.rbenv/shims/"))
-   (lsp-disabled-clients . '(rubocop-ls))
-   (lsp-enabled-clients . '(ruby-lsp-ls))
+   ;; solargraphを使う場合
+   (lsp-solargraph-use-bundler . t)
+   (lsp-solargraph-library-directories . '("~/.rbenv/shims/"))
+   ;; ruby-lspを使う場合
+   ;; (lsp-disabled-clients . '(rubocop-ls))
+   ;; (lsp-enabled-clients . '(ruby-lsp-ls))
 ))
 
 (leaf lsp-ui
@@ -55,3 +59,11 @@
   (lsp-ui-sideline-delay . 0.05)
   (lsp-ui-sideline-show-hover . t)
   (lsp-ui-sideline-show-code-actions . t))
+
+(leaf lsp-pyright
+  :ensure t
+  :custom
+  (lsp-pyright-langserver-command . "basedpyright") ;; requires: `uv tool install basedpyright`
+  (lsp-pyright-auto-import-completions . t)
+  (lsp-pyright-typechecking-mode . "basic") ;; off, basic, strict
+  (lsp-pyright-use-library-code-for-types . t))

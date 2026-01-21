@@ -39,5 +39,11 @@
 (leaf goose
   :init
   (require 'goose)
+  :bind (("C-c g" . goose-transient))
   :hook (goose-mode-hook . (lambda ()
-                             (display-line-numbers-mode -1))))
+                             (display-line-numbers-mode -1)))
+  :custom ((goose-program-name .
+                               ;; "GOOSE_LEAD_MODEL=gpt-4.1 GOOSE_MODEL=gpt-4.1 goose"
+                               ;; "GOOSE_LEAD_MODEL=o4-mini GOOSE_MODEL=gpt-4.1 goose"
+                               "goose"
+                               )))

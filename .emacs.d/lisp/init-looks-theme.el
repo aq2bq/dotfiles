@@ -1,3 +1,14 @@
+(custom-set-faces
+ '(default ((t (:background "#13213A"))))
+ ;; vtermなどでTUIを利用すると空白領域に色がついて辛い
+ '(whitespace-trailing ((t (:background nil))))
+ '(trailing-whitespace ((t (:background nil))))
+
+ ;; コメント系(暗すぎると読めない)
+ '(font-lock-comment-face ((t (:foreground "gray"))))
+ '(font-lock-doc-face ((t (:foreground "#FFCC00"))))
+ )
+
 (leaf doom-themes
   :ensure t
   :url "https://github.com/doomemacs/themes"
@@ -23,20 +34,6 @@
   ;; (load-theme 'doom-material t nil))
 
   (doom-themes-neotree-config)
-
-
-  (custom-set-faces
-   '(whitespace-trailing ((t (:background nil))))
-   '(trailing-whitespace ((t (:background nil))))
-   ;; '(font-lock-comment-face ((t (:foreground "snow3"))))
-   ;; '(font-lock-doc-face ((t (:foreground "honeydew2"))))
-   )
-  ;; (when (equal (car custom-enabled-themes) 'doom-ephemeral)
-  ;;   (custom-set-faces
-  ;;    '(whitespace-trailing ((t (:background nil))))
-  ;;    '(trailing-whitespace ((t (:background nil))))
-  ;;    '(font-lock-comment-face ((t (:foreground "snow3"))))
-  ;;    '(font-lock-doc-face ((t (:foreground "honeydew2"))))))
   :custom
   (doom-themes-visual-bell-config . t)
   (doom-themes-enable-italic . t)
@@ -55,13 +52,21 @@
   (doom-ephemeral-brighter-modeline . t)
   )
 
-;; (leaf ef-themes
-;;   :ensure t
-;;   :url "https://github.com/protesilaos/ef-themes"
-;;   :config
-;;   ;; (ef-themes-select 'ef-deuteranopia-dark)
-;;   ;; (ef-themes-select 'ef-dream)
-;;   ;; (ef-themes-select 'ef-elea-dark)
-;;   ;; (ef-themes-select 'ef-trio-dark)
-;;   ;; (ef-themes-select 'ef-tritanopia-dark)
-;;   )
+(leaf ef-themes
+  :ensure t
+  :url "https://github.com/protesilaos/ef-themes"
+  :config
+  ;; (ef-themes-select 'ef-deuteranopia-dark)
+  ;; (ef-themes-select 'ef-dream)
+  ;; (ef-themes-select 'ef-elea-dark)
+  ;; (ef-themes-select 'ef-trio-dark)
+  ;; (ef-themes-select 'ef-tritanopia-dark)
+  )
+
+(leaf rebecca-theme
+  :doc "The future was cooler in the 80's."
+  :url "https://github.com/vic/rebecca-theme"
+  :ensure t
+  :config
+  ;; (load-theme 'rebecca t nil)
+  )

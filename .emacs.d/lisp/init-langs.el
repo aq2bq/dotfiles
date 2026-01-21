@@ -5,6 +5,36 @@
          (prog-mode-hook . electric-indent-local-mode)
          (prog-mode-hook . electric-layout-mode)))
 
+(leaf dockerfile-ts-mode
+  :doc "Major mode for editing Dockerfiles"
+  :mode ("Dockerfile\\'" . dockerfile-ts-mode)
+  :hook (electric-pair-mode . docker-ts-mode)
+  :custom
+  ((docker-ts-indent-offset . 2))
+  :config
+  (add-to-list 'auto-mode-alist '("Dockerfile\\'" . docker-ts-mode)))
+
+(leaf markdown-mode
+  :ensure t
+  :doc "Markdown Modeと久々に向き合う"
+  :url "https://qiita.com/tadsan/items/7bb0099479f647d2c106"
+  :mode ("\\.md\\'" . gfm-mode)
+  :config
+  (setopt markdown-command '("pandoc" "--from=markdown" "--to=html5"))
+  (setopt markdown-fontify-code-blocks-natively t)
+  (setopt markdown-header-scaling t)
+  (setopt markdown-indent-on-enter 'indent-and-new-item))
+
+;; `npm install -g @mermaid-js/mermaid-cli` to use
+(leaf markdown-mermaid
+  :ensure t
+  :url "https://github.com/pasunboneleve/markdown-mermaid"
+  :hook (markdown-mode)
+  :bind (markdown-mode-map
+         ("C-c m" . markdown-mermaid-preview))
+  :custom ((markdown-mermaid-mmdc-path . "~/.nodenv/shims/mmdc"))
+  )
+
 (leaf yaml-mode
   :ensure t
   :mode "\\(\.yml\\|\.yaml\\)")
@@ -107,5 +137,5 @@
   :custom `((py-keep-windows-configuration . t)
             (python-indent-guess-indent-offset . t)
             (python-indent-guess-indent-offset-verbose . nil)
-            (py-python-command . ,(if (executable-find "rye run python") "rye run python"
+            (py-python-command . ,(if (executable-find "uv run python") "uv run python"
                                     "python"))))

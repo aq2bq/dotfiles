@@ -17,6 +17,29 @@
       (other-frame 1)
     (make-frame)))
 
+(defun my/copy-buffer-relative-path ()
+  (interactive)
+  (let* ((filename (buffer-file-name))
+         (project (project-current))
+         (project-root (when project (expand-file-name (project-root project))))
+         (relpath (when (and filename project-root)
+                    (file-relative-name filename project-root))))
+    (cond
+     ((not filename)
+      (message "not file buffer"))
+     ((not project-root)
+      (message "not found project root"))
+     (t
+      (kill-new relpath)
+      (message "kill-new：%s" relpath)))))
+
+(add-hook
+ 'kill-emacs-query-functions
+ (lambda ()
+   (y-or-n-p "Really exit Emacs? ")))
+
+(global-set-key (kbd "C-c C-c c") 'my/copy-buffer-relative-path)
+
 (global-set-key (kbd "C-q") (lambda () (interactive) (my/other-window-or-split 1)))
 (global-set-key (kbd "C-S-q") 'my/other-frame-or-create)
 (global-set-key (kbd "C-h") 'delete-backward-char)
@@ -192,13 +215,14 @@
 ;; Load custom init files
 (add-to-list 'load-path (expand-file-name "lisp" user-emacs-directory))
 
+(load "init-ui")
 (load "init-looks")
 (load "init-completion")
 (load "init-langs")
 (load "init-lsp")
 (load "init-ai")
 (load "init-tools")
-(load "init-ui")
+
 
 (provide 'init)
 
