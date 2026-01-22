@@ -202,14 +202,36 @@ export FZF_DEFAULT_OPTS='--height 40% --layout default --border --cycle'
 function fzf-history-widget() {
   command -v fzf >/dev/null 2>&1 || return 1
 
-  setopt localoptions no_bang_hist
+  local reload_cmd
+  reload_cmd=$(cat <<'EOF'
+cat ~/.zsh_history \
+  | sed 's/^: [0-9]*:[0-9]*;//' \
+  | tac \
+  | awk -v q={q} '
+      seen[$0]++ == 0 {
+        all[++n] = $0
+        if (q != "" && index($0, q)) {
+          hits[++m] = $0
+        }
+      }
+      END {
+        if (q != "" && m > 0) {
+          for (i = 1; i <= m; i++) print hits[i]
+        } else {
+          for (i = 1; i <= n; i++) print all[i]
+        }
+      }
+    '
+EOF
+)
 
   local selected
   selected=$(
-    fc -rl 1 \
-      | sed 's/^[[:space:]]*[0-9]\+[[:space:]]*//' \
-      | awk 'seen[$0]++ == 0' \
-      | fzf --height 40% --layout default --border --cycle --query="$LBUFFER"
+    fzf --no-sort --height 40% --layout default --border --cycle \
+      --query="$LBUFFER" \
+      --bind "start:reload:$reload_cmd" \
+      --bind "change:reload:$reload_cmd" \
+      </dev/null
   )
   if [ -n "$selected" ]; then
     LBUFFER=$selected
