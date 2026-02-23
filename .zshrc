@@ -49,7 +49,7 @@ export PATH
 # --------------------------
 export CHEAT_CONFIG_PATH="$HOME/.config/cheat/conf.yml"
 export LESS='-g -i -M -R -S -W -z-4 -x4'
-export EDITOR=emacsclient
+export EDITOR=vim
 export PGDATA=/usr/local/var/postgress
 export HOMEBREW_INSTALL_CLEANUP=1
 
@@ -76,14 +76,16 @@ random_choice() {
   local fonts=("$FIGLET_FONT_DIR"/*.flf(N))
   (( ${#fonts[@]} )) || return 1
   local idx=$(( RANDOM % ${#fonts[@]} + 1 ))
-  print -r -- "${fonts[$idx]:t:r}"
+  REPLY="${fonts[$idx]:t:r}"
+  print -r -- "$REPLY"
 }
 
 random_choice_cow() {
   local cows=("$COWSAY_COW_DIR"/*.cow(N))
   (( ${#cows[@]} )) || return 1
   local idx=$(( RANDOM % ${#cows[@]} + 1 ))
-  print -r -- "${cows[$idx]:t:r}"
+  REPLY="${cows[$idx]:t:r}"
+  print -r -- "$REPLY"
 }
 
 elisptest() {
@@ -186,6 +188,7 @@ tilex() {
 # --------------------------
 # 40-aliases
 # --------------------------
+alias emacs="/Applications/Emacs.app/Contents/MacOS/Emacs"
 alias be='bundle exec'
 alias diff='delta'
 alias flushdns='dscacheutil -flushcache'
@@ -197,8 +200,15 @@ alias chrome="/Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome"
 alias gore='gore -autoimport'
 alias t='open -a Typora'
 alias tf='terraform'
-alias lgtm="figlet -f $(random_choice) LGTM"
-alias techie="cowsay -f $(random_choice_cow) テクい！"
+function lgtm() {
+  random_choice >/dev/null || return 1
+  figlet -f "$REPLY" LGTM
+}
+
+function techie() {
+  random_choice_cow >/dev/null || return 1
+  cowsay -f "$REPLY" テクい！
+}
 alias llm='ollama run gemma3:12b'
 
 # --------------------------
@@ -283,6 +293,10 @@ EOF
 # --------------------------
 # 80-keybinds
 # --------------------------
+# ZLEをemacsモードに強制設定（EDITOR変数の影響を排除）
+# (これをしないとtmuxの拡張キーサポートを衝突する)
+bindkey -e
+
 zle -N ghq-fzf
 bindkey '^o' ghq-fzf
 
@@ -298,3 +312,8 @@ bindkey '^j' on_enter
 autoload -U add-zsh-hook
 add-zsh-hook precmd on_enter_precmd
 add-zsh-hook preexec on_enter_preexec
+
+# Added by LM Studio CLI (lms)
+export PATH="$PATH:/Users/pememo/.lmstudio/bin"
+# End of LM Studio CLI section
+
