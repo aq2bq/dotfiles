@@ -105,6 +105,7 @@
 
 ;; use flash instead of beeping
 (setq visible-bell t)
+(setq ring-bell-function 'ignore)
 
 ;; Again the emacs default is too low 4k considering that the some of the language server responses are in 800k - 3M range
 ;; https://emacs-lsp.github.io/lsp-mode/page/performance/#increase-the-amount-of-data-which-emacs-reads-from-the-process
@@ -225,4 +226,3 @@
 
 
 (provide 'init)
-

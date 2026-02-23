@@ -20,3 +20,9 @@
   :ensure t
   :custom (vterm-toggle-scope . 'project)
   :bind (("C-s-t" . vterm-toggle)))
+
+(leaf mindstream
+  :doc "quickly write down some thoughts"
+  :url "https://github.com/countvajhula/mindstream"
+  :ensure t
+  :config (mindstream-mode))
