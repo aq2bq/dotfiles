@@ -7,6 +7,8 @@
 # Ignore from TARGETS
 /.emacs.d/*
 /.config/*
+/.config/karabiner/automatic_backups/
+
 /bin
 
 projectile-bookmarks.eld
@@ -26,6 +28,11 @@ projectile-bookmarks.eld
 !/.config
 !/.config/fish/functions
 !/.config/fish/config.fish
+!/.config/karabiner/
+!/.config/karabiner/karabiner.json
+!/.config/karabiner/assets/
+!/.config/karabiner/assets/complex_modifications/
+!/.config/karabiner/assets/complex_modifications/*.json
 
 !/keymaps
 
