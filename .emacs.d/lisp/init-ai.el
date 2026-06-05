@@ -1,8 +1,6 @@
 (leaf copilot
   :ensure t
   :custom
-  ;; 公式SDKを使うようになって以降設定しておかないとなぜか見つけてくれない
-  ;; `(copilot-server-executable . ,(expand-file-name "~/.emacs.d/.cache/copilot/bin/copilot-language-server"))
   (copilot-indent-offset-warning-disable . t)
   (copilot-max-char-warning-disable . t) ;; スキーマ系の長大なファイルで警告が出るので無効化
   :config
@@ -64,7 +62,7 @@
          ("C-c C-p m" . copilot-chat-transient-magit)
          )
   :custom (
-           (copilot-chat-default-model . "gpt-4.1")
+           (copilot-chat-default-model . "claude-sonnet-4.6")
            (copilot-chat-prompt-doc . "/doc 以下のコードについてドキュメントを書いて:\n")
            (copilot-chat-prompt-explain . "/explain 日本語で説明:\n")
            (copilot-chat-prompt-fix . "/fix 問題箇所を修正して、修正内容の解説して:\n")

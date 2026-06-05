@@ -19,6 +19,8 @@
   :doc "Markdown Modeと久々に向き合う"
   :url "https://qiita.com/tadsan/items/7bb0099479f647d2c106"
   :mode ("\\.md\\'" . gfm-mode)
+  :bind ((markdown-mode-map
+          ("C-c C-c c" . my/copy-buffer-relative-path)))
   :config
   (setopt markdown-command '("pandoc" "--from=markdown" "--to=html5"))
   (setopt markdown-fontify-code-blocks-natively t)
@@ -38,6 +40,10 @@
 (leaf yaml-mode
   :ensure t
   :mode "\\(\.yml\\|\.yaml\\)")
+
+(leaf json-ts-mode
+  :ensure t
+  :mode "\\(\.json\\|\.jsonc\\)")
 
 (leaf fish-mode
   :doc "Emacs major mode for fish shell scripts."

@@ -36,12 +36,23 @@
 (leaf orderless
   :doc "補完スタイルの提供"
   :ensure t
-  :custom (completion-styles . '(orderless)))
+  :custom ((completion-styles . '(orderless basic))
+           (completion-category-defaults . nil)
+           (completion-category-overrides . '((file (styles basic partial-completion))))))
 (leaf marginalia
   :ensure t
   :doc "ミニバッファの右側に追加情報を表示する"
   :init (marginalia-mode)
-  :global-minor-mode t)
+  :global-minor-mode t
+  :config
+  ;; Emacs 30.2でバイトコンパイル済みのMarginaliaが`seconds-to-string'を
+  ;; 誤った引数で呼び出す場合があるため、互換関数を明示的に使う。
+  (defun marginalia--time-relative (time)
+    "Format TIME as a relative age."
+    (setq time (max 0 (float-time (time-since time))))
+    (concat (funcall (compat-function seconds-to-string)
+                     time 'expanded 'abbrev)
+            " ago")))
 (leaf vertico
   :doc "ミニバッファ補完UI"
   :ensure t
@@ -134,4 +145,3 @@
   (add-to-list 'completion-at-point-functions #'cape-dabbrev)
   (add-to-list 'completion-at-point-functions #'cape-file)
   (add-to-list 'completion-at-point-functions #'cape-elisp-block))
-
