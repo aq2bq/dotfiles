@@ -1,75 +1,93 @@
-(leaf copilot
+;;; init-ai.el --- AI関連設定 -*- lexical-binding: t; -*-
+
+(defvar my/gptel-commit-instructions-file
+  (expand-file-name "git-commit-instructions.md"
+                    (file-name-directory (or load-file-name buffer-file-name)))
+  "コミットメッセージ生成の指示ファイル。")
+
+(defvar my/gptel-commit-max-diff-chars 30000)
+
+(defun my/gptel-commit--buffer-empty-p ()
+  "コミットバッファの編集領域(コメント行より前)が空なら non-nil。"
+  (save-excursion
+    (goto-char (point-min))
+    (let ((end (if (re-search-forward "^#" nil t)
+                   (match-beginning 0)
+                 (point-max))))
+      (string-empty-p
+       (string-trim (buffer-substring-no-properties (point-min) end))))))
+
+(defvar-local my/gptel-commit--overlay nil)
+
+(defun my/gptel-commit--show-progress ()
+  "バッファ先頭に生成中インジケーターを表示する。"
+  (my/gptel-commit--clear-progress (current-buffer))
+  (let ((ov (make-overlay (point-min) (point-min))))
+    (overlay-put ov 'after-string
+                 (propertize "⏳ コミットメッセージを生成中...\n" 'face 'shadow))
+    (setq my/gptel-commit--overlay ov)))
+
+(defun my/gptel-commit--clear-progress (buf)
+  "BUF の生成中インジケーターを消す。"
+  (when (buffer-live-p buf)
+    (with-current-buffer buf
+      (when my/gptel-commit--overlay
+        (delete-overlay my/gptel-commit--overlay)
+        (setq my/gptel-commit--overlay nil)))))
+
+(defun my/gptel-commit--staged-diff ()
+  "ステージ済み差分を返す。空なら nil。"
+  (let ((diff (shell-command-to-string
+               "git diff --cached --no-ext-diff --find-renames --stat --patch")))
+    (unless (string-empty-p (string-trim diff))
+      (if (> (length diff) my/gptel-commit-max-diff-chars)
+          (concat (substring diff 0 my/gptel-commit-max-diff-chars)
+                  "\n\n[差分が長いためここで省略]")
+        diff))))
+
+(defun my/gptel-insert-commit-message ()
+  "空のコミットバッファに生成したメッセージを非同期で挿入する。"
+  (interactive)
+  (require 'gptel)
+  (when-let* (((my/gptel-commit--buffer-empty-p))
+              (diff (my/gptel-commit--staged-diff))
+              (buf (current-buffer)))
+    (my/gptel-commit--show-progress)
+    (gptel-request
+        (concat "次のステージ済み差分からコミットメッセージを作成してください。\n\n" diff)
+      :system (with-temp-buffer
+                (insert-file-contents my/gptel-commit-instructions-file)
+                (string-trim (buffer-string)))
+      :callback
+      (lambda (response info)
+        ;; reasoning等のcons応答は無視し、文字列(本文)とnil(失敗)だけ扱う
+        (cond
+         ((null response)
+          (my/gptel-commit--clear-progress buf)
+          (message "コミットメッセージ生成に失敗しました: %s"
+                   (plist-get info :status)))
+         ((and (stringp response) (buffer-live-p buf))
+          (my/gptel-commit--clear-progress buf)
+          (with-current-buffer buf
+            ;; 生成待ちの間にユーザーが書き始めていたら挿入しない
+            (when (my/gptel-commit--buffer-empty-p)
+              (save-excursion
+                (goto-char (point-min))
+                (insert (string-trim response) "\n\n"))
+              (message "コミットメッセージを挿入しました")))))))))
+
+(leaf gptel
   :ensure t
-  :custom
-  (copilot-indent-offset-warning-disable . t)
-  (copilot-max-char-warning-disable . t) ;; スキーマ系の長大なファイルで警告が出るので無効化
+  :url "https://github.com/karthink/gptel"
+  :hook ((git-commit-setup-hook . my/gptel-insert-commit-message))
   :config
-  (leaf editorconfig
-    :ensure t)
-  (leaf s
-    :ensure t)
-  (leaf dash
-    :ensure t)
-  :hook (prog-mode-hook . copilot-mode)
-  :bind ((copilot-completion-map
-          ("C-<return>" . copilot-accept-completion)
-          ("C-c TAB" . copilot-accept-completion-by-word)
-          ("C-c f" . copilot-accept-completion-by-line))))
-
-(defun my/copilot-chat-prefer-chep ()
-  ;; 2026-03:
-  ;; copilot.el が同名ライブラリ `copilot-chat.el` を同梱し始めたため、
-  ;; chep/copilot-chat.el と名前衝突する。commit 生成系は chep 側にあるので、
-  ;; `copilot-chat-*` ディレクトリを先頭に寄せて解決順を固定する。
-  "Put newest chep/copilot-chat package directory first in `load-path`."
-  (let* ((elpa-dir (and (boundp 'package-user-dir) package-user-dir))
-         (pattern (and elpa-dir (expand-file-name "copilot-chat-[0-9]*" elpa-dir)))
-         (candidates (if pattern (file-expand-wildcards pattern t) nil))
-         (target (car (sort candidates #'string>))))
-    (when (and target (file-directory-p target))
-      (setq load-path (cons target (delete target load-path))))))
-
-(defun my/copilot-chat-load-chep ()
-  ;; `copilot-chat-git` だけを先に読むと `copilot-chat-backend` が未初期化になりうる。
-  ;; 先にトップレベル `copilot-chat` を明示ロードして必要変数を初期化する。
-  "Load chep/copilot-chat top-level and git module."
-  (my/copilot-chat-prefer-chep)
-  (if (require 'copilot-chat nil t)
-      (require 'copilot-chat-git nil t)
-    nil))
-
-(defun my/copilot-chat-insert-commit-message-safe ()
-  ;; `git-commit-setup-hook` で直接 autoload を踏むと衝突側を引くことがある。
-  ;; chep 側トップレベルを初期化してから呼び出し、失敗は明示エラーにする。
-  "Insert commit message via chep/copilot-chat if available."
-  (if (my/copilot-chat-load-chep)
-      (if (fboundp 'copilot-chat-insert-commit-message)
-          (copilot-chat-insert-commit-message)
-        (user-error
-         "[copilot-chat] `copilot-chat-insert-commit-message` is unavailable"))
-    (user-error "[copilot-chat] failed to load `copilot-chat` modules")))
-
-(leaf copilot-chat
-  :ensure t
-  :url "https://github.com/chep/copilot-chat.el"
-  :init
-  ;; 通常の `M-x copilot-chat*` も含め、名前解決を常に chep 側へ寄せる。
-  (my/copilot-chat-prefer-chep)
-  :bind (
-         ("C-c C-p t" . copilot-chat-transient)
-         ("C-c C-p c" . copilot-chat-transient-buffers)
-         ("C-c C-p c" . copilot-chat-transient-code)
-         ("C-c C-p m" . copilot-chat-transient-magit)
-         )
-  :custom (
-           (copilot-chat-default-model . "claude-sonnet-4.6")
-           (copilot-chat-prompt-doc . "/doc 以下のコードについてドキュメントを書いて:\n")
-           (copilot-chat-prompt-explain . "/explain 日本語で説明:\n")
-           (copilot-chat-prompt-fix . "/fix 問題箇所を修正して、修正内容の解説して:\n")
-           (copilot-chat-prompt-optimize . "/optimize パフォーマンスと可読性を向上させるため、以下のコードを最適化:\n")
-           (copilot-chat-prompt-review . "/review 以下のコードをレビューして:\n"))
-  ;; 既存のコミット自動挿入の操作感は維持しつつ、衝突だけを回避する。
-  :hook (git-commit-setup-hook . my/copilot-chat-insert-commit-message-safe))
+  (setq gptel-backend (gptel-make-ollama "Ollama"
+                        :host "localhost:11434"
+                        :stream nil
+                        ;; thinkingを切らないと生成に10秒以上かかる
+                        :request-params '(:think :json-false :keep_alive "30m")
+                        :models '(gemma4:e4b-mlx))
+        gptel-model 'gemma4:e4b-mlx))
 
 
 (add-to-list 'load-path "~/go/src/github.com/aq2bq/goose.el/")
