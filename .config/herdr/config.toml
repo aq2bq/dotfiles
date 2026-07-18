@@ -31,6 +31,14 @@ switch_tab = ""
 # 直前に操作したペインへ戻る。
 last_pane = "prefix+semicolon"
 
+[[keys.command]]
+key = "prefix+ctrl+g"
+type = "popup"
+command = "tig"
+description = "run tig"
+width = "80%"
+height = "80%"
+
 [ui]
 mouse_capture = true
 pane_borders = false

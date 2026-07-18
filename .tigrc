@@ -1,0 +1,83 @@
+set git-colors = no
+
+# Theme: doom-outrun-electric (approximated in xterm-256 colors)
+#   bg      #0c0a20 -> color233   fg      #f2f3f7 -> color255
+#   base1   #1f1147 -> color17    grey    #546A90 -> color60
+#   fg-alt  #7984D1 -> color104
+#   red     #e61f44 -> color197   orange  #cf433e -> color167
+#   green   #a7da1e -> color148   yellow  #ffd400 -> color220
+#   blue    #1ea8fc -> color39    dk-blue #3F88AD -> color67
+#   magenta #ff2afc -> color201   violet  #df85ff -> color177
+#   cyan    #42c6ff -> color81    teal    #A875FF -> color141
+
+# General
+color default           color255 color233
+color cursor            color255 color17 bold
+color search-result     color233 color220
+color title-focus       color233 color201 bold
+color title-blur        color104 color17
+color status            color148 color233
+color line-number       color60  default
+color delimiter         color60  default
+color date              color67  default
+color author            color177 default
+color id                color81  default
+color mode              color39  default
+color overflow          color197 default
+color directory         color39  default bold
+color file              color255 default
+color file-size         color60  default
+color header            color201 default bold
+color section           color81  default bold
+
+# Diff view
+color diff-header       color201 default bold
+color diff-index        color39  default
+color diff-chunk        color81  default bold
+color diff-stat         color39  default
+color diff-add          color148 default
+color diff-del          color197 default
+color diff-oldmode      color167 default
+color diff-newmode      color220 default
+color "Reported-by:"    color148 default
+
+# Commit headers
+color "Author:"         color177 default
+color "Commit:"         color39  default
+color "Date:"           color67  default
+color "AuthorDate:"     color67  default
+color "CommitDate:"     color67  default
+color "Merge:"          color39  default
+color "Refs:"           color220 default
+
+# Main view refs
+color main-head         color81  default bold
+color main-remote       color141 default bold
+color main-tracked      color141 default bold
+color main-tag          color220 default bold
+color main-local-tag    color220 default
+color main-ref          color39  default
+color graph-commit      color201 default
+
+# Commit graph palette
+color palette-0         color201 default
+color palette-1         color81  default
+color palette-2         color220 default
+color palette-3         color148 default
+color palette-4         color177 default
+color palette-5         color39  default
+color palette-6         color197 default
+color palette-7         color141 default
+
+# Status view
+color stat-staged       color148 default
+color stat-unstaged     color220 default
+color stat-untracked    color167 default
+
+# Tree view
+color tree.header       color201 default bold
+color tree.directory    color39  default bold
+color tree.file         color255 default
+color tree.date         color67  default
+color tree.author       color177 default
+color tree.mode         color60  default
