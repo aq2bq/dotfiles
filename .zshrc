@@ -252,42 +252,22 @@ export FZF_DEFAULT_OPTS='--height 40% --layout default --border --cycle'
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 
 # fzf history (custom; override fzf's default Ctrl-R widget)
+# fc -rl で新しい順に取得（metafyされた履歴ファイルを直接パースしない）し、
+# awkで最新の出現だけ残して重複排除。イベント番号で複数行コマンドも正しく復元。
 function fzf-history-widget() {
   command -v fzf >/dev/null 2>&1 || return 1
 
-  local reload_cmd
-  reload_cmd=$(cat <<'EOF'
-cat ~/.zsh_history \
-  | sed 's/^: [0-9]*:[0-9]*;//' \
-  | tac \
-  | awk -v q={q} '
-      seen[$0]++ == 0 {
-        all[++n] = $0
-        if (q != "" && index($0, q)) {
-          hits[++m] = $0
-        }
-      }
-      END {
-        if (q != "" && m > 0) {
-          for (i = 1; i <= m; i++) print hits[i]
-        } else {
-          for (i = 1; i <= n; i++) print all[i]
-        }
-      }
-    '
-EOF
-)
-
-  local selected
+  local selected num
   selected=$(
-    fzf --no-sort --height 40% --layout default --border --cycle \
-      --query="$LBUFFER" \
-      --bind "start:reload:$reload_cmd" \
-      --bind "change:reload:$reload_cmd" \
-      </dev/null
+    fc -rl 1 |
+      awk '{ cmd = $0; sub(/^[ \t]*[0-9]+\*?[ \t]+/, "", cmd); if (!seen[cmd]++) print }' |
+      fzf --no-sort --exact --height 40% --layout default --border --cycle \
+        --with-nth=2.. --query="$LBUFFER"
   )
   if [ -n "$selected" ]; then
-    LBUFFER=$selected
+    num="${selected#"${selected%%[0-9]*}"}"
+    num="${num%%[^0-9]*}"
+    [ -n "$num" ] && zle vi-fetch-history -n "$num"
     zle reset-prompt
   fi
 }
