@@ -1,3 +1,35 @@
+(defun lsp-booster--advice-json-parse (old-fn &rest args)
+  "Try to parse bytecode instead of json."
+  (or
+   (when (equal (following-char) ?#)
+     (let ((bytecode (read (current-buffer))))
+       (when (byte-code-function-p bytecode)
+         (funcall bytecode))))
+   (apply old-fn args)))
+(advice-add (if (progn (require 'json)
+                       (fboundp 'json-parse-buffer))
+                'json-parse-buffer
+              'json-read)
+            :around
+            #'lsp-booster--advice-json-parse)
+
+(defun lsp-booster--advice-final-command (old-fn cmd &optional test?)
+  "Prepend emacs-lsp-booster command to lsp CMD."
+  (let ((orig-result (funcall old-fn cmd test?)))
+    (if (and (not test?)                             ;; for check lsp-server-present?
+             (not (file-remote-p default-directory)) ;; see lsp-resolve-final-command, it would add extra shell wrapper
+             lsp-use-plists
+             (not (functionp 'json-rpc-connection))  ;; native json-rpc
+             (executable-find "emacs-lsp-booster"))
+        (progn
+          ;; resolve command from exec-path (in case not found in $PATH)
+          (when-let ((command-from-exec-path (executable-find (car orig-result))))
+            (setcar orig-result command-from-exec-path))
+          (message "Using emacs-lsp-booster for %s!" orig-result)
+          (cons "emacs-lsp-booster" orig-result))
+      orig-result)))
+(advice-add 'lsp-resolve-final-command :around #'lsp-booster--advice-final-command)
+
 (leaf lsp-mode
   :ensure t
   :init (yas-global-mode)
@@ -9,7 +41,8 @@
          (tsx-ts-mode-hook . lsp-deferred)
          (conf-toml-mode-hook . lsp-deferred) ;; require: `cargo install taplo-cli --features lsp`
          (terraform-mode-hook . lsp-deferred) ;; require `brew install hashicorp/tap/terraform-ls`
-         (lsp-mode-hook . lsp-ui-mode))
+         (lsp-mode-hook . lsp-ui-mode)
+         (lsp-mode . lsp-enable-which-key-integration))
   :bind
   (("C-c h" . lsp-describe-thing-at-point)
    ("C-c C-c a" . lsp-execute-code-action)
@@ -18,22 +51,31 @@
   :custom
   ((lsp-message-project-root-warning . t)
    (lsp-auto-guess-root . nil)
+   (lsp-headerline-breadcrumb-enable . nil)
    (lsp-restart . 'auto-restart)
    (lsp-log-io . nil)
    (lsp-eldoc-render-all . t)
    (lsp-lens-mode . t)
    (lsp-completion-provider . :none) ;; to completion using corfu
    (lsp-enable-links . t)
-   (lsp-disabled-clients . '(pyls pylsp))
+   (lsp-disabled-clients . '(rubocop-ls pyls pylsp))
+   (lsp-response-timeout . 30)
+   (lsp-log-io . nil) ;; too heavy
 
    ;; ruby --
    ;; solargraphを使う場合
    (lsp-solargraph-use-bundler . t)
    (lsp-solargraph-library-directories . '("~/.rbenv/shims/"))
-   ;; ruby-lspを使う場合
-   ;; (lsp-disabled-clients . '(rubocop-ls))
-   ;; (lsp-enabled-clients . '(ruby-lsp-ls))
-))
+   ;; sorbetを併用
+   ;; (lsp-sorbet-as-add-on . t)
+   ;; (lsp-sorbet-use-bundler . t)
+   ;; ruby-lspを使い場合
+   ;; (lsp-ruby-lsp-use-bundler . t)
+   ;; (lsp-enabled-clients . '(
+   ;;                          ruby-lsp-ls
+   ;;                          ;; solargraph-ls
+   ;;                          ))
+   ))
 
 (leaf lsp-ui
   :ensure t
