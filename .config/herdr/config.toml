@@ -1,0 +1,61 @@
+onboarding = false
+# tmux (~/.tmux.conf) に近い操作感にするための設定
+
+[terminal]
+# 新しいペインとタブは、現在の作業ディレクトリを引き継ぐ。
+new_cwd = "follow"
+
+[keys]
+# tmux と同じプレフィックスキー。
+prefix = "ctrl+t"
+
+# tmux の prefix+r / prefix+ctrl+r に相当。
+reload_config = ["prefix+r", "prefix+ctrl+r"]
+
+# tmux の prefix+c に相当。
+new_tab = "prefix+c"
+
+# tmux の prefix+2（上下分割）と prefix+3（左右分割）に相当。
+split_horizontal = "prefix+2"
+split_vertical = "prefix+3"
+
+# 数字によるタブ移動は上記の分割キーと衝突するため無効にする。
+# 1..9 しか指定できない
+switch_tab = ""
+
+# tmux の prefix+ctrl+k / prefix+k に相当。
+# close_pane = "prefix+ctrl+k"
+# close_tab = "prefix+k"
+
+# prefix+ctrl+t はherdrの予約操作と衝突するため、tmux標準と同じ ; を使う。
+# 直前に操作したペインへ戻る。
+last_pane = "prefix+semicolon"
+
+[ui]
+mouse_capture = true
+pane_borders = false
+pane_gaps = false
+
+# tmux と同様、名前の入力を挟まずに新しいタブを作成する。
+prompt_new_tab_name = false
+
+[theme]
+name = "terminal"
+
+[experimental]
+# https://syobochim.hatenablog.com/entry/2026/07/15/103749
+# TUI がカーソルを隠していても、IME が候補ウィンドウの位置を
+# 追えるように外側のターミナルへカーソル位置を公開する
+reveal_hidden_cursor_for_cjk_ime = true
+# 上の設定を適用するエージェント（フォーカス中のペインで判定）
+cjk_ime_agents = ["claude", "codex", "opencode"]
+# IME 用に表示するカーソルの形状
+cjk_ime_cursor_shape = "steady_block"
+# prefix モードの間だけ macOS の入力ソースを ASCII 系に切り替え、抜けたら元の入力ソースに戻す
+switch_ascii_input_source_in_prefix = true
+
+
+# requirements: integrations
+# herdr integration install claude
+# herdr integration install codex
+# herdr integration install opencode
