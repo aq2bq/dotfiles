@@ -1,5 +1,5 @@
 (custom-set-faces
- '(default ((t (:background "#13213A"))))
+ ;; '(default ((t (:background "#13213A"))))
  ;; vtermなどでTUIを利用すると空白領域に色がついて辛い
  '(whitespace-trailing ((t (:background nil))))
  '(trailing-whitespace ((t (:background nil))))
@@ -15,9 +15,9 @@
   :config
   ;; POP系
   ;; (load-theme 'doom-dracula t nil)
-  ;; (load-theme 'doom-outrun-electric t nil)
+  (load-theme 'doom-outrun-electric t nil)
   ;; 紫系
-  (load-theme 'doom-laserwave t nil)
+  ;; (load-theme 'doom-laserwave t nil)
   ;; (load-theme 'doom-challenger-deep t nil)
   ;; (load-theme 'doom-shades-of-purple t nil)
   ;; 暗い系
