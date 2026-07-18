@@ -16,6 +16,8 @@ path_prepend() {
 export ANDROID_SDK_ROOT="$HOME/Library/Android/sdk"
 export ANDROID_AVD_HOME="$HOME/.android/avd"
 
+export XDG_CONFIG_HOME="$HOME/.config"
+
 # Language paths
 export GOPATH="${GOPATH:-$HOME/go}"
 
@@ -313,7 +315,13 @@ autoload -U add-zsh-hook
 add-zsh-hook precmd on_enter_precmd
 add-zsh-hook preexec on_enter_preexec
 
-# Added by LM Studio CLI (lms)
-export PATH="$PATH:/Users/pememo/.lmstudio/bin"
-# End of LM Studio CLI section
+# bun completions
+[ -s "$HOME/.bun/_bun" ] && source "$HOME/.bun/_bun"
 
+# pnpm
+export PNPM_HOME="$HOME/Library/pnpm"
+case ":$PATH:" in
+  *":$PNPM_HOME/bin:"*) ;;
+  *) export PATH="$PNPM_HOME/bin:$PATH" ;;
+esac
+# pnpm end
