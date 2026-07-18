@@ -39,6 +39,15 @@ description = "run tig"
 width = "80%"
 height = "80%"
 
+[[keys.command]]
+# `herdr plugin install maro114510/herdr-toggle-popup`
+key = "alt+l"
+type = "plugin_action"
+command = "maro114510.toggle-popup.toggle-shell"
+description = "Toggle popup shell"
+scope = "directory"
+popup_size.shell = "right:0.5:3 down:0.5:3"
+
 [ui]
 mouse_capture = true
 pane_borders = false
