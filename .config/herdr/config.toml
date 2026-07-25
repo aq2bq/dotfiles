@@ -40,13 +40,21 @@ width = "80%"
 height = "80%"
 
 [[keys.command]]
-# `herdr plugin install maro114510/herdr-toggle-popup`
-key = "alt+l"
-type = "plugin_action"
-command = "maro114510.toggle-popup.toggle-shell"
-description = "Toggle popup shell"
-scope = "directory"
-popup_size.shell = "right:0.5:3 down:0.5:3"
+key = "prefix+ctrl+s"
+type = "popup"
+command = "exec $SHELL"
+description = "run shell"
+width = "80%"
+height = "80%"
+
+[[keys.command]]
+# `brew install modem-dev/tap/hunk`
+key = "prefix+ctrl+h"
+type = "popup"
+command = "hunk show"
+description = "run hunk"
+width = "80%"
+height = "80%"
 
 [ui]
 mouse_capture = true
