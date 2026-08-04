@@ -32,11 +32,12 @@ switch_tab = ""
 last_pane = "prefix+semicolon"
 
 [[keys.command]]
+# `brew install tig`
 key = "prefix+ctrl+g"
 type = "popup"
 command = "tig"
 description = "run tig"
-width = "80%"
+width = "90%"
 height = "80%"
 
 [[keys.command]]
@@ -44,16 +45,16 @@ key = "prefix+ctrl+s"
 type = "popup"
 command = "exec $SHELL"
 description = "run shell"
-width = "80%"
+width = "90%"
 height = "80%"
 
 [[keys.command]]
 # `brew install modem-dev/tap/hunk`
 key = "prefix+ctrl+h"
 type = "popup"
-command = "hunk show"
-description = "run hunk"
-width = "80%"
+command = "hunk diff"
+description = "run hunk diff"
+width = "90%"
 height = "80%"
 
 [ui]
