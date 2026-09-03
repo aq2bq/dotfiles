@@ -1,0 +1,106 @@
+# iTerm2 3.6.11 の既定プロファイルを Ghostty 1.3.1 向けに移植した設定。
+# Ghostty の設定再読込は Command + Shift + ,。一部は新しいウインドウか再起動後に反映される。
+#
+# official docs:
+# - https://ghostty.org/docs/config
+# - https://ghostty.org/docs/config/reference
+# - https://ghostty.org/docs/config/keybind
+
+# フォント
+# iTerm2 の ASCII 用フォントは Monoid Retina 12 pt。
+font-family = Monoid
+font-style = Retina
+font-size = 12
+
+# iTerm2 の非 ASCII 用フォントは Cica Regular 15 pt。
+# Ghostty はフォールバックフォントだけを 15 pt にできないため、Cica の字体を 12 pt で使う。
+font-codepoint-map = U+0080-U+10FFFF=Cica
+
+# 色
+# iTerm2 に保存された Srcery 系配色。P3 だった背景・青・明るい青は同じ見え方の sRGB に変換済み。
+background = #0b1525
+foreground = #fce8c3
+bold-color = #fce8c3
+
+palette = 0=#1c1b19
+palette = 1=#ef2f27
+palette = 2=#519f50
+palette = 3=#fbb829
+palette = 4=#94d3ff
+palette = 5=#e02c6d
+palette = 6=#0aaeb3
+palette = 7=#d0bfa1
+palette = 8=#918175
+palette = 9=#f75341
+palette = 10=#98bc37
+palette = 11=#fed06e
+palette = 12=#bae0fe
+palette = 13=#ff5c8f
+palette = 14=#53fdeb
+palette = 15=#fce8c3
+
+selection-foreground = #1c1b19
+selection-background = #fce8c3
+
+cursor-style = block
+cursor-style-blink = false
+cursor-color = #fce8c3
+cursor-text = #1c1b19
+
+# iTerm2 の透明度 0.1538347739 は、Ghostty では不透明度 0.8461652261 に相当する。
+background-opacity = 0.8461652261
+background-opacity-cells = true
+background-blur = false
+
+# ウインドウ
+# iTerm2 の既定グリッドは 80 列 x 25 行。余白は iTerm2 の標準値で左右 5 pt、上下 2 pt。
+window-width = 80
+window-height = 25
+window-padding-x = 5
+window-padding-y = 2
+window-padding-balance = true
+window-theme = dark
+macos-titlebar-style = tabs
+
+# iTerm2 は終了時のセッション復元を無効にしている。
+window-save-state = never
+
+# iTerm2 の新規セッションはホームディレクトリと既定の 12 pt から始まる。
+working-directory = home
+window-inherit-working-directory = false
+tab-inherit-working-directory = false
+split-inherit-working-directory = false
+window-inherit-font-size = false
+
+# 操作
+# Command + R で Ghostty の設定を再読込する。既定の Command + Shift + , も引き続き使える。
+keybind = super+r=reload_config
+
+# iTerm2 の左右 Option キーは Esc+入力、すなわち端末の Meta キーとして動作する。
+macos-option-as-alt = true
+
+# iTerm2 と同じ端末識別子にして、端末アプリケーションの分岐を近づける。
+term = xterm-256color
+
+# Ghostty のシェル連携がプロンプト上だけカーソルをバーへ変えないようにする。
+shell-integration-features = no-cursor
+
+# iTerm2 の無制限スクロールバックに対し、Ghostty には無制限値がない。
+# 1,073,741,824 byte（1 GiB）を端末サーフェス1面あたりの実用上の上限とする。
+scrollback-limit = 1073741824
+
+# iTerm2 と同じく、選択時にコピーし、右クリックでメニューを開き、端末からのクリップボード操作を許可する。
+copy-on-select = true
+right-click-action = context-menu
+clipboard-read = allow
+clipboard-write = allow
+
+# iTerm2 は終了確認を表示せず、非アクティブな分割ペインも暗くしない。
+confirm-close-surface = false
+unfocused-split-opacity = 1
+
+# iTerm2 のベルは無音で視覚通知を使う。Ghostty では枠と Dock の通知が最も近い。
+bell-features = no-system,no-audio,attention,no-title,border
+
+# SSH接続中の警告を各ペイン上端へ常時表示するため、OSC 9;4 の進捗バーを有効にする。
+progress-style = true
