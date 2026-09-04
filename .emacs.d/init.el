@@ -94,14 +94,11 @@
 (setq mouse-drag-copy-region t)
 
 ;; for support `ls --dired`
-(let ((gls (substring (shell-command-to-string "which gls") 0 -1)))
-  (if (file-exists-p gls) (setq insert-directory-program gls)))
+(when-let ((gls (executable-find "gls")))
+  (setq insert-directory-program gls))
 
 ;; enable paste to region
 (delete-selection-mode t)
-
-;; Enable copy mouse drag region
-(setq mouse-drag-copy-region t)
 
 ;; use flash instead of beeping
 (setq visible-bell t)
@@ -169,7 +166,7 @@
   :custom `((custom-file . ,(locate-user-emacs-file "custom.el"))))
 
 
-(leaf save-hist
+(leaf savehist
   :doc "Save minibuffer history"
   :tag "builtin"
   :custom ((savehist-mode . t)
@@ -190,11 +187,10 @@
   (("C-c r" . anzu-query-replace)
    ("C-c RET" . anzu-query-replace-at-cursor-thing))
   :custom
-  ((global-anzu-mode . t)
-   (anzu-mode-lighter . "")
-   ((anzu-deactivate-region . t)
-    (anzu-deactivate-region . t)
-    (anzu-search-threshold . 1000))))
+  ((anzu-mode-lighter . "")
+   (anzu-deactivate-region . t)
+   (anzu-search-threshold . 1000))
+  :global-minor-mode global-anzu-mode)
 
 
 ;; - ref: Emacs 29 でTree-sitterを利用してシンタックスハイライトする
@@ -205,11 +201,12 @@
 (leaf treesit-auto
   :ensure t
   :url "https://github.com/renzmann/treesit-auto"
-  :global-minor-mode global-treesit-auto-mode
-  :custom ((global-treesit-auto-modes . '((not ruby-mode)(not rust-mode)))
-           (treesit-auto-install . t))
+  :require t
+  :custom ((treesit-auto-install . t))
   :config
-  (global-treesit-auto-mode))
+  (setq treesit-auto-langs (delete 'ruby treesit-auto-langs))
+  (setq treesit-auto-langs (delete 'rust treesit-auto-langs))
+  (global-treesit-auto-mode 1))
 
 
 ;;;;

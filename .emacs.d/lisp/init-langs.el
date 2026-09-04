@@ -6,13 +6,9 @@
          (prog-mode-hook . electric-layout-mode)))
 
 (leaf dockerfile-ts-mode
-  :doc "Major mode for editing Dockerfiles"
-  :mode ("Dockerfile\\'" . dockerfile-ts-mode)
-  :hook (electric-pair-mode . docker-ts-mode)
-  :custom
-  ((docker-ts-indent-offset . 2))
-  :config
-  (add-to-list 'auto-mode-alist '("Dockerfile\\'" . docker-ts-mode)))
+  :tag "builtin"
+  :mode
+  ("Dockerfile\\'" . dockerfile-ts-mode))
 
 (leaf markdown-mode
   :ensure t
@@ -31,11 +27,9 @@
 (leaf markdown-mermaid
   :ensure t
   :url "https://github.com/pasunboneleve/markdown-mermaid"
-  :hook (markdown-mode)
   :bind (markdown-mode-map
          ("C-c m" . markdown-mermaid-preview))
-  :custom ((markdown-mermaid-mmdc-path . "~/.nodenv/shims/mmdc"))
-  )
+  :custom ((markdown-mermaid-mmdc-path . "~/.nodenv/shims/mmdc")))
 
 (leaf yaml-mode
   :ensure t
@@ -54,12 +48,13 @@
 (leaf ruby-ts-mode
   :mode
   (("\\.rb$" . ruby-ts-mode)
-	 ("Gemfile$" . ruby-ts-mode)
-	 ("Steepfile$" . ruby-ts-mode)
-	 ("Capfile$" . ruby-ts-mode)
-	 ("Guardfile$" . ruby-ts-mode)
-	 ("[Rr]akefile$" . ruby-ts-mode))
-  :hook (electric-pair-mode rubocop-mode eldoc-mode ruby-electric-mode)
+   ("Gemfile$" . ruby-ts-mode)
+   ("Steepfile$" . ruby-ts-mode)
+   ("Capfile$" . ruby-ts-mode)
+   ("Guardfile$" . ruby-ts-mode)
+   ("[Rr]akefile$" . ruby-ts-mode))
+  :hook
+  ((ruby-ts-mode-hook . rubocop-mode))
   :config
   ;; (leaf ruby-electric
   ;;   :ensure t)
@@ -82,7 +77,6 @@
   :mode
   (("\\.ts$" . typescript-ts-mode)
    ("\\.tsx$" . typescript-ts-mode))
-  :hook (electric-pair-mode eldoc-mode)
   :custom
   ((typescript-indent-level . 2)))
 
@@ -91,8 +85,11 @@
   ;; :hook ((eglot-ensure))
   :custom
   ((gofmt-command . "goimports"))
+  :hook
+  (go-mode-hook
+   . (lambda ()
+       (add-hook 'before-save-hook #'gofmt-before-save nil t)))
   :config
-  (add-hook 'before-save-hook 'gofmt-before-save)
   (leaf gotest
     :doc "Run Go tests and programs from Emacs"
     :ensure t
@@ -143,5 +140,5 @@
   :custom `((py-keep-windows-configuration . t)
             (python-indent-guess-indent-offset . t)
             (python-indent-guess-indent-offset-verbose . nil)
-            (py-python-command . ,(if (executable-find "uv run python") "uv run python"
+            (py-python-command . ,(if (executable-find "uv") "uv run python"
                                     "python"))))
