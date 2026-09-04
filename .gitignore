@@ -22,6 +22,7 @@ projectile-bookmarks.eld
 !/.zshrc
 !/.emacs.d
 !/.emacs.d/init.el
+!/.emacs.d/early-init.el
 !/.emacs.d/init/*.el
 !/.emacs.d/lisp
 !/.emacs.d/lisp/*.el
