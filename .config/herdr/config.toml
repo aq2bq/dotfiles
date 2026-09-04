@@ -4,11 +4,6 @@
 # 1. herdr server stop
 # 2. herdr session attach default
 
-
-
-onboarding = false
-# tmux (~/.tmux.conf) に近い操作感にするための設定
-
 [terminal]
 # 新しいペインとタブは、現在の作業ディレクトリを引き継ぐ。
 new_cwd = "follow"
@@ -86,14 +81,6 @@ description = "run hunk diff"
 width = "90%"
 height = "80%"
 
-[[keys.command]]
-# https://github.com/zenbu-labs/terminal-browser
-# `herdr plugin install zenbu-labs/terminal-browser/herdr-plugin`
-key = "prefix+b"
-type = "shell"
-command = '"${HERDR_BIN_PATH}" plugin pane open --plugin official.browser --entrypoint browser --placement split --direction right --focus'
-description = "open browser in right split"
-
 [ui]
 mouse_capture = true
 pane_borders = false
@@ -137,3 +124,4 @@ kitty_graphics = true
 
 # just install:
 # herdr plugin install shibayu36/herdr-equalize-panes
+# herdr plugin install zenbu-labs/terminal-browser/herdr-plugin
