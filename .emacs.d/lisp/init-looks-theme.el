@@ -1,8 +1,8 @@
 (custom-set-faces
  ;; '(default ((t (:background "#13213A"))))
  ;; vtermなどでTUIを利用すると空白領域に色がついて辛い
- '(whitespace-trailing ((t (:background nil))))
- '(trailing-whitespace ((t (:background nil))))
+ '(whitespace-trailing ((t (:background unspecified))))
+ '(trailing-whitespace ((t (:background unspecified))))
 
  ;; コメント系(暗すぎると読めない)
  '(font-lock-comment-face ((t (:foreground "gray"))))
