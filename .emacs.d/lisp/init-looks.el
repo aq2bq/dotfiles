@@ -1,3 +1,6 @@
+;; (Macのみ) タイトルバーを透過させる
+(add-to-list 'default-frame-alist '(ns-transparent-titlebar . t))
+
 ;; Highlight current line
 (global-hl-line-mode t)
 ;; メニューバーの非表示
@@ -5,8 +8,12 @@
 ;; ツールバー(GUI)
 (tool-bar-mode 0)
 
+(window-divider-mode 0)
+
 ;; ウィンドウの境界線を表示
-(window-divider-mode 1)
+(window-divider-mode 0)
+
+(scroll-bar-mode 0)
 
 ;; highlight a blank-space of end of line
 (setq-default show-trailing-whitespace t)
@@ -92,17 +99,6 @@
   :ensure t
   :if (display-graphic-p)
   :hook (ibuffer-mode-hook . all-the-icons-ibuffer-mode))
-(leaf centaur-tabs
-  :ensure t
-  :url "https://github.com/ema2159/centaur-tabs"
-  :config (centaur-tabs-mode t)
-  :bind ((centaur-tabs-mode-map
-          ("C-s-n" . centaur-tabs-forward-tab)
-          ("C-s-p" . centaur-tabs-backward-tab)))
-  :custom ((centaur-tabs-set-icons . t)
-           (centaur-tabs-style . "chamfer")
-           (centaur-tabs-set-bar . "over")) ;; To display an overline over the selected tab
-  )
 (leaf dashboard
   :ensure t
   :doc "An extensible emacs startup screen showing you what’s most important."

@@ -26,12 +26,6 @@
   :ensure t
   :hook ((prog-mode-hook . rainbow-delimiters-mode)))
 
-
-(leaf topsy
-  :doc "simple alternative to `semantic-stickyfunc-mode`"
-  :ensure t
-  :hook (prog-mode-hook . topsy-mode))
-
 (leaf rotate
   :doc "Rotate the current buffer to the next or previous buffer in the current window"
   :url "https://github.com/daichirata/emacs-rotate"
