@@ -1,28 +1,8 @@
 ;; 括弧を自動で補完する
 (electric-pair-mode 1)
 
-;; Highlight paren
-(show-paren-mode 1)
-
 ;; replace inputting yes-no to y-n
 (fset 'yes-or-no-p 'y-or-n-p)
-
-(leaf flymake
-  :ensure t
-  :bind (flymake-mode-map
-         ("C-x C-p" . flymake-goto-prev-error)
-         ("C-x C-n" . flymake-goto-next-error))
-  :custom ((flymake-no-changes-timeout . 5)  ;; チェックの頻度を減らす場合は値(秒)を増やす
-           (flymake-proc-legacy-flymake . t) ;; エラーメッセージのポップアップ
-           (flymake-start-syntax-check-on-newline . t) ;; 行追加するごとにチェックするか
-           (flymake-start-syntax-check-on-find-file . t) ;; ファイルを開いたときにチェックするか
-           (flymake-start-on-save-buffer . t)  ;; 保存時のみチェック
-           (flymake-diagnostic-functions . '(flymake-proc-legacy-flymake)))
-  :config
-  (set-face-foreground 'flymake-errline "white")
-  (set-face-background 'flymake-errline "red4")
-  (set-face-foreground 'flymake-warnline "white")
-  (set-face-background 'flymake-warnline "goldenrod3"))
 
 (leaf paren
   :doc "highlight matching paren"

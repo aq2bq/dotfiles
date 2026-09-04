@@ -64,6 +64,14 @@
   (corfu-popupinfo-mode 1))
 
 
+(leaf kind-icon
+  :ensure t
+  :after corfu
+  :custom
+  ((kind-icon-default-face . 'corfu-default))
+  :config (add-to-list 'corfu-margin-formatters #'kind-icon-margin-formatter))
+
+
 ;; Additional completion-at-point backends
 (leaf cape
   :ensure t

@@ -6,7 +6,7 @@
 (tool-bar-mode 0)
 
 ;; ウィンドウの境界線を表示
-(setq window-divider-mode t)
+(window-divider-mode 1)
 
 ;; highlight a blank-space of end of line
 (setq-default show-trailing-whitespace t)
@@ -21,8 +21,8 @@
 
 (when (display-graphic-p)
   ;; GUIモード時の透明度設定
-  (set-frame-parameter (selected-frame) 'alpha '(90 . 90))
-  (add-to-list 'default-frame-alist '(alpha . (90 . 90)))
+  (set-frame-parameter (selected-frame) 'alpha '(85 . 85))
+  (add-to-list 'default-frame-alist '(alpha . (85 . 85)))
 
   (setq use-default-font-for-symbols nil)
 
@@ -92,18 +92,6 @@
   :ensure t
   :if (display-graphic-p)
   :hook (ibuffer-mode-hook . all-the-icons-ibuffer-mode))
-(leaf all-the-icons-completion
-  :ensure t
-  :if (display-graphic-p)
-  :hook (marginalia-mode-hook . all-the-icons-completion-marginalia-setup)
-  :init (all-the-icons-completion-mode))
-(leaf kind-icon
-  :ensure t
-  :after corfu
-  :custom
-  ((kind-icon-default-face . 'corfu-default))
-  :config (add-to-list 'corfu-margin-formatters #'kind-icon-margin-formatter))
-
 (leaf centaur-tabs
   :ensure t
   :url "https://github.com/ema2159/centaur-tabs"

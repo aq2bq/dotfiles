@@ -36,6 +36,13 @@
   :global-minor-mode marginalia-mode)
 
 
+(leaf all-the-icons-completion
+  :ensure t
+  :if (display-graphic-p)
+  :hook (marginalia-mode-hook . all-the-icons-completion-marginalia-setup)
+  :init (all-the-icons-completion-mode))
+
+
 ;; Actions on completion candidates
 (leaf embark
   :ensure t
