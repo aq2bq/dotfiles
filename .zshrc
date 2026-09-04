@@ -12,6 +12,10 @@ path_prepend() {
   [[ -d "$1" ]] && path=("$1" $path)
 }
 
+# Homebrew prefix
+BREW_PREFIX="/opt/homebrew"
+[[ -d "$BREW_PREFIX" ]] || BREW_PREFIX="/usr/local"
+
 # SDK paths
 export ANDROID_SDK_ROOT="$HOME/Library/Android/sdk"
 export ANDROID_AVD_HOME="$HOME/.android/avd"
@@ -20,29 +24,19 @@ export XDG_CONFIG_HOME="$HOME/.config"
 
 # Language paths
 export GOPATH="${GOPATH:-$HOME/go}"
-
-# Optional Ruby gems path (avoid errors if Ruby is missing)
-ruby_gem_bin=""
-if command -v ruby >/dev/null 2>&1; then
-  ruby_gem_bin="$(ruby -e 'print Gem.user_dir' 2>/dev/null)/bin"
-fi
+export PNPM_HOME="$HOME/Library/pnpm"
+export BUN_INSTALL="$HOME/.bun"
 
 path_prepend "$HOME/.local/bin"
 path_prepend "$ANDROID_SDK_ROOT/emulator"
 path_prepend "$ANDROID_SDK_ROOT/platform-tools"
 path_prepend "$GOPATH/bin"
-path_prepend "$ruby_gem_bin"
-path_prepend "$HOME/.rbenv/shims"
 path_prepend "$HOME/.cargo/bin"
-path_prepend "$HOME/nodenv/shims"
-path_prepend /opt/homebrew/bin
-
-# bun
-export BUN_INSTALL="$HOME/.bun"
+path_prepend "$BREW_PREFIX/bin"
 path_prepend "$BUN_INSTALL/bin"
-
-# Antigravity
 path_prepend "$HOME/.antigravity/antigravity/bin"
+path_prepend "$PNPM_HOME/bin"
+path_prepend "$BREW_PREFIX/opt/openjdk/bin"
 
 export PATH
 
@@ -53,11 +47,14 @@ export CHEAT_CONFIG_PATH="$HOME/.config/cheat/conf.yml"
 export LESS='-g -i -M -R -S -W -z-4 -x4'
 export EDITOR=vim
 export PGDATA=/usr/local/var/postgress
-export HOMEBREW_INSTALL_CLEANUP=1
 
 # --------------------------
 # 20-tools init
 # --------------------------
+if command -v rbenv >/dev/null 2>&1; then
+  eval "$(rbenv init - --no-rehash zsh)"
+fi
+
 if command -v nodenv >/dev/null 2>&1; then
   eval "$(nodenv init -)"
 fi
@@ -69,8 +66,6 @@ fi
 # --------------------------
 # 30-functions
 # --------------------------
-BREW_PREFIX="/opt/homebrew"
-[[ -d /opt/homebrew ]] || BREW_PREFIX="/usr/local"
 FIGLET_FONT_DIR="$BREW_PREFIX/share/figlet/fonts"
 COWSAY_COW_DIR="$BREW_PREFIX/share/cowsay/cows"
 
@@ -96,7 +91,9 @@ elisptest() {
 
 # vterm_printf function for Emacs vterm
 vterm_printf() {
-  if [ -n "$TMUX" ] && [ "$TERM" = "screen" ] || [ "$TERM" = "tmux" ]; then
+  if [ -n "$TMUX" ] \
+      && { [ "${TERM%%-*}" = "tmux" ] \
+           || [ "${TERM%%-*}" = "screen" ]; }; then
     printf "\ePtmux;\e\e]%s\007\e\\" "$1"
   elif [ "${TERM%%-*}" = "screen" ]; then
     printf "\eP\e]%s\007\e\\" "$1"
@@ -146,46 +143,6 @@ function on_enter_preexec() {
   unset _on_enter_key
 }
 
-# tilex: tmuxペインを一括生成してCLIを並列実行するランチャー
-# from: https://zenn.dev/pepabo/articles/f3af8a9262180d
-# tilex: <number> 個のペインで <command> を並列実行
-# 使い方: tilex 4 -- python script.py
-tilex() {
-  local count session="multirun"
-
-  # ---------- 引数パース ----------
-  while (($#)); do
-    case $1 in
-      --) shift; break ;;
-      [0-9]*) count=$1; shift ;;
-      *) echo "Usage: tilex <number> -- <command>"; return 1 ;;
-    esac
-  done
-  [[ -z $count || $# -eq 0 ]] && { echo "Usage: tilex <number> -- <command>"; return 1; }
-
-  local cmd="$*"
-
-  # ---------- セッション準備 ----------
-  if [[ -z $TMUX ]]; then
-    tmux new-session -d -s "$session" "$cmd"
-    target="$session"
-    created=1               # 1ペイン目は new-session で生成済み
-  else
-    target="."              # 現ウィンドウ
-    created=0
-  fi
-
-  # ---------- ペイン生成 ----------
-  for ((i = created; i < count; i++)); do
-    tmux split-window -t "$target" "$cmd" && ((created++))
-  done
-
-  # ---------- レイアウト整形と接続 ----------
-  tmux select-layout -t "$target" tiled
-  [[ -z $TMUX ]] && tmux attach-session -t "$session"
-
-  echo "✅ tilex: created $created/$count pane(s)."
-}
 
 # --------------------------
 # 40-aliases
@@ -224,11 +181,9 @@ autoload -Uz compinit && compinit
 HISTSIZE=20000
 SAVEHIST=20000
 HISTFILE="$HOME/.zsh_history"
+setopt SHARE_HISTORY
 setopt HIST_IGNORE_DUPS
 setopt HIST_IGNORE_SPACE
-setopt SHARE_HISTORY
-setopt APPEND_HISTORY
-setopt EXTENDED_HISTORY
 
 # --------------------------
 # 70-prompt & plugins
@@ -238,8 +193,8 @@ if command -v starship >/dev/null 2>&1; then
 fi
 
 # zsh-autosuggestions (similar to fish autosuggestion)
-if [ -f /opt/homebrew/share/zsh-autosuggestions/zsh-autosuggestions.zsh ]; then
-  source /opt/homebrew/share/zsh-autosuggestions/zsh-autosuggestions.zsh
+if [ -f "$BREW_PREFIX/share/zsh-autosuggestions/zsh-autosuggestions.zsh" ]; then
+  source "$BREW_PREFIX/share/zsh-autosuggestions/zsh-autosuggestions.zsh"
 fi
 
 # zoxide
@@ -297,11 +252,3 @@ add-zsh-hook preexec on_enter_preexec
 
 # bun completions
 [ -s "$HOME/.bun/_bun" ] && source "$HOME/.bun/_bun"
-
-# pnpm
-export PNPM_HOME="$HOME/Library/pnpm"
-case ":$PATH:" in
-  *":$PNPM_HOME/bin:"*) ;;
-  *) export PATH="$PNPM_HOME/bin:$PATH" ;;
-esac
-# pnpm end

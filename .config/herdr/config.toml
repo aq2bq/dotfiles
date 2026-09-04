@@ -1,3 +1,11 @@
+# homebrewでセットアップしたのでセルフアップデートであるところの`herdr update`, `herdr update --handoff`を利用できない
+# セッションを活かしたままアップデートを適用するには:
+#
+# 1. herdr server stop
+# 2. herdr session attach default
+
+
+
 onboarding = false
 # tmux (~/.tmux.conf) に近い操作感にするための設定
 
@@ -49,13 +57,42 @@ width = "90%"
 height = "80%"
 
 [[keys.command]]
+# https://www.hunk.dev/
 # `brew install modem-dev/tap/hunk`
-key = "prefix+ctrl+h"
+key = "prefix+h"
 type = "popup"
 command = "hunk diff"
 description = "run hunk diff"
 width = "90%"
 height = "80%"
+
+[[keys.command]]
+# https://www.hunk.dev/
+# `brew install modem-dev/tap/hunk`
+key = "prefix+ctrl+h"
+type = "popup"
+command = "hunk diff --staged"
+description = "run hunk diff --staged"
+width = "90%"
+height = "80%"
+
+[[keys.command]]
+# https://www.hunk.dev/
+# `brew install modem-dev/tap/hunk`
+key = "prefix+shift+h"
+type = "popup"
+command = "hunk show"
+description = "run hunk diff"
+width = "90%"
+height = "80%"
+
+[[keys.command]]
+# https://github.com/zenbu-labs/terminal-browser
+# `herdr plugin install zenbu-labs/terminal-browser/herdr-plugin`
+key = "prefix+b"
+type = "shell"
+command = '"${HERDR_BIN_PATH}" plugin pane open --plugin official.browser --entrypoint browser --placement split --direction right --focus'
+description = "open browser in right split"
 
 [ui]
 mouse_capture = true
@@ -64,6 +101,16 @@ pane_gaps = false
 
 # tmux と同様、名前の入力を挟まずに新しいタブを作成する。
 prompt_new_tab_name = false
+
+show_agent_labels_on_pane_borders = false
+
+[ui.sidebar.agents]
+row_gap = 0
+rows = [
+  ["state_icon", "workspace", "tab"],
+  ["agent", "pane", "$name"],
+]
+
 
 [theme]
 name = "terminal"
@@ -80,8 +127,13 @@ cjk_ime_cursor_shape = "steady_block"
 # prefix モードの間だけ macOS の入力ソースを ASCII 系に切り替え、抜けたら元の入力ソースに戻す
 switch_ascii_input_source_in_prefix = true
 
+# for `herdr-browser`
+kitty_graphics = true
 
 # requirements: integrations
 # herdr integration install claude
 # herdr integration install codex
 # herdr integration install opencode
+
+# just install:
+# herdr plugin install shibayu36/herdr-equalize-panes
