@@ -219,6 +219,7 @@
 (load "init-ui")
 (load "init-looks")
 (load "init-completion")
+(load "init-minibuffer")
 (load "init-langs")
 (load "init-lsp")
 (load "init-ai")

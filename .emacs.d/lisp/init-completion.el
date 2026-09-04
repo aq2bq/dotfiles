@@ -1,101 +1,113 @@
+;;; init-completion.el --- In-buffer completion -*- lexical-binding: t; -*-
+
+;; (leaf company
+;;   :doc "Modular text completion framework"
+;;   :req "emacs-24.3"
+;;   :tag "matching" "convenience" "abbrev" "emacs>=24.3"
+;;   :url "http://company-mode.github.io/"
+;;   :emacs>= 24.3
+;;   :ensure t
+;;   :blackout t
+;;   :leaf-defer nil
+;;   :bind ((company-active-map
+;;           ("M-n" . nil)
+;;           ("M-p" . nil)
+;;           ("C-s" . company-filter-candidates)
+;;           ("C-n" . company-select-next)
+;;           ("C-p" . company-select-previous)
+;;           ;; ("<tab>" . company-complete-selection)
+;;           ("TAB" . company-select-next)
+;;           ("<backtab>" . company-select-previous))
+;;          (company-search-map
+;;           ("C-n" . company-select-next)
+;;           ("C-p" . company-select-previous)))
+;;   :custom ((company-idle-delay . 0)
+;;            (company-minimum-prefix-length . 1)
+;;            (company-transformers . '(company-sort-by-occurrence))
+;;            (company-selection-wrap-around . t))
+;;   :global-minor-mode global-company-mode)
+
+
+;; Snippets
+(leaf yasnippet
+  :ensure t
+  :custom
+  (yas-snippet-dirs . '("~/.emacs.d/snippets"))
+  :global-minor-mode yas-global-mode)
+
+
+;; In-buffer completion UI
+(leaf corfu
+  :ensure t
+  :doc "Completion Overlay Region FUnction"
+  :url "https://github.com/minad/corfu"
+
+  :global-minor-mode global-corfu-mode
+
+  :custom
+  ((global-corfu-minibuffer . t)
+   (corfu-auto . t)
+   (corfu-auto-prefix . 1)
+   (corfu-auto-delay . 0.1)
+   (corfu-cycle . t)
+   (corfu-preselect . 'prompt))
+
+  :bind
+  (corfu-map
+   ("TAB" . corfu-next)
+   ([tab] . corfu-next)
+   ("S-TAB" . corfu-previous)
+   ([backtab] . corfu-previous))
+
+  :config
+  ;; Show documentation for the selected completion candidate.
+  (corfu-popupinfo-mode 1))
+
+
+;; Additional completion-at-point backends
+(leaf cape
+  :ensure t
+  :doc "Completion At Point Extensions"
+  :url "https://github.com/minad/cape"
+
+  :custom
+  ((dabbrev-case-fold-search . t))
+
+  :bind
+  (("C-c p p" . completion-at-point)
+   ("C-c p t" . complete-tag)
+   ("C-c p d" . cape-dabbrev)
+   ("C-c p h" . cape-history)
+   ("C-c p f" . cape-file)
+   ("C-c p k" . cape-keyword)
+   ("C-c p s" . cape-elisp-symbol)
+   ("C-c p e" . cape-elisp-block)
+   ("C-c p a" . cape-abbrev)
+   ("C-c p l" . cape-line)
+   ("C-c p w" . cape-dict)
+   ("C-c p :" . cape-emoji)
+   ("C-c p \\" . cape-tex)
+   ("C-c p _" . cape-tex)
+   ("C-c p ^" . cape-tex)
+   ("C-c p &" . cape-sgml)
+   ("C-c p r" . cape-rfc1345))
+
+  :config
+  ;; Major mode / LSP が提供する CAPF を優先し、
+  ;; Cape は fallback として後ろに追加する。
+  (add-to-list 'completion-at-point-functions #'cape-dabbrev t)
+  (add-to-list 'completion-at-point-functions #'cape-file t)
+  (add-to-list 'completion-at-point-functions #'cape-elisp-block t))
+
+
+(provide 'init-completion)
+;;; init-completion.el ends here
+
 (leaf yasnippet
   :ensure t
   :custom
   (yas-snippet-dirs . '("~/.emacs.d/snippets")))
 
-(leaf company
-  :doc "Modular text completion framework"
-  :req "emacs-24.3"
-  :tag "matching" "convenience" "abbrev" "emacs>=24.3"
-  :url "http://company-mode.github.io/"
-  :emacs>= 24.3
-  :ensure t
-  :blackout t
-  :leaf-defer nil
-  :bind ((company-active-map
-          ("M-n" . nil)
-          ("M-p" . nil)
-          ("C-s" . company-filter-candidates)
-          ("C-n" . company-select-next)
-          ("C-p" . company-select-previous)
-          ;; ("<tab>" . company-complete-selection)
-          ("TAB" . company-select-next)
-          ("<backtab>" . company-select-previous))
-         (company-search-map
-          ("C-n" . company-select-next)
-          ("C-p" . company-select-previous)))
-  :custom ((company-idle-delay . 0)
-           (company-minimum-prefix-length . 1)
-           (company-transformers . '(company-sort-by-occurrence))
-           (company-selection-wrap-around . t))
-  :global-minor-mode global-company-mode)
-
-
-;; Emacsの次世代ミニバッファ補完UI
-;; https://blog.tomoya.dev/posts/a-new-wave-has-arrived-at-emacs/
-(leaf orderless
-  :doc "補完スタイルの提供"
-  :ensure t
-  :custom ((completion-styles . '(orderless basic))
-           (completion-category-defaults . nil)
-           (completion-category-overrides . '((file (styles basic partial-completion))))))
-(leaf marginalia
-  :ensure t
-  :doc "ミニバッファの右側に追加情報を表示する"
-  :init (marginalia-mode)
-  :global-minor-mode t
-  :config
-  ;; Emacs 30.2でバイトコンパイル済みのMarginaliaが`seconds-to-string'を
-  ;; 誤った引数で呼び出す場合があるため、互換関数を明示的に使う。
-  (defun marginalia--time-relative (time)
-    "Format TIME as a relative age."
-    (setq time (max 0 (float-time (time-since time))))
-    (concat (funcall (compat-function seconds-to-string)
-                     time 'expanded 'abbrev)
-            " ago")))
-(leaf vertico
-  :doc "ミニバッファ補完UI"
-  :ensure t
-  :global-minor-mode vertico-mode
-  :bind ((minibuffer-local-map (
-          ("C-l" . vertico-directory-up)
-                                )))
-  :custom ((vertico-count . 20)))
-(leaf embark
-  :ensure t
-  :bind (("C-." . embark-act)
-         (minibuffer-local-map
-          :package emacs
-          ("M-." . embark-dwim)
-          ("C-." . embark-act)))
-  :config (setopt embark-help-key "?") ;;  Embark が起動している時に ? を叩いたら help が出る
-  )
-(leaf consult
-  :doc "補完候補リストの作成と便利な補完コマンド"
-  :url "https://github.com/minad/consult"
-  :ensure t
-  :bind (("C-x C-b" . consult-buffer)
-         ("C-x l" . consult-goto-line)
-         ("C-s" . consult-line)
-         ("C-c s" . consult-ripgrep)
-         ("C-c C-s" . consult-ripgrep-specific-directory)
-         ("C-c C-r" . consult-recent-file))
-  ;; :custom ((consult-find-command . "fd --color=never --full-path ARG OPTS"))
-  :config
-  (defun consult-ripgrep-specific-directory () ;; 都度対象ディレクトリを指定して検索できる
-    (interactive)
-    (let ((consult-project-function (lambda (_) default-directory)))
-      (consult-ripgrep (read-directory-name "Directory: "))))
-  (leaf consult-ghq
-    :doc "ghq interface"
-    :if (executable-find "ghq")
-    :ensure t
-    :bind (("M-g M-f" . consult-ghq-find))
-    :custom ((consult-ghq-find-function . 'dired)))
-  ;; (leaf consult-lsp
-  ;;   :ensure t)
-  (leaf embark-consult
-    :ensure t))
 
 (leaf corfu
   :ensure t
@@ -103,7 +115,7 @@
   :url "https://github.com/minad/corfu"
   :init (global-corfu-mode)
   :custom ((corfu-popupinfo-mode . t)
-           (corfu--auto . t)
+           (corfu-auto . t)
            (corfu-auto-prefix . 1)
            (corfu-auto-delay . 0)
            (corfu-cycle . t) ;; Enable cycling for `corfu-next/previous'
