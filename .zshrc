@@ -175,6 +175,12 @@ alias llm='ollama run gemma3:12b'
 # --------------------------
 autoload -Uz compinit && compinit
 
+# carapace (multi-shell argument completion)
+if command -v carapace >/dev/null 2>&1; then
+  export CARAPACE_BRIDGES='zsh,fish,bash,inshellisense'
+  source <(carapace _carapace)
+fi
+
 # --------------------------
 # 60-history
 # --------------------------
