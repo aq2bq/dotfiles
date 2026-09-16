@@ -159,6 +159,8 @@ alias chrome="/Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome"
 alias gore='gore -autoimport'
 alias t='open -a Typora'
 alias tf='terraform'
+alias glob='print -rl --'
+
 function lgtm() {
   random_choice >/dev/null || return 1
   figlet -f "$REPLY" LGTM
@@ -190,6 +192,7 @@ HISTFILE="$HOME/.zsh_history"
 setopt SHARE_HISTORY
 setopt HIST_IGNORE_DUPS
 setopt HIST_IGNORE_SPACE
+setopt GLOB_DOTS
 
 # --------------------------
 # 70-prompt & plugins
