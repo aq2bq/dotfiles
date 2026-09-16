@@ -54,16 +54,6 @@ height = "80%"
 [[keys.command]]
 # https://www.hunk.dev/
 # `brew install modem-dev/tap/hunk`
-key = "prefix+h"
-type = "popup"
-command = "hunk diff"
-description = "run hunk diff"
-width = "90%"
-height = "80%"
-
-[[keys.command]]
-# https://www.hunk.dev/
-# `brew install modem-dev/tap/hunk`
 key = "prefix+ctrl+h"
 type = "popup"
 command = "hunk diff --staged"
