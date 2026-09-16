@@ -30,12 +30,27 @@
       orig-result)))
 (advice-add 'lsp-resolve-final-command :around #'lsp-booster--advice-final-command)
 
+;; (defun my/ruby-lsp-deferred ()
+;;   "Ruby バッファでは Ruby LSP だけを起動候補にする。"
+;;   (setq-local lsp-enabled-clients '(ruby-lsp-ls))
+;;   ;; Ruby LSP の解析は手動操作を中心に使い、移動時の自動要求・表示を抑える。
+;;   (setq-local lsp-ui-doc-enable nil
+;;               lsp-ui-sideline-enable nil
+;;               lsp-eldoc-enable-hover nil
+;;               lsp-enable-symbol-highlighting nil
+;;               lsp-signature-auto-activate nil
+;;               lsp-lens-enable nil)
+;;   (lsp-deferred))
+
 (leaf lsp-mode
   :ensure t
   :commands (lsp lsp-deferred)
   :init (yas-global-mode)
   :hook ((rust-mode-hook . lsp-deferred)
+         (ruby-mode-hook . lsp-deferred)
          (ruby-ts-mode-hook . lsp-deferred)
+         ;; (ruby-mode-hook . my/ruby-lsp-deferred)
+         ;; (ruby-ts-mode-hook . my/ruby-lsp-deferred)
          (python-ts-mode-hook . lsp-deferred)
          (typescript-mode-hook . lsp-deferred)
          (typescript-ts-mode-hook . lsp-deferred)
@@ -51,7 +66,8 @@
   :custom
   (lsp-auto-guess-root . nil)
   (lsp-completion-provider . :none) ;; to completion using corfu
-  (lsp-disabled-clients . '(rubocop-ls pyls pylsp))
+  ;; ruby-ls は Solargraph のクライアントID。
+  (lsp-disabled-clients . '(ruby-ls rubocop-ls pyls pylsp sorbet-ls))
   (lsp-eldoc-render-all . t)
   (lsp-enable-links . t)
   (lsp-message-project-root-warning . t)
@@ -63,19 +79,11 @@
   (lsp-restart . 'auto-restart)
 
   ;; ruby --
-  ;; solargraphを使う場合
-  ;; (lsp-solargraph-use-bundler . t)
-  ;; (lsp-solargraph-library-directories . '("~/.rbenv/shims/"))
-  ;; sorbetを併用
-  ;; (lsp-sorbet-as-add-on . t)
-  ;; (lsp-sorbet-use-bundler . t)
-  ;; ruby-lspを使い場合
+  ;; Ruby の起動候補は my/ruby-lsp-deferred で限定する。
   (lsp-ruby-lsp-use-bundler . nil)
+  ;; Sorbet に委譲せず Ruby LSP 自身で定義解決する。参照検索は全走査のため重い。
+  ;; (lsp-ruby-lsp-server-command . '("env" "RUBY_LSP_BYPASS_TYPECHECKER=1" "ruby-lsp"))
   (lsp-ruby-lsp-server-command . '("ruby-lsp"))
-  ;; (lsp-enabled-clients . '(
-  ;;                          ruby-lsp-ls
-  ;;                          ;; solargraph-ls
-  ;;                          ))
   )
 
 (leaf lsp-ui
