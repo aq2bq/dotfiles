@@ -32,6 +32,7 @@ projectile-bookmarks.eld
 !/.config/fish/config.fish
 !/.config/ghostty/config
 !/.config/herdr/config.toml
+!/.config/starship.toml
 !/.config/karabiner/
 !/.config/karabiner/karabiner.json
 !/.config/karabiner/assets/

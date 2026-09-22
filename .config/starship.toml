@@ -1,0 +1,80 @@
+format = """
+[╭─](bold blue)$username\
+$hostname\
+$directory\
+$git_branch\
+$git_commit\
+$git_state\
+$git_status\
+$package\
+$nodejs\
+$python\
+$golang\
+$rust\
+$java\
+$lua\
+$docker_context\
+$kubernetes\
+$aws\
+$terraform\
+$vagrant\
+$conda\
+$memory_usage\
+$jobs\
+$battery
+[╰─](bold blue)$character"""
+
+right_format = """$cmd_duration"""
+
+[username]
+show_always = false
+style_user = "bold green"
+style_root = "bold red"
+format = "[$user]($style) "
+
+[hostname]
+ssh_only = true
+style = "bold green"
+format = "[$hostname]($style) "
+
+[directory]
+style = "bold cyan"
+truncate_to_repo = false
+truncation_length = 3
+truncation_symbol = "…/"
+
+[character]
+success_symbol = "[➜](bold green)"
+error_symbol = "[✗](bold red)"
+vimcmd_symbol = "[❮](bold green)"
+
+[git_branch]
+style = "bold purple"
+format = "[$symbol$branch]($style) "
+
+[git_status]
+style = "bold red"
+format = "([$all_status$ahead_behind]($style)) "
+
+[nodejs]
+style = "bold green"
+format = "[$symbol($version) ]($style)"
+
+[python]
+style = "bold yellow"
+format = "[$symbol($version) ]($style)"
+
+[golang]
+style = "bold cyan"
+format = "[$symbol($version) ]($style)"
+
+[rust]
+style = "bold red"
+format = "[$symbol($version) ]($style)"
+
+[cmd_duration]
+min_time = 0
+show_milliseconds = false
+format = "[ took $duration]($style)"
+style = "yellow bold"
+disabled = true
