@@ -1,3 +1,5 @@
+;;; init-tools.el --- Tool settings -*- lexical-binding: t; -*-
+
 (leaf flymake
   :ensure t
   :bind (flymake-mode-map

@@ -1,3 +1,5 @@
+;;; init-ui.el --- UI settings -*- lexical-binding: t; -*-
+
 ;; 括弧を自動で補完する
 (electric-pair-mode 1)
 

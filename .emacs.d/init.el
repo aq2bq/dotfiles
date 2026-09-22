@@ -1,3 +1,5 @@
+;;; init.el --- Emacs configuration -*- lexical-binding: t; -*-
+
 ;; Emacs for Mac
 ;; brew install --cask emacs-mac-spacemacs-icon
 

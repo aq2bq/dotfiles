@@ -1,3 +1,5 @@
+;;; init-looks-theme.el --- Theme settings -*- lexical-binding: t; -*-
+
 (custom-set-faces
  ;; '(default ((t (:background "#13213A"))))
  ;; vtermなどでTUIを利用すると空白領域に色がついて辛い

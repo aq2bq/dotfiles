@@ -1,3 +1,5 @@
+;;; init-langs.el --- Language settings -*- lexical-binding: t; -*-
+
 (leaf prog-mode
   :doc "Major mode for programming language"
   :hook ((prog-mode-hook . display-line-numbers-mode)

@@ -1,3 +1,5 @@
+;;; init-lsp.el --- LSP backend dispatcher -*- lexical-binding: t; -*-
+
 (defvar my/lsp-backend :lsp-mode)
 
 (cl-case my/lsp-backend

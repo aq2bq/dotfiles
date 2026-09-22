@@ -1,3 +1,5 @@
+;;; init-lsp-lsp-mode.el --- lsp-mode settings -*- lexical-binding: t; -*-
+
 (defun lsp-booster--advice-json-parse (old-fn &rest args)
   "Try to parse bytecode instead of json."
   (or

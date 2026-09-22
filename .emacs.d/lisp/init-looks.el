@@ -1,3 +1,5 @@
+;;; init-looks.el --- Appearance settings -*- lexical-binding: t; -*-
+
 ;; (Macのみ) タイトルバーを透過させる
 (add-to-list 'default-frame-alist '(ns-transparent-titlebar . t))
 
