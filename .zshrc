@@ -48,6 +48,12 @@ export LESS='-g -i -M -R -S -W -z-4 -x4'
 export EDITOR=vim
 export PGDATA=/usr/local/var/postgress
 
+# ssh先ではCOLORTERMが渡らないことがあるため補完する(Ghostty等はtruecolor対応)。
+# これが無いとCUIアプリ(Emacs等)が256色近似で暗い青など意図しない色になる。
+if [[ -n $SSH_CONNECTION && -z $COLORTERM ]]; then
+  export COLORTERM=truecolor
+fi
+
 # --------------------------
 # 20-tools init
 # --------------------------
