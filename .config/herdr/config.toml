@@ -1,3 +1,4 @@
+onboarding = false
 # homebrewでセットアップしたのでセルフアップデートであるところの`herdr update`, `herdr update --handoff`を利用できない
 # セッションを活かしたままアップデートを適用するには:
 #
