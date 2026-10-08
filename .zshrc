@@ -267,3 +267,6 @@ add-zsh-hook preexec on_enter_preexec
 
 # bun completions
 [ -s "$HOME/.bun/_bun" ] && source "$HOME/.bun/_bun"
+
+# opencode
+export PATH=/Users/pememo/.opencode/bin:$PATH

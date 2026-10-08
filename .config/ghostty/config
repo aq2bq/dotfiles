@@ -72,12 +72,11 @@ tab-inherit-working-directory = false
 split-inherit-working-directory = false
 window-inherit-font-size = false
 
-# 操作
-# Command + R で Ghostty の設定を再読込する。既定の Command + Shift + , も引き続き使える。
-keybind = super+r=reload_config
-
+# キーバインド
 # iTerm2 の左右 Option キーは Esc+入力、すなわち端末の Meta キーとして動作する。
 macos-option-as-alt = true
+keybind = super+r=reload_config
+
 
 # iTerm2 と同じ端末識別子にして、端末アプリケーションの分岐を近づける。
 term = xterm-256color
