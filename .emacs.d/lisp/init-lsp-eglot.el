@@ -1,7 +1,7 @@
 ;;; init-lsp-eglot.el --- eglot settings -*- lexical-binding: t; -*-
 
 (leaf eglot
-  :ensure t
+  :tag "builtin"
   :doc "Emacs Polyglot: an Emacs LSP client that stays out of your way"
   :bind (("C-c h" . eldoc-doc-buffer))
   :preface

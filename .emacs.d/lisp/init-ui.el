@@ -12,12 +12,6 @@
   :custom (show-paren-style . 'mixed)
   :config
   (show-paren-mode t))
-(leaf smartparens
-  :ensure t
-  :global-minor-mode show-smartparens-global-mode
-  :config
-  (require 'smartparens-ruby))
-
 (leaf posframe
   :ensure t
   :url "https://github.com/tumashu/posframe"
@@ -28,27 +22,31 @@
   :ensure t
   :hook ((prog-mode-hook . rainbow-delimiters-mode)))
 
-(leaf rotate
-  :doc "Rotate the current buffer to the next or previous buffer in the current window"
-  :url "https://github.com/daichirata/emacs-rotate"
-  :ensure t
-  :bind (
-         ("M-q" . rotate-window)
-         ("M-r" . rotate-layout)
-         ;; ("C-x <right>" . rotate-window-right)
-         ;; ("C-x <left>" . rotate-window-left)
-         ))
+(leaf window
+  :tag "builtin"
+  :bind (("M-q" . rotate-windows)
+         ;; 上下分割と左右分割を切り替える。
+         ("M-r" . window-layout-transpose)))
 
-(leaf yafolding
-  :doc "Folding code blocks based on indentation."
-  :url "https://github.com/zenozeng/yafolding.el"
-  :ensure t
-  :bind ("C-c i" . yafolding-toggle-element))
+(leaf hideshow
+  :tag "builtin"
+  :preface
+  (defun my/toggle-code-fold ()
+    "標準のHideshowで現在のブロックを開閉する。"
+    (interactive)
+    (require 'hideshow)
+    (unless hs-minor-mode
+      ;; 構文解析のないモードでは従来どおりインデントで判定する。
+      (unless (treesit-parser-list)
+        (hs-indentation-mode 1))
+      (hs-minor-mode 1))
+    (hs-toggle-hiding))
+  :bind ("C-c i" . my/toggle-code-fold))
 
 (leaf which-key
   :doc "minor mode for Emacs that displays the key bindings following your currently entered incomplete command (a prefix) in a popup."
-  :ensure t
-  :init (which-key-mode))
+  :tag "builtin"
+  :init (which-key-mode 1))
 
 (leaf highlight-indent-guides
   :url "https://github.com/DarthFennec/highlight-indent-guides"

@@ -47,7 +47,6 @@
 (leaf lsp-mode
   :ensure t
   :commands (lsp lsp-deferred)
-  :init (yas-global-mode)
   :hook ((rust-mode-hook . lsp-deferred)
          (ruby-mode-hook . lsp-deferred)
          (ruby-ts-mode-hook . lsp-deferred)

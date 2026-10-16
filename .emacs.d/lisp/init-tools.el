@@ -1,7 +1,7 @@
 ;;; init-tools.el --- Tool settings -*- lexical-binding: t; -*-
 
 (leaf flymake
-  :ensure t
+  :tag "builtin"
   :bind (flymake-mode-map
          ("C-x C-p" . flymake-goto-prev-error)
          ("C-x C-n" . flymake-goto-next-error))

@@ -139,15 +139,8 @@
     (package-refresh-contents)
     (package-install 'leaf))
 
-  (leaf leaf-convert :ensure t)
   (leaf leaf-keywords
     :ensure t
-    :init
-    ;; optional packages if you want to use :hydra, :el-get, :blackout,,,
-    (leaf hydra :ensure t)
-    (leaf el-get :ensure t)
-    (leaf blackout :ensure t)
-
     :config
     ;; initialize leaf-keywords.el
     (leaf-keywords-init))
@@ -204,13 +197,12 @@
   :config
   ;; Emacs 31標準の切り替えを使う。全言語の文法を毎回走査しない。
   ;; Go/Rust/Markdownは整形・編集機能を設定した従来のモードを使う。
-  (when (>= emacs-major-version 31)
-    (setopt treesit-enabled-modes
-            '(bash-ts-mode c-ts-mode c++-ts-mode c-or-c++-ts-mode
-              css-ts-mode dockerfile-ts-mode java-ts-mode js-ts-mode
-              json-ts-mode python-ts-mode ruby-ts-mode toml-ts-mode
-              typescript-ts-mode tsx-ts-mode yaml-ts-mode)
-            treesit-auto-install-grammar 'ask)))
+  (setopt treesit-enabled-modes
+          '(bash-ts-mode c-ts-mode c++-ts-mode c-or-c++-ts-mode
+            css-ts-mode dockerfile-ts-mode java-ts-mode js-ts-mode
+            json-ts-mode python-ts-mode ruby-ts-mode toml-ts-mode
+            typescript-ts-mode tsx-ts-mode yaml-ts-mode)
+          treesit-auto-install-grammar 'ask))
 
 
 ;;;;
