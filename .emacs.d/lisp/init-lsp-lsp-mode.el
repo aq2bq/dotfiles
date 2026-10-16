@@ -57,7 +57,7 @@
          (typescript-mode-hook . lsp-deferred)
          (typescript-ts-mode-hook . lsp-deferred)
          (tsx-ts-mode-hook . lsp-deferred)
-         (conf-toml-mode-hook . lsp-deferred) ;; require: `cargo install taplo-cli --features lsp`
+         (toml-ts-mode-hook . lsp-deferred) ;; require: `cargo install taplo-cli --features lsp`
          (terraform-mode-hook . lsp-deferred) ;; require `brew install hashicorp/tap/terraform-ls`
          (lsp-mode-hook . lsp-ui-mode)
          (lsp-mode-hook . lsp-enable-which-key-integration))

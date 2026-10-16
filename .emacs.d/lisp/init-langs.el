@@ -12,6 +12,11 @@
   :mode
   ("Dockerfile\\'" . dockerfile-ts-mode))
 
+(leaf markdown-modern
+  :ensure t
+  :url "https://github.com/rjprins/markdown-modern"
+  :vc (:url "https://github.com/rjprins/markdown-modern"))
+
 (leaf markdown-mode
   :ensure t
   :doc "Markdown Modeと久々に向き合う"
@@ -33,13 +38,13 @@
          ("C-c m" . markdown-mermaid-preview))
   :custom ((markdown-mermaid-mmdc-path . "~/.nodenv/shims/mmdc")))
 
-(leaf yaml-mode
-  :ensure t
-  :mode "\\(\.yml\\|\.yaml\\)")
+(leaf yaml-ts-mode
+  :tag "builtin"
+  :mode "\\.ya?ml\\'")
 
 (leaf json-ts-mode
-  :ensure t
-  :mode "\\(\.json\\|\.jsonc\\)")
+  :tag "builtin"
+  :mode "\\.jsonc?\\'")
 
 (leaf fish-mode
   :doc "Emacs major mode for fish shell scripts."
@@ -78,9 +83,9 @@
 (leaf typescript-ts-mode
   :mode
   (("\\.ts$" . typescript-ts-mode)
-   ("\\.tsx$" . typescript-ts-mode))
+   ("\\.tsx$" . tsx-ts-mode))
   :custom
-  ((typescript-indent-level . 2)))
+  ((typescript-ts-indent-offset . 2)))
 
 (leaf go-mode
   :ensure t
@@ -133,14 +138,12 @@
       (setq-local lsp-semantic-tokens-enable t)
       (setq-local lsp-semantic-tokens-honor-refresh-requests t))))
 
-;; Python
-(leaf python-mode
-  :ensure t
-  :doc "Python major mode"
-  :url "https://gitlab.com/groups/python-mode-devs"
-  :mode "\\.py\\'"
-  :custom `((py-keep-windows-configuration . t)
-            (python-indent-guess-indent-offset . t)
-            (python-indent-guess-indent-offset-verbose . nil)
-            (py-python-command . ,(if (executable-find "uv") "uv run python"
-                                    "python"))))
+;; Python: Emacs標準のモードをtreesit-enabled-modesで切り替える。
+(leaf python
+  :tag "builtin"
+  :custom ((python-indent-guess-indent-offset . t)
+           (python-indent-guess-indent-offset-verbose . nil))
+  :config
+  (when (executable-find "uv")
+    (setq python-shell-interpreter "uv"
+          python-shell-interpreter-args "run python -i")))

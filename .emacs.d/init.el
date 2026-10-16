@@ -198,17 +198,19 @@
 ;; - ref: Emacs 29 でTree-sitterを利用してシンタックスハイライトする
 ;;   https://zenn.dev/hyakt/articles/42a1d237cdfa2a
 (leaf treesit
-  :custom ((treesit-font-lock-level . 4)))
-
-(leaf treesit-auto
-  :ensure t
-  :url "https://github.com/renzmann/treesit-auto"
+  :tag "builtin"
   :require t
-  :custom ((treesit-auto-install . t))
+  :custom ((treesit-font-lock-level . 4))
   :config
-  (setq treesit-auto-langs (delete 'ruby treesit-auto-langs))
-  (setq treesit-auto-langs (delete 'rust treesit-auto-langs))
-  (global-treesit-auto-mode 1))
+  ;; Emacs 31標準の切り替えを使う。全言語の文法を毎回走査しない。
+  ;; Go/Rust/Markdownは整形・編集機能を設定した従来のモードを使う。
+  (when (>= emacs-major-version 31)
+    (setopt treesit-enabled-modes
+            '(bash-ts-mode c-ts-mode c++-ts-mode c-or-c++-ts-mode
+              css-ts-mode dockerfile-ts-mode java-ts-mode js-ts-mode
+              json-ts-mode python-ts-mode ruby-ts-mode toml-ts-mode
+              typescript-ts-mode tsx-ts-mode yaml-ts-mode)
+            treesit-auto-install-grammar 'ask)))
 
 
 ;;;;
@@ -227,3 +229,4 @@
 
 (provide 'init)
 (put 'dired-find-alternate-file 'disabled nil)
+(put 'upcase-region 'disabled nil)

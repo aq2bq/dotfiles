@@ -57,7 +57,7 @@
   ((highlight-indent-guides-method . 'fill)
    (highlight-indent-guides-auto-enabled . t)
    (highlight-indent-guides-responsive . t))
-    :hook (((prog-mode-hook yaml-mode-hook) . highlight-indent-guides-mode)))
+    :hook (((prog-mode-hook yaml-ts-mode-hook) . highlight-indent-guides-mode)))
 
 (leaf keypression
   :ensure t
