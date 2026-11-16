@@ -37,6 +37,7 @@ path_prepend "$BUN_INSTALL/bin"
 path_prepend "$HOME/.antigravity/antigravity/bin"
 path_prepend "$PNPM_HOME/bin"
 path_prepend "$BREW_PREFIX/opt/openjdk/bin"
+path_prepend "$HOME/.opencode/bin"
 
 export PATH
 
@@ -268,5 +269,3 @@ add-zsh-hook preexec on_enter_preexec
 # bun completions
 [ -s "$HOME/.bun/_bun" ] && source "$HOME/.bun/_bun"
 
-# opencode
-export PATH=/Users/pememo/.opencode/bin:$PATH
