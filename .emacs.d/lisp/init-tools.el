@@ -16,25 +16,35 @@
 (leaf magit
   :ensure t)
 
-(leaf vterm
-  ;; requirements: brew install cmake
-  :doc "Emacs libvterm integration"
-  :url "https://github.com/akermu/emacs-libvterm"
+(leaf ghostel
+  :doc "Terminal emulator powered by libghostty"
+  :url "https://github.com/dakra/ghostel"
   :ensure t
-  :bind (vterm-mode-map
-         ("C-h" . vterm-send-backspace)
-         ("C-g" . vterm-send-escape)
-         ("C-l" . vterm-clear)
-         ("C-c C-c" . vterm--self-insert)
-         ("C-q" . other-window))
-  :custom (
-           (display-line-numbers . nil)
-           (vterm-max-scrollback . 10000)))
-(leaf vterm-toggle
-  :doc "toggles between the vterm buffer and whatever buffer you are editing."
-  :ensure t
-  :custom (vterm-toggle-scope . 'project)
-  :bind (("C-s-t" . vterm-toggle)))
+  :commands (ghostel ghostel-project)
+  :preface
+  (defun my/ghostel-toggle ()
+    "Toggle the current project's terminal and the editing buffer."
+    (interactive)
+    (if (derived-mode-p 'ghostel-mode)
+        (quit-window)
+      (require 'project)
+      (if (project-current nil)
+          (ghostel-project)
+        (ghostel))))
+  :bind (("C-s-t" . my/ghostel-toggle)
+         (ghostel-semi-char-mode-map
+          ("C-h" . (lambda () (interactive) (ghostel-send-key "backspace")))
+          ("C-g" . (lambda ()
+                     (interactive)
+                     (setq quit-flag nil)
+                     (ghostel-send-key "escape")))
+          ("C-l" . ghostel-clear)
+          ("C-c C-c" . ghostel-send-C-c)
+          ("C-q" . other-window)
+          ("C-s-t" . my/ghostel-toggle)))
+  :hook (ghostel-mode-hook . (lambda () (display-line-numbers-mode -1)))
+  ;; 8 MiB: Ghostel measures scrollback in bytes, rather than lines.
+  :custom (ghostel-max-scrollback . 8388608))
 
 (leaf mindstream
   :doc "quickly write down some thoughts"
