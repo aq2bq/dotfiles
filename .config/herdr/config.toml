@@ -74,13 +74,13 @@ height = "80%"
 
 [ui]
 mouse_capture = true
-pane_borders = false
+pane_borders = "always"
+show_agent_labels_on_pane_borders = true
 pane_gaps = false
 
 # tmux と同様、名前の入力を挟まずに新しいタブを作成する。
 prompt_new_tab_name = false
 
-show_agent_labels_on_pane_borders = false
 
 [ui.sidebar.agents]
 row_gap = 0
